@@ -1116,7 +1116,7 @@ async function loadData() {
         members = membersData || [];
         allMembersData = [...members];
         
-        console.log('Data members loaded:', members.length, 'members');
+        console.log('✅ Data members loaded:', members.length, 'members');
         
         await loadSetlistData();
         restoreState();
@@ -1143,7 +1143,7 @@ async function loadData() {
 
 async function loadSetlistData() {
     try {
-        console.log('Memuat data setlist dari tabel setlist_performance...');
+        console.log('📊 Memuat data setlist dari tabel setlist_performance...');
         
         const { data: setlistData, error: setlistError } = await db
             .from('setlist_performance')
@@ -1151,59 +1151,101 @@ async function loadSetlistData() {
         
         if (setlistError) {
             console.error('Error loading setlist data:', setlistError);
-            initializeEmptySetlistData();
-            return;
         }
         
-        console.log('Data setlist ditemukan:', setlistData?.length || 0, 'records');
+        console.log('📥 Data setlist ditemukan:', setlistData?.length || 0, 'records');
         
-        if (!setlistData || setlistData.length === 0) {
-            initializeEmptySetlistData();
-            return;
+        // Reset all setlist data
+        Object.keys(SETLIST_DATA).forEach(key => {
+            SETLIST_DATA[key].members = {};
+        });
+        
+        // First, initialize all members with 0 shows for all setlists
+        members.forEach(member => {
+            const memberName = member.name;
+            Object.keys(SETLIST_DATA).forEach(setlistKey => {
+                SETLIST_DATA[setlistKey].members[memberName] = 0;
+            });
+        });
+        
+        // **AGGREGATION LOGIC: Handle duplicate data per setlist**
+        if (setlistData && setlistData.length > 0) {
+            // Create a map to aggregate data by member + setlist
+            const showCountMap = {};
+            
+            // Count total shows for each member per setlist
+            setlistData.forEach(record => {
+                const memberName = record.name;
+                const setlistName = record.setlist_name;
+                const shows = parseInt(record.show_count) || 1; // Default 1 if no show_count
+                
+                // Map setlist names to keys
+                if (setlistName) {
+                    const setName = setlistName.toLowerCase();
+                    let setlistKey = null;
+                    
+                    if (setName.includes('ramune') || setName.includes('mennhum')) {
+                        setlistKey = 'ramune';
+                    } else if (setName.includes('tsunaginagara') || setName.includes('tsumaginagara') || setName.includes('tte')) {
+                        setlistKey = 'tte';
+                    } else if (setName.includes('pertaruhan') || setName.includes('cinta')) {
+                        setlistKey = 'pertaruhan';
+                    } else if (setName.includes('pajama')) {
+                        setlistKey = 'pajama';
+                    }
+                    
+                    if (setlistKey) {
+                        // Unique key for member + setlist combination
+                        const mapKey = `${memberName}_${setlistKey}`;
+                        
+                        if (!showCountMap[mapKey]) {
+                            showCountMap[mapKey] = shows;
+                        } else {
+                            // Add if duplicate for the SAME SETLIST
+                            showCountMap[mapKey] += shows;
+                            console.log(`🔄 Duplicate found: ${memberName} in ${setlistKey} - Total now: ${showCountMap[mapKey]}`);
+                        }
+                    }
+                }
+            });
+            
+            // Apply aggregated data to SETLIST_DATA
+            Object.keys(showCountMap).forEach(mapKey => {
+                const [memberName, setlistKey] = mapKey.split('_');
+                const totalShows = showCountMap[mapKey];
+                
+                if (SETLIST_DATA[setlistKey]) {
+                    SETLIST_DATA[setlistKey].members[memberName] = totalShows;
+                }
+            });
+            
+            console.log('✅ Setlist data processed with aggregation');
+        } else {
+            console.log('⚠️ No setlist data found in database');
         }
         
-        SETLIST_DATA.ramune.members = {};
-        SETLIST_DATA.tte.members = {};
-        SETLIST_DATA.pertaruhan.members = {};
-        SETLIST_DATA.pajama.members = {};
-        
-        setlistData.forEach(record => {
-            const memberName = record.name;
-            const setlistName = record.setlist_name;
-            const shows = record.show_count || 0;
+        // Debug: Show detailed summary
+        console.log('📈 SETLIST DATA SUMMARY:');
+        Object.keys(SETLIST_DATA).forEach(setlistKey => {
+            const memberShows = SETLIST_DATA[setlistKey].members;
+            const totalShows = Object.values(memberShows).reduce((a, b) => a + b, 0);
+            const activeMembers = Object.values(memberShows).filter(shows => shows > 0).length;
             
-            let setlistKey = null;
+            console.log(`\n🎭 ${setlistKey.toUpperCase()}: ${activeMembers} active members, ${totalShows} total shows`);
             
-            if (setlistName.toLowerCase().includes('ramune')) {
-                setlistKey = 'ramune';
-            } else if (setlistName.toLowerCase().includes('tte')) {
-                setlistKey = 'tte';
-            } else if (setlistName.toLowerCase().includes('pertaruhan') || 
-                      setlistName.toLowerCase().includes('cinta')) {
-                setlistKey = 'pertaruhan';
-            } else if (setlistName.toLowerCase().includes('pajama')) {
-                setlistKey = 'pajama';
-            }
-            
-            if (setlistKey && SETLIST_DATA[setlistKey]) {
-                SETLIST_DATA[setlistKey].members[memberName] = shows;
-            }
+            // Show top 10 members for this setlist
+            Object.keys(memberShows)
+                .filter(name => memberShows[name] > 0)
+                .sort((a, b) => memberShows[b] - memberShows[a])
+                .slice(0, 10)
+                .forEach((name, index) => {
+                    console.log(`  ${index + 1}. ${name}: ${memberShows[name]} shows`);
+                });
         });
         
     } catch (err) {
-        console.error('Error loading setlist data:', err);
-        initializeEmptySetlistData();
+        console.error('❌ Error loading setlist data:', err);
     }
-}
-
-function initializeEmptySetlistData() {
-    members.forEach(member => {
-        const memberName = member.name;
-        SETLIST_DATA.ramune.members[memberName] = 0;
-        SETLIST_DATA.tte.members[memberName] = 0;
-        SETLIST_DATA.pertaruhan.members[memberName] = 0;
-        SETLIST_DATA.pajama.members[memberName] = 0;
-    });
 }
 
 async function updateLastUpdate() {
@@ -1318,46 +1360,55 @@ function renderSetlistMembers() {
     
     list.innerHTML = '';
     
-    const setlistMembersArray = Object.entries(setlistData.members)
-        .map(([name, shows]) => ({ 
-            name, 
-            shows: shows || 0,
-            memberData: members.find(m => m.name === name) || { gen: '?', team: '?', show: 0, status: '?' }
-        }))
-        .sort((a, b) => b.shows - a.shows);
+    // Create array of all members with their setlist shows
+    const setlistMembersArray = members.map(member => {
+        const shows = setlistData.members[member.name] || 0;
+        return { 
+            name: member.name, 
+            shows: shows,
+            memberData: member
+        };
+    })
+    .sort((a, b) => {
+        // Sort by shows descending, then by name
+        if (b.shows !== a.shows) {
+            return b.shows - a.shows;
+        }
+        return a.name.localeCompare(b.name);
+    });
     
     const activeMembers = setlistMembersArray.filter(m => m.shows > 0);
-    
-    if (activeMembers.length === 0) {
-        list.innerHTML = `
-            <div class="simple-message">
-                <div>Belum ada member yang show di "${setlistData.title}"</div>
-            </div>
-        `;
-        
-        document.getElementById('setlistStats').innerHTML = 
-            `${setlistData.title} • 0 Member • 0 show`;
-        
-        return;
-    }
-    
     const totalShows = activeMembers.reduce((sum, m) => sum + m.shows, 0);
-    const avgShows = (totalShows / activeMembers.length).toFixed(1);
     
-    const statsText = `${setlistData.title} • ${activeMembers.length} Member • Total ${totalShows.toLocaleString()} show • Rata-rata ${avgShows} show/member`;
+    // Find maximum shows for dynamic scaling
+    let maxShows = 0;
+    if (activeMembers.length > 0) {
+        maxShows = Math.max(...activeMembers.map(m => m.shows));
+    }
+    // Use dynamic scaling: minimum scale of 5 shows for better visibility
+    const scaleMax = Math.max(maxShows, 5);
+    
+    const avgShows = activeMembers.length > 0 ? (totalShows / activeMembers.length).toFixed(1) : '0.0';
+    
+    const statsText = `${setlistData.title} • ${activeMembers.length} Member Aktif • Total ${totalShows.toLocaleString()} show • Rata-rata ${avgShows} show/member`;
     document.getElementById('setlistStats').innerHTML = statsText;
     document.getElementById('setlistStats').style.display = 'block';
     
+    // Get setlist badge text
     let setlistBadge = '';
     if (currentSetlistView === 'ramune') setlistBadge = 'RAMUNE';
     else if (currentSetlistView === 'tte') setlistBadge = 'TTE';
     else if (currentSetlistView === 'pertaruhan') setlistBadge = 'PERTARUHAN';
     else if (currentSetlistView === 'pajama') setlistBadge = 'PAJAMA';
     
+    // Render all active members (shows > 0)
     activeMembers.forEach((member, index) => {
         const rank = index + 1;
         const memberData = member.memberData;
-        const percent = Math.min(100, (member.shows / 100) * 100);
+        
+        // DYNAMIC PROGRESS BAR SCALING
+        const percent = Math.min(100, (member.shows / scaleMax) * 100);
+        
         const color = GEN_COLORS[memberData.gen] || setlistData.color || '#6366f1';
         
         const card = document.createElement('div');
@@ -1397,6 +1448,23 @@ function renderSetlistMembers() {
         `;
         list.appendChild(card);
     });
+    
+    // Debug log in console
+    console.log(`🎯 Rendering ${currentSetlistView}: ${activeMembers.length} active members`);
+    console.log(`📊 Max shows: ${maxShows}, Scale: ${scaleMax}`);
+    activeMembers.forEach((member, index) => {
+        const percent = Math.min(100, (member.shows / scaleMax) * 100);
+        console.log(`${index + 1}. ${member.name}: ${member.shows} shows → ${percent}% progress`);
+    });
+    
+    // If no active members, show message
+    if (activeMembers.length === 0) {
+        list.innerHTML = `
+            <div class="simple-message">
+                <div>Belum ada member yang tampil di setlist "${setlistData.title}"</div>
+            </div>
+        `;
+    }
 }
 
 function updateStats() {
