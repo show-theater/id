@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JKT48 Show Theater</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Arial,sans-serif;background:#f5f5f5;color:#333;min-height:100vh;padding-bottom:60px;transition:background 0.3s,color 0.3s}
+body.dark{background:#0a0e1a;color:#e5e7eb}
+
+/* Header */
+header{
+    background:#e60012;
+    text-align:center;
+    padding:20px 60px 20px 20px;
+    font-size:24px;
+    font-weight:bold;
+    color:#fff;
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+.theme-toggle{
+    position:absolute;
+    right:20px;
+    top:50%;
+    transform:translateY(-50%);
+    background:rgba(255,255,255,0.2);
+    border:none;
+    color:#fff;
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:8px;
+    transition:all 0.3s;
+}
+.theme-toggle:hover{
+    background:rgba(255,255,255,0.3);
+    transform:translateY(-50%) scale(1.1);
+}
+.theme-toggle svg{
+    width:20px;
+    height:20px;
+    transition:transform 0.3s;
+}
+.theme-toggle:hover svg{
+    transform:rotate(20deg);
+}
+body.dark .theme-toggle{
+    background:rgba(0,0,0,0.2);
+}
+
+.top{
+    padding:15px 20px;
+    background:#fff;
+    border-bottom:1px solid #ddd;
+    text-align:center;
+    transition:background 0.3s,border-color 0.3s
+}
+body.dark .top{
+    background:#1b1f3a;
+    border-bottom:1px solid #2d3548
+}
+
+.search-box{
+    display:inline-block;
+    width:100%;
+    max-width:400px;
+    position:relative
+}
+.search-box input{
+    width:100%;
+    padding:12px 20px;
+    border-radius:25px;
+    border:2px solid #D3D3D3;
+    background:#fff;
+    font-size:14px;
+    outline:none;
+    color:#333;
+    transition:all 0.3s
+}
+.search-box input:focus{
+    border-color:#D3D3D3
+}
+body.dark .search-box input{
+    background:#0a0e1a;
+    color:#e5e7eb;
+    border-color:#666563
+}
+
+.last-update{
+    text-align:center;
+    padding:8px;
+    font-size:11px;
+    color:#9ca3af;
+    background:#fff;
+    transition:background 0.3s;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px
+}
+body.dark .last-update{
+    background:#0a0e1a;
+    color:#6b7280
+}
+.last-update .spinner{
+    width:12px;
+    height:12px;
+    border-width:2px
+}
+
+/* TOP MEMBER SECTION */
+.top-member-section {
+    padding: 15px 20px;
+    background: #fff;
+    border-bottom: 1px solid #ddd;
+    transition: background 0.3s, border-color 0.3s;
+}
+body.dark .top-member-section {
+    background: #1b1f3a;
+    border-bottom: 1px solid #2d3548;
+}
+
+.top-member-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #6b7280;
+    margin-bottom: 8px;
+    text-align: center;
+}
+body.dark .top-member-title {
+    color: #9ca3af;
+}
+
+.top-member-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+}
+
+.top-member-filter {
+    padding: 10px 18px;
+    font-size: 13px;
+    border-radius: 20px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    font-weight: bold;
+    background: #f0f0f0;
+    color: #333;
+    transition: all 0.3s;
+    min-width: 140px;
+    text-align: center;
+}
+.top-member-filter.active {
+    border-color: #e60012;
+    box-shadow: 0 0 10px rgba(230, 0, 18, 0.3);
+}
+.top-member-filter.setlist-ramune {
+    background: #00CED1;
+    color: #fff;
+}
+body.dark .top-member-filter.setlist-ramune {
+    background: #00CED1;
+    color: #fff;
+}
+.top-member-filter.setlist-tte {
+    background: #FF69B4;
+    color: #fff;
+}
+body.dark .top-member-filter.setlist-tte {
+    background: #FF69B4;
+    color: #fff;
+}
+.top-member-filter.setlist-pertaruhan {
+    background: #D30000;
+    color: #fff;
+}
+body.dark .top-member-filter.setlist-pertaruhan {
+    background: #900603;
+    color: #fff;
+}
+.top-member-filter.setlist-pajama {
+    background: #00006d;
+    color: #fff;
+}
+body.dark .top-member-filter.setlist-pajama {
+    background: #00006d;
+    color: #fff;
+}
+body.dark .top-member-filter {
+    background: #1f2937;
+    color: #e5e7eb;
+}
+body.dark .top-member-filter.active {
+    border-color: #f87171;
+}
+
+.filters{
+    padding:15px 20px;
+    background:#fff;
+    border-bottom:1px solid #ddd;
+    transition:background 0.3s,border-color 0.3s
+}
+body.dark .filters{
+    background:#1b1f3a;
+    border-bottom:1px solid #2d3548
+}
+
+.filter-section{
+    margin-bottom:15px
+}
+.filter-section:last-child{
+    margin-bottom:0
+}
+
+.filter-section-title{
+    font-size:12px;
+    font-weight:600;
+    color:#6b7280;
+    margin-bottom:8px;
+    text-align:center
+}
+body.dark .filter-section-title{
+    color:#9ca3af
+}
+
+.filter-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    justify-content:center
+}
+
+.filter{
+    padding:10px 18px;
+    font-size:13px;
+    border-radius:20px;
+    border:2px solid transparent;
+    cursor:pointer;
+    font-weight:bold;
+    background:#f0f0f0;
+    color:#333;
+    transition:all 0.3s;
+    min-width:120px;
+    text-align:center
+}
+.filter.active{
+    border-color:#e60012;
+    background:#fff;
+}
+.filter.gen-search{
+    background:#6366f1;
+    color:#fff
+}
+body.dark .filter{
+    background:#1f2937;
+    color:#e5e7eb
+}
+body.dark .filter.active{
+    background:#0a0e1a;
+}
+body.dark .filter.gen-search{
+    background:#4f46e5;
+    color:#fff
+}
+
+.stats{
+    text-align:center;
+    padding:8px;
+    font-size:12px;
+    color:#9ca3af;
+    background:#fff;
+    transition:background 0.3s
+}
+body.dark .stats{
+    background:#0a0e1a;
+    color:#6b7280
+}
+
+.setlist-stats {
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    color: #92400e;
+    font-weight: bold;
+    border-top: 2px solid #f59e0b;
+    display: none;
+}
+body.dark .setlist-stats {
+    background: linear-gradient(135deg, #78350f, #92400e);
+    color: #fef3c7;
+    border-top: 2px solid #d97706;
+}
+
+/* GRID RESPONSIF */
+.container{
+    padding:20px;
+    display:grid;
+    gap:15px;
+    max-width:1400px;
+    margin:0 auto;
+    width:100%
+}
+
+/* Mobile: 4 kolom */
+@media (max-width: 767px) {
+    .container{
+        grid-template-columns:repeat(4, 1fr);
+        gap:10px;
+        padding:15px
+    }
+}
+
+/* Tablet: 8 kolom */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .container{
+        grid-template-columns:repeat(8, 1fr);
+        gap:12px;
+        padding:18px
+    }
+}
+
+/* Desktop: 10 kolom */
+@media (min-width: 1024px) {
+    .container{
+        grid-template-columns:repeat(10, 1fr);
+        gap:15px;
+        padding:20px
+    }
+}
+
+/* Desktop besar: 12 kolom */
+@media (min-width: 1200px) {
+    .container{
+        grid-template-columns:repeat(12, 1fr);
+        gap:16px;
+        padding:24px
+    }
+}
+
+.card{
+    background:#fff;
+    border-radius:12px;
+    overflow:hidden;
+    text-align:center;
+    cursor:pointer;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+    transition:all 0.3s;
+    display:flex;
+    flex-direction:column;
+    height:100%;
+}
+.card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 6px 16px rgba(0,0,0,0.15)
+}
+body.dark .card{
+    background:#1b1f3a;
+    box-shadow:0 2px 8px rgba(0,0,0,0.4)
+}
+body.dark .card:hover{
+    box-shadow:0 6px 16px rgba(0,0,0,0.6)
+}
+
+/* CARD TOP MEMBER */
+.card.setlist-card {
+    position: relative;
+    border: 2px solid transparent;
+}
+.card.setlist-card.rank-1 {
+    border-color: #f59e0b;
+    box-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
+}
+.card.setlist-card.rank-2 {
+    border-color: #9ca3af;
+    box-shadow: 0 0 10px rgba(156, 163, 175, 0.2);
+}
+.card.setlist-card.rank-3 {
+    border-color: #d97706;
+    box-shadow: 0 0 8px rgba(217, 119, 6, 0.2);
+}
+
+/* FOTO MEMBER */
+.avatar-container{
+    width:100%;
+    height:0;
+    padding-bottom:133%;
+    position:relative;
+    overflow:hidden;
+    background:#f0f0f0;
+}
+body.dark .avatar-container{
+    background:#0a0e1a
+}
+
+.avatar{
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+    transition:transform 0.3s
+}
+.card:hover .avatar{
+    transform:scale(1.05)
+}
+
+.avatar-placeholder{
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(135deg,#f0f0f0,#e0e0e0);
+    color:#9ca3af;
+    font-size:14px;
+    font-weight:bold
+}
+body.dark .avatar-placeholder{
+    background:linear-gradient(135deg,#1f2937,#0a0e1a);
+    color:#6b7280
+}
+
+/* CARD FOOTER FIXED */
+.card-footer{
+    padding:8px 6px;
+    display:flex;
+    flex-direction:column;
+    flex-grow:1;
+    min-height:80px;
+    justify-content:space-between;
+}
+
+.gen-badge{
+    display:inline-block;
+    background:rgba(0,0,0,0.3);
+    color:#fff;
+    font-size:9px;
+    font-weight:bold;
+    padding:2px 6px;
+    border-radius:10px;
+    margin-bottom:2px;
+    letter-spacing:0.3px;
+    align-self:center;
+    line-height:1.2;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    max-width:90%;
+}
+
+/* PERBAIKAN NAMA MEMBER */
+.name-container {
+    margin: 2px 0;
+    min-height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.name{
+    font-weight:bold;
+    font-size:12px;
+    color:#fff;
+    line-height:1.2;
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    max-height:2.4em;
+    padding:0 2px;
+}
+
+/* SHOW INFO - FIXED SPACING */
+.show-info{
+    font-size:10px;
+    color:rgba(255,255,255,0.95);
+    line-height:1.3;
+    margin: 3px 0 6px 0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:600;
+    min-height: 16px;
+}
+
+.bar-container{
+    margin-top:auto;
+    padding-top:4px;
+}
+
+.bar{
+    height:4px;
+    background:rgba(0,0,0,0.25);
+    border-radius:2px;
+    overflow:hidden;
+}
+.bar span{
+    display:block;
+    height:100%;
+    background:#fff;
+    transition:width 0.5s ease
+}
+body.dark .bar{
+    background:rgba(255,255,255,0.15)
+}
+body.dark .bar span{
+    background:rgba(255,255,255,0.9)
+}
+
+/* RANK BADGE */
+.rank-badge {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 11px;
+    z-index: 2;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+.rank-badge.rank-1 {
+    background: #f59e0b;
+    color: #000;
+}
+.rank-badge.rank-2 {
+    background: #9ca3af;
+    color: #fff;
+}
+.rank-badge.rank-3 {
+    background: #d97706;
+    color: #fff;
+}
+.rank-badge.rank-4, 
+.rank-badge.rank-5, 
+.rank-badge.rank-6, 
+.rank-badge.rank-7, 
+.rank-badge.rank-8, 
+.rank-badge.rank-9, 
+.rank-badge.rank-10 {
+    background: #4b5563;
+    color: #fff;
+}
+
+/* SETLIST INFO DI FOTO SAJA */
+.photo-setlist-badge {
+    position: absolute;
+    bottom: 6px;
+    right: 6px;
+    background: rgba(0, 0, 0, 0.85);
+    color: #fff;
+    font-size: 8px;
+    padding: 2px 6px;
+    border-radius: 8px;
+    z-index: 2;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+
+.msg{
+    grid-column:1/-1;
+    text-align:center;
+    padding:40px 20px;
+    color:#9ca3af;
+    font-size:14px
+}
+body.dark .msg{
+    color:#6b7280
+}
+
+.loading{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    grid-column:1/-1;
+    padding:60px 20px
+}
+
+@keyframes spin{
+    to{
+        transform:rotate(360deg)
+    }
+}
+
+.spinner{
+    display:inline-block;
+    width:32px;
+    height:32px;
+    border:3px solid rgba(0,0,0,0.1);
+    border-top-color:#f59e0b;
+    border-radius:50%;
+    animation:spin 0.8s linear infinite
+}
+body.dark .spinner{
+    border-color:rgba(255,255,255,0.1);
+    border-top-color:#f59e0b
+}
+
+/* Modal Generasi */
+.modal-overlay{
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.7);
+    z-index:1000;
+    align-items:center;
+    justify-content:center;
+    backdrop-filter:blur(4px)
+}
+.modal-overlay.active{
+    display:flex
+}
+
+.modal{
+    background:#fff;
+    border-radius:16px;
+    padding:24px;
+    max-width:420px;
+    width:90%;
+    max-height:85vh;
+    overflow-y:auto;
+    box-shadow:0 20px 60px rgba(0,0,0,0.3);
+    animation:modalSlide 0.3s ease-out
+}
+body.dark .modal{
+    background:#1b1f3a;
+    color:#e5e7eb;
+    border:1px solid #2d3548
+}
+
+@keyframes modalSlide{
+    from{
+        transform:translateY(-20px);
+        opacity:0
+    }
+    to{
+        transform:translateY(0);
+        opacity:1
+    }
+}
+
+.modal-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+    padding-bottom:16px;
+    border-bottom:2px solid #e5e7eb
+}
+body.dark .modal-header{
+    border-bottom-color:#2d3548
+}
+
+.modal-title{
+    font-size:18px;
+    font-weight:bold;
+    color:#e60012
+}
+body.dark .modal-title{
+    color:#f87171
+}
+
+.modal-close{
+    background:transparent;
+    border:none;
+    font-size:24px;
+    cursor:pointer;
+    color:#9ca3af;
+    padding:0;
+    width:32px;
+    height:32px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    transition:all 0.3s
+}
+.modal-close:hover{
+    background:#f3f4f6;
+    color:#333
+}
+body.dark .modal-close:hover{
+    background:#374151;
+    color:#e5e7eb
+}
+
+.gen-grid{
+    display:grid;
+    gap:8px;
+    margin:0 auto;
+    width:100%
+}
+
+@media (max-width: 480px) {
+    .gen-grid{
+        grid-template-columns:repeat(2, 1fr)
+    }
+}
+@media (min-width: 481px) and (max-width: 767px) {
+    .gen-grid{
+        grid-template-columns:repeat(3, 1fr)
+    }
+}
+@media (min-width: 768px) {
+    .gen-grid{
+        grid-template-columns:repeat(3, 1fr)
+    }
+}
+
+.gen-option{
+    padding:12px 8px;
+    border-radius:12px;
+    border:2px solid transparent;
+    cursor:pointer;
+    font-weight:bold;
+    text-align:center;
+    transition:all 0.3s;
+    font-size:14px;
+    min-height:60px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+}
+.gen-option:hover{
+    transform:translateY(-2px);
+    box-shadow:0 6px 12px rgba(0,0,0,0.15)
+}
+.gen-option.active{
+    border-color:#fff;
+    box-shadow:0 0 0 3px rgba(255,255,255,0.5),
+               0 4px 12px rgba(0,0,0,0.2)
+}
+
+.gen-option.all-gen{
+    background:#6366f1;
+    color:#fff;
+    grid-column:1 / -1
+}
+.gen-option.gen-3{
+    background:#ec4899;
+    color:#fff
+}
+.gen-option.gen-6{
+    background:#22c55e;
+    color:#fff
+}
+.gen-option.gen-7{
+    background:#15803d;
+    color:#fff
+}
+.gen-option.gen-8{
+    background:#1e40af;
+    color:#fff
+}
+.gen-option.gen-9{
+    background:#06b6d4;
+    color:#fff
+}
+.gen-option.gen-10{
+    background:#38bdf8;
+    color:#fff
+}
+.gen-option.gen-11{
+    background:#f97316;
+    color:#fff
+}
+.gen-option.gen-12{
+    background:#fde047;
+    color:#000
+}
+.gen-option.gen-13{
+    background:#facc15;
+    color:#000
+}
+.gen-option.gen-14{
+    background:#e879f9;
+    color:#fff
+}
+
+/* Responsive typography */
+@media (max-width: 767px) {
+    .name{
+        font-size:11px;
+    }
+    .show-info{
+        font-size:9px;
+        margin: 2px 0 5px 0;
+    }
+    .gen-badge{
+        font-size:8px;
+        padding:1px 5px;
+    }
+    .bar{
+        height:3px;
+    }
+    .rank-badge {
+        width: 20px;
+        height: 20px;
+        font-size: 10px;
+    }
+    .photo-setlist-badge {
+        font-size: 7px;
+        padding: 1px 4px;
+    }
+    .card-footer {
+        padding: 6px 4px;
+        min-height: 75px;
+    }
+    .name-container {
+        min-height: 26px;
+    }
+}
+
+/* Sticky header untuk mobile */
+@media (max-width: 767px) {
+    header{
+        position:sticky;
+        top:0;
+        z-index:100;
+        padding:15px 50px 15px 15px;
+        font-size:20px
+    }
+    .theme-toggle{
+        width:35px;
+        height:35px;
+        right:15px
+    }
+    .top-member-filter {
+        min-width: 110px;
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+    .filter {
+        min-width: 100px;
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+}
+
+/* SIMPLE MESSAGE */
+.simple-message {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px 20px;
+    color: #6b7280;
+    font-size: 14px;
+}
+body.dark .simple-message {
+    color: #9ca3af;
+}
+.simple-message .icon {
+    font-size: 32px;
+    margin-bottom: 12px;
+    opacity: 0.5;
+}
+</style>
+</head>
+<body>
+<header>
+    JKT48 SHOW THEATER
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark Mode" aria-label="Ubah tema gelap/terang">
+        <svg id="themeIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/>
+        </svg>
+    </button>
+</header>
+
+<div class="top">
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Cari member..." oninput="searchMember()" aria-label="Cari member">
+    </div>
+</div>
+
+<div class="last-update" id="lastUpdate">
+    <div class="spinner"></div>
+    <span>Loading...</span>
+</div>
+
+<!-- SECTION SETLIST -->
+<div class="top-member-section">
+    <div class="top-member-title">SETLIST PERFORMANCE</div>
+    <div class="top-member-row">
+        <button class="top-member-filter setlist-ramune" onclick="showSetlist('ramune')">Cara Meminum Ramune</button>
+        <button class="top-member-filter setlist-tte" onclick="showSetlist('tte')">Te Wo Tsunaginagara</button>
+        <button class="top-member-filter setlist-pertaruhan" onclick="showSetlist('pertaruhan')">Pertaruhan Cinta</button>
+        <button class="top-member-filter setlist-pajama" onclick="showSetlist('pajama')">Pajama Drive</button>
+    </div>
+</div>
+
+<div class="filters">
+    <div class="filter-section">
+        <div class="filter-section-title">CARI GENERASI</div>
+        <div class="filter-row">
+            <button class="filter gen-search" onclick="openGenModal()">Pilih Generasi</button>
+        </div>
+    </div>
+    <div class="filter-section">
+        <div class="filter-section-title">FILTER TEAM</div>
+        <div class="filter-row">
+            <button class="filter team-filter" onclick="filterTeam('Love')" style="background:#ec4899;color:#fff">Team Love</button>
+            <button class="filter team-filter" onclick="filterTeam('Dream')" style="background:#06b6d4;color:#fff">Team Dream</button>
+            <button class="filter team-filter" onclick="filterTeam('Passion')" style="background:#fbbf24;color:#fff">Team Passion</button>
+        </div>
+    </div>
+</div>
+
+<div class="stats" id="stats"></div>
+<div class="stats setlist-stats" id="setlistStats"></div>
+
+<div class="container" id="list">
+    <div class="loading">
+        <div class="spinner"></div>
+        <span>Loading data...</span>
+    </div>
+</div>
+
+<div class="modal-overlay" id="genModal" onclick="closeModalOnOverlay(event)">
+    <div class="modal">
+        <div class="modal-header">
+            <div class="modal-title">Pilih Generasi</div>
+            <button class="modal-close" onclick="closeGenModal()" aria-label="Tutup">×</button>
+        </div>
+        <div class="gen-grid">
+            <div class="gen-option all-gen" onclick="selectGen('all')">All Generasi</div>
+            <div class="gen-option gen-3" onclick="selectGen(3)">Gen 3</div>
+            <div class="gen-option gen-6" onclick="selectGen(6)">Gen 6</div>
+            <div class="gen-option gen-7" onclick="selectGen(7)">Gen 7</div>
+            <div class="gen-option gen-8" onclick="selectGen(8)">Gen 8</div>
+            <div class="gen-option gen-9" onclick="selectGen(9)">Gen 9</div>
+            <div class="gen-option gen-10" onclick="selectGen(10)">Gen 10</div>
+            <div class="gen-option gen-11" onclick="selectGen(11)">Gen 11</div>
+            <div class="gen-option gen-12" onclick="selectGen(12)">Gen 12</div>
+            <div class="gen-option gen-13" onclick="selectGen(13)">Gen 13</div>
+            <div class="gen-option gen-14" onclick="selectGen(14)">Gen 14</div>
+        </div>
+    </div>
+</div>
+
+<script>
+const SUPABASE_URL = "https://pprxfopqkvpeajeoxzig.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBwcnhmb3Bxa3ZwZWFqZW94emlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYyNTI4MTIsImV4cCI6MjA4MTgyODgxMn0.iXRO_dAHhtVHRLqGTresG_63RD2zIaopNXtXYNfthdg";
+const GEN_COLORS = {
+    3: '#ec4899', 6: '#22c55e', 7: '#15803d', 8: '#1e40af',
+    9: '#06b6d4', 10: '#38bdf8', 11: '#f97316', 12: '#fde047',
+    13: '#facc15', 14: '#e879f9'
+};
+
+const SETLIST_DATA = {
+    'ramune': {
+        id: 'ramune',
+        title: 'Cara Meminum Ramune',
+        color: '#ec4899',
+        members: {}
+    },
+    'tte': {
+        id: 'tte',
+        title: 'Te Wo Tsunaginagara',
+        color: '#06b6d4',
+        members: {}
+    },
+    'pertaruhan': {
+        id: 'pertaruhan',
+        title: 'Pertaruhan Cinta',
+        color: '#ef4444',
+        members: {}
+    },
+    'pajama': {
+        id: 'pajama',
+        title: 'Pajama Drive',
+        color: '#10b981',
+        members: {}
+    }
+};
+
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+let members = [];
+let allMembersData = [];
+let currentGen = 'all';
+let currentTeam = 'all';
+let searchQuery = '';
+let isDataLoaded = false;
+let scrollSaveTimeout;
+let currentSetlistView = null;
+
+function initializeTheme() {
+    const savedTheme = localStorage.getItem('jkt48_theme') || 'light';
+    const icon = document.getElementById('themeIcon');
+    
+    if (savedTheme === 'dark') {
+        document.documentElement.classList.add('dark');
+        document.body.classList.add('dark');
+        if (icon) {
+            icon.innerHTML = '<path d="M12,17a5,5,0,1,1,5-5A5,5,0,0,1,12,17Zm0-8a3,3,0,1,0,3,3A3,3,0,0,0,12,9Zm0-4a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41L6.34,5A1,1,0,0,0,4.93,6.34ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm.64,5.66a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71a1,1,0,0,0-1.41-1.41ZM12,19a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19Zm6.36-2.34a1,1,0,0,0-1.41,1.41l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-3.64-3.95a1,1,0,0,0,.7.29,1,1,0,0,0,.71-1.7l-.71-.71a1,1,0,0,0-1.41,1.41Z"/>';
+        }
+    } else {
+        document.documentElement.classList.remove('dark');
+        document.body.classList.remove('dark');
+        if (icon) {
+            icon.innerHTML = '<path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/>';
+        }
+    }
+}
+
+function toggleTheme() {
+    const body = document.body;
+    const icon = document.getElementById('themeIcon');
+    const html = document.documentElement;
+    
+    const themeToggle = document.querySelector('.theme-toggle');
+    themeToggle.style.transform = 'translateY(-50%) scale(0.9)';
+    setTimeout(() => {
+        themeToggle.style.transform = 'translateY(-50%) scale(1)';
+    }, 150);
+    
+    body.classList.toggle('dark');
+    html.classList.toggle('dark');
+    
+    if (body.classList.contains('dark')) {
+        icon.innerHTML = '<path d="M12,17a5,5,0,1,1,5-5A5,5,0,0,1,12,17Zm0-8a3,3,0,1,0,3,3A3,3,0,0,0,12,9Zm0-4a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41L6.34,5A1,1,0,0,0,4.93,6.34ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm.64,5.66a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71a1,1,0,0,0-1.41-1.41ZM12,19a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19Zm6.36-2.34a1,1,0,0,0-1.41,1.41l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-3.64-3.95a1,1,0,0,0,.7.29,1,1,0,0,0,.71-1.7l-.71-.71a1,1,0,0,0-1.41,1.41Z"/>';
+        localStorage.setItem('jkt48_theme', 'dark');
+    } else {
+        icon.innerHTML = '<path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/>';
+        localStorage.setItem('jkt48_theme', 'light');
+    }
+}
+
+function openGenModal() {
+    document.getElementById('genModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+    
+    setTimeout(() => {
+        const genOptions = document.querySelectorAll('.gen-option');
+        genOptions.forEach(option => {
+            option.classList.remove('active');
+            if (option.classList.contains('all-gen') && currentGen === 'all') {
+                option.classList.add('active');
+            } else if (option.textContent.includes('Gen')) {
+                const genNum = parseInt(option.textContent.replace('Gen ', '').trim());
+                if (genNum === currentGen) {
+                    option.classList.add('active');
+                }
+            }
+        });
+    }, 10);
+}
+
+function closeGenModal() {
+    document.getElementById('genModal').classList.remove('active');
+    document.body.style.overflow = 'auto';
+}
+
+function closeModalOnOverlay(e) {
+    if (e.target === document.getElementById('genModal')) {
+        closeGenModal();
+    }
+}
+
+function selectGen(gen) {
+    currentGen = gen;
+    currentTeam = 'all';
+    currentSetlistView = null;
+    searchQuery = '';
+    document.getElementById('searchInput').value = '';
+    
+    document.querySelectorAll('.team-filter').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.top-member-filter').forEach(btn => btn.classList.remove('active'));
+    document.getElementById('stats').style.display = 'block';
+    document.getElementById('setlistStats').style.display = 'none';
+    
+    closeGenModal();
+    renderMembers();
+    updateStats();
+    saveCurrentState();
+}
+
+async function loadData() {
+    try {
+        console.log('Memuat data dari database...');
+        
+        const { data: membersData, error: membersError } = await db
+            .from('members')
+            .select('*')
+            .order('show', { ascending: false });
+        
+        if (membersError) {
+            console.error('Error loading members:', membersError);
+            throw membersError;
+        }
+        
+        members = membersData || [];
+        allMembersData = [...members];
+        
+        console.log('Data members loaded:', members.length, 'members');
+        
+        await loadSetlistData();
+        restoreState();
+        
+        if (members.length === 0) {
+            document.getElementById('list').innerHTML = '<div class="msg">Tidak ada data member</div>';
+            document.getElementById('lastUpdate').innerHTML = 'Tidak ada data';
+        } else {
+            await updateLastUpdate();
+            renderMembers();
+            updateStats();
+            isDataLoaded = true;
+            
+            setTimeout(() => {
+                restoreScrollPosition();
+            }, 100);
+        }
+    } catch (err) {
+        console.error('Error:', err);
+        document.getElementById('list').innerHTML = '<div class="msg" style="color:#ef4444">Error: ' + err.message + '</div>';
+        document.getElementById('lastUpdate').innerHTML = 'Error loading data';
+    }
+}
+
+async function loadSetlistData() {
+    try {
+        console.log('Memuat data setlist dari tabel setlist_performance...');
+        
+        const { data: setlistData, error: setlistError } = await db
+            .from('setlist_performance')
+            .select('*');
+        
+        if (setlistError) {
+            console.error('Error loading setlist data:', setlistError);
+            initializeEmptySetlistData();
+            return;
+        }
+        
+        console.log('Data setlist ditemukan:', setlistData?.length || 0, 'records');
+        
+        if (!setlistData || setlistData.length === 0) {
+            initializeEmptySetlistData();
+            return;
+        }
+        
+        SETLIST_DATA.ramune.members = {};
+        SETLIST_DATA.tte.members = {};
+        SETLIST_DATA.pertaruhan.members = {};
+        SETLIST_DATA.pajama.members = {};
+        
+        setlistData.forEach(record => {
+            const memberName = record.name;
+            const setlistName = record.setlist_name;
+            const shows = record.show_count || 0;
+            
+            let setlistKey = null;
+            
+            if (setlistName.toLowerCase().includes('ramune')) {
+                setlistKey = 'ramune';
+            } else if (setlistName.toLowerCase().includes('tte')) {
+                setlistKey = 'tte';
+            } else if (setlistName.toLowerCase().includes('pertaruhan') || 
+                      setlistName.toLowerCase().includes('cinta')) {
+                setlistKey = 'pertaruhan';
+            } else if (setlistName.toLowerCase().includes('pajama')) {
+                setlistKey = 'pajama';
+            }
+            
+            if (setlistKey && SETLIST_DATA[setlistKey]) {
+                SETLIST_DATA[setlistKey].members[memberName] = shows;
+            }
+        });
+        
+    } catch (err) {
+        console.error('Error loading setlist data:', err);
+        initializeEmptySetlistData();
+    }
+}
+
+function initializeEmptySetlistData() {
+    members.forEach(member => {
+        const memberName = member.name;
+        SETLIST_DATA.ramune.members[memberName] = 0;
+        SETLIST_DATA.tte.members[memberName] = 0;
+        SETLIST_DATA.pertaruhan.members[memberName] = 0;
+        SETLIST_DATA.pajama.members[memberName] = 0;
+    });
+}
+
+async function updateLastUpdate() {
+    if (members.length === 0) return;
+    
+    try {
+        const { data: latestSetlist, error } = await db
+            .from('setlist_performance')
+            .select('updated_at')
+            .order('updated_at', { ascending: false })
+            .limit(1)
+            .single();
+        
+        if (!error && latestSetlist && latestSetlist.updated_at) {
+            const setlistUpdate = new Date(latestSetlist.updated_at);
+            const options = { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+            const formatted = setlistUpdate.toLocaleDateString('id-ID', options);
+            document.getElementById('lastUpdate').innerHTML = 'Update: ' + formatted;
+            return;
+        }
+    } catch (err) {
+        console.log('Tidak bisa mengambil data update:', err.message);
+    }
+    
+    document.getElementById('lastUpdate').innerHTML = 'Data tersedia';
+}
+
+function renderMembers() {
+    const list = document.getElementById('list');
+    searchQuery = document.getElementById('searchInput').value.trim();
+    
+    if (currentSetlistView) {
+        renderSetlistMembers();
+        return;
+    }
+    
+    let filtered = members.filter(m => {
+        const matchGen = currentGen === 'all' || m.gen === currentGen;
+        const matchTeam = currentTeam === 'all' || m.team === currentTeam;
+        const matchSearch = !searchQuery || m.name.toLowerCase().includes(searchQuery.toLowerCase());
+        return matchGen && matchTeam && matchSearch;
+    });
+    
+    if (filtered.length === 0) {
+        let message = '';
+        if (searchQuery) {
+            message = `Tidak ada member dengan nama "${searchQuery}"`;
+        } else if (currentTeam !== 'all') {
+            message = `Tidak ada member ${currentTeam}`;
+        } else if (currentGen !== 'all') {
+            message = `Belum ada data untuk Generasi ${currentGen}`;
+        } else {
+            message = 'Belum ada data member';
+        }
+        list.innerHTML = `<div class="simple-message">${message}</div>`;
+        return;
+    }
+    
+    list.innerHTML = '';
+    const sorted = filtered.sort((a, b) => b.show - a.show);
+    
+    sorted.forEach((m, index) => {
+        const rank = index + 1;
+        const percent = Math.min(100, (m.show / 1000) * 100);
+        const color = GEN_COLORS[m.gen] || '#6366f1';
+        const card = document.createElement('div');
+        card.className = 'card';
+        
+        card.addEventListener('click', function() {
+            saveCurrentState();
+            window.location.href = 'detail.html?member=' + encodeURIComponent(m.name);
+        });
+        
+        const avatarHtml = `
+            <div class="avatar-container">
+                <img class="avatar" 
+                     src="img/${m.name.toLowerCase()}.jpg" 
+                     alt="${m.name}"
+                     loading="lazy"
+                     onerror="this.onerror=null; this.style.display='none'; this.parentNode.innerHTML='<div class=\\'avatar-placeholder\\'>${m.name.charAt(0)}</div>'">
+            </div>
+        `;
+        
+        card.innerHTML = avatarHtml + `
+            <div class="card-footer" style="background-color: ${color}">
+                <div class="gen-badge">Gen ${m.gen}</div>
+                <div class="name-container">
+                    <div class="name">${m.name}</div>
+                </div>
+                <div class="show-info">${m.show} show</div>
+                <div class="bar-container">
+                    <div class="bar"><span style="width:${percent}%"></span></div>
+                </div>
+            </div>
+        `;
+        list.appendChild(card);
+    });
+}
+
+function renderSetlistMembers() {
+    const list = document.getElementById('list');
+    const setlistData = SETLIST_DATA[currentSetlistView];
+    
+    if (!setlistData) {
+        list.innerHTML = `
+            <div class="simple-message">
+                <div>Data setlist tidak tersedia</div>
+            </div>
+        `;
+        return;
+    }
+    
+    list.innerHTML = '';
+    
+    const setlistMembersArray = Object.entries(setlistData.members)
+        .map(([name, shows]) => ({ 
+            name, 
+            shows: shows || 0,
+            memberData: members.find(m => m.name === name) || { gen: '?', team: '?', show: 0, status: '?' }
+        }))
+        .sort((a, b) => b.shows - a.shows);
+    
+    const activeMembers = setlistMembersArray.filter(m => m.shows > 0);
+    
+    if (activeMembers.length === 0) {
+        list.innerHTML = `
+            <div class="simple-message">
+                <div>Belum ada member yang show di "${setlistData.title}"</div>
+            </div>
+        `;
+        
+        document.getElementById('setlistStats').innerHTML = 
+            `${setlistData.title} • 0 Member • 0 show`;
+        
+        return;
+    }
+    
+    const totalShows = activeMembers.reduce((sum, m) => sum + m.shows, 0);
+    const avgShows = (totalShows / activeMembers.length).toFixed(1);
+    
+    const statsText = `${setlistData.title} • ${activeMembers.length} Member • Total ${totalShows.toLocaleString()} show • Rata-rata ${avgShows} show/member`;
+    document.getElementById('setlistStats').innerHTML = statsText;
+    document.getElementById('setlistStats').style.display = 'block';
+    
+    let setlistBadge = '';
+    if (currentSetlistView === 'ramune') setlistBadge = 'RAMUNE';
+    else if (currentSetlistView === 'tte') setlistBadge = 'TTE';
+    else if (currentSetlistView === 'pertaruhan') setlistBadge = 'PERTARUHAN';
+    else if (currentSetlistView === 'pajama') setlistBadge = 'PAJAMA';
+    
+    activeMembers.forEach((member, index) => {
+        const rank = index + 1;
+        const memberData = member.memberData;
+        const percent = Math.min(100, (member.shows / 100) * 100);
+        const color = GEN_COLORS[memberData.gen] || setlistData.color || '#6366f1';
+        
+        const card = document.createElement('div');
+        card.className = `card setlist-card rank-${rank <= 3 ? rank : ''}`;
+        
+        card.addEventListener('click', function() {
+            saveCurrentState();
+            window.location.href = 'detail.html?member=' + encodeURIComponent(member.name);
+        });
+        
+        const rankBadge = rank <= 10 ? `<div class="rank-badge rank-${rank}">${rank}</div>` : '';
+        const photoSetlistBadge = `<div class="photo-setlist-badge">${setlistBadge}</div>`;
+        
+        const avatarHtml = `
+            <div class="avatar-container">
+                <img class="avatar" 
+                     src="img/${member.name.toLowerCase()}.jpg" 
+                     alt="${member.name}"
+                     loading="lazy"
+                     onerror="this.onerror=null; this.style.display='none'; this.parentNode.innerHTML='<div class=\\'avatar-placeholder\\'>${member.name.charAt(0)}</div>'">
+                ${rankBadge}
+                ${photoSetlistBadge}
+            </div>
+        `;
+        
+        card.innerHTML = avatarHtml + `
+            <div class="card-footer" style="background-color: ${color}">
+                <div class="gen-badge">Gen ${memberData.gen}</div>
+                <div class="name-container">
+                    <div class="name">${member.name}</div>
+                </div>
+                <div class="show-info">${member.shows} show</div>
+                <div class="bar-container">
+                    <div class="bar"><span style="width:${percent}%"></span></div>
+                </div>
+            </div>
+        `;
+        list.appendChild(card);
+    });
+}
+
+function updateStats() {
+    const stats = document.getElementById('stats');
+    const filtered = members.filter(m => {
+        const matchGen = currentGen === 'all' || m.gen === currentGen;
+        const matchTeam = currentTeam === 'all' || m.team === currentTeam;
+        const matchSearch = !searchQuery || m.name.toLowerCase().includes(searchQuery.toLowerCase());
+        return matchGen && matchTeam && matchSearch;
+    });
+    
+    const total = filtered.reduce((sum, m) => sum + m.show, 0);
+    let statsText = filtered.length + ' members • ' + total.toLocaleString() + ' total shows';
+    
+    if (currentGen !== 'all') {
+        statsText += ' • Gen ' + currentGen;
+    }
+    if (currentTeam !== 'all') {
+        statsText += ' • ' + currentTeam;
+    }
+    
+    stats.innerHTML = statsText;
+}
+
+function searchMember() {
+    searchQuery = document.getElementById('searchInput').value;
+    currentSetlistView = null;
+    currentGen = 'all';
+    currentTeam = 'all';
+    
+    document.querySelectorAll('.top-member-filter').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.team-filter').forEach(btn => btn.classList.remove('active'));
+    document.getElementById('stats').style.display = 'block';
+    document.getElementById('setlistStats').style.display = 'none';
+    
+    renderMembers();
+    updateStats();
+    saveCurrentState();
+}
+
+function filterTeam(team) {
+    currentTeam = team;
+    currentGen = 'all';
+    currentSetlistView = null;
+    searchQuery = '';
+    document.getElementById('searchInput').value = '';
+    
+    document.querySelectorAll('.filter').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.top-member-filter').forEach(btn => btn.classList.remove('active'));
+    document.getElementById('stats').style.display = 'block';
+    document.getElementById('setlistStats').style.display = 'none';
+    event.target.classList.add('active');
+    
+    renderMembers();
+    updateStats();
+    saveCurrentState();
+}
+
+function showSetlist(setlistType) {
+    currentSetlistView = setlistType;
+    currentGen = 'all';
+    currentTeam = 'all';
+    searchQuery = '';
+    
+    document.getElementById('searchInput').value = '';
+    document.querySelectorAll('.filter').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.team-filter').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.top-member-filter').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    
+    document.getElementById('stats').style.display = 'none';
+    document.getElementById('setlistStats').style.display = 'block';
+    
+    renderSetlistMembers();
+    saveCurrentState();
+}
+
+function saveCurrentState() {
+    sessionStorage.setItem('jkt48_current_gen', currentGen);
+    sessionStorage.setItem('jkt48_current_team', currentTeam);
+    sessionStorage.setItem('jkt48_search_query', searchQuery);
+    sessionStorage.setItem('jkt48_setlist_view', currentSetlistView || '');
+    sessionStorage.setItem('jkt48_scroll_position', window.scrollY);
+}
+
+function restoreState() {
+    const savedGen = sessionStorage.getItem('jkt48_current_gen');
+    const savedTeam = sessionStorage.getItem('jkt48_current_team');
+    const savedSearch = sessionStorage.getItem('jkt48_search_query');
+    const savedSetlistView = sessionStorage.getItem('jkt48_setlist_view');
+    
+    if (savedGen && savedGen !== 'null') {
+        currentGen = savedGen === 'all' ? 'all' : parseInt(savedGen);
+    }
+    
+    if (savedTeam && savedTeam !== 'null') {
+        currentTeam = savedTeam;
+    }
+    
+    if (savedSearch && savedSearch !== 'null') {
+        searchQuery = savedSearch;
+        document.getElementById('searchInput').value = searchQuery;
+    }
+    
+    if (savedSetlistView && savedSetlistView !== 'null' && savedSetlistView !== '') {
+        currentSetlistView = savedSetlistView;
+        if (currentSetlistView) {
+            document.getElementById('stats').style.display = 'none';
+            document.getElementById('setlistStats').style.display = 'block';
+            
+            document.querySelectorAll('.top-member-filter').forEach(btn => {
+                btn.classList.remove('active');
+                const btnText = btn.textContent.toLowerCase();
+                
+                if ((currentSetlistView === 'ramune' && btnText.includes('ramune')) ||
+                    (currentSetlistView === 'tte' && btnText.includes('tsunaginagara')) ||
+                    (currentSetlistView === 'pertaruhan' && btnText.includes('pertaruhan')) ||
+                    (currentSetlistView === 'pajama' && btnText.includes('pajama'))) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+    } else {
+        currentSetlistView = null;
+    }
+    
+    if (currentTeam !== 'all') {
+        document.querySelectorAll('.team-filter').forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.textContent.includes(currentTeam)) {
+                btn.classList.add('active');
+            }
+        });
+    }
+}
+
+function restoreScrollPosition() {
+    const savedScrollPosition = sessionStorage.getItem('jkt48_scroll_position');
+    
+    if (savedScrollPosition && savedScrollPosition !== 'null') {
+        setTimeout(() => {
+            window.scrollTo({
+                top: parseInt(savedScrollPosition),
+                behavior: 'instant'
+            });
+        }, 50);
+    }
+}
+
+window.addEventListener('scroll', function() {
+    clearTimeout(scrollSaveTimeout);
+    scrollSaveTimeout = setTimeout(() => {
+        if (isDataLoaded) {
+            sessionStorage.setItem('jkt48_scroll_position', window.scrollY);
+        }
+    }, 150);
+});
+
+window.addEventListener('beforeunload', function() {
+    saveCurrentState();
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    initializeTheme();
+    loadData();
+});
+</script>
+</body>
+</html>
