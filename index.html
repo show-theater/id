@@ -290,15 +290,20 @@ body.dark .stats{
 }
 
 .setlist-stats {
-    background: linear-gradient(135deg, #fef3c7, #fde68a);
-    color: #92400e;
+    text-align: center;
+    padding: 12px 20px;
+    font-size: 16px;
     font-weight: bold;
+    color: #333;
+    background: #fff;
     border-top: 2px solid #f59e0b;
     display: none;
+    margin: 0;
+    transition: background 0.3s, color 0.3s;
 }
 body.dark .setlist-stats {
-    background: linear-gradient(135deg, #78350f, #92400e);
-    color: #fef3c7;
+    background: #1b1f3a;
+    color: #e5e7eb;
     border-top: 2px solid #d97706;
 }
 
@@ -931,7 +936,7 @@ body.dark .simple-message {
 </div>
 
 <div class="stats" id="stats"></div>
-<div class="stats setlist-stats" id="setlistStats"></div>
+<div class="setlist-stats" id="setlistStats"></div>
 
 <div class="container" id="list">
     <div class="loading">
@@ -975,25 +980,21 @@ const SETLIST_DATA = {
     'ramune': {
         id: 'ramune',
         title: 'Cara Meminum Ramune',
-        color: '#ec4899',
         members: {}
     },
     'tte': {
         id: 'tte',
         title: 'Te Wo Tsunaginagara',
-        color: '#06b6d4',
         members: {}
     },
     'pertaruhan': {
         id: 'pertaruhan',
         title: 'Pertaruhan Cinta',
-        color: '#ef4444',
         members: {}
     },
     'pajama': {
         id: 'pajama',
         title: 'Pajama Drive',
-        color: '#10b981',
         members: {}
     }
 };
@@ -1116,7 +1117,7 @@ async function loadData() {
         members = membersData || [];
         allMembersData = [...members];
         
-        console.log('✅ Data members loaded:', members.length, 'members');
+        console.log('Data members loaded:', members.length, 'members');
         
         await loadSetlistData();
         restoreState();
@@ -1143,7 +1144,7 @@ async function loadData() {
 
 async function loadSetlistData() {
     try {
-        console.log('📊 Memuat data setlist dari tabel setlist_performance...');
+        console.log('Memuat data setlist dari tabel setlist_performance...');
         
         const { data: setlistData, error: setlistError } = await db
             .from('setlist_performance')
@@ -1153,7 +1154,7 @@ async function loadSetlistData() {
             console.error('Error loading setlist data:', setlistError);
         }
         
-        console.log('📥 Data setlist ditemukan:', setlistData?.length || 0, 'records');
+        console.log('Data setlist ditemukan:', setlistData?.length || 0, 'records');
         
         // Reset all setlist data
         Object.keys(SETLIST_DATA).forEach(key => {
@@ -1168,7 +1169,7 @@ async function loadSetlistData() {
             });
         });
         
-        // **AGGREGATION LOGIC: Handle duplicate data per setlist**
+        // AGGREGATION LOGIC: Handle duplicate data per setlist
         if (setlistData && setlistData.length > 0) {
             // Create a map to aggregate data by member + setlist
             const showCountMap = {};
@@ -1203,7 +1204,7 @@ async function loadSetlistData() {
                         } else {
                             // Add if duplicate for the SAME SETLIST
                             showCountMap[mapKey] += shows;
-                            console.log(`🔄 Duplicate found: ${memberName} in ${setlistKey} - Total now: ${showCountMap[mapKey]}`);
+                            console.log('Duplicate found:', memberName, 'in', setlistKey, '- Total now:', showCountMap[mapKey]);
                         }
                     }
                 }
@@ -1219,19 +1220,19 @@ async function loadSetlistData() {
                 }
             });
             
-            console.log('✅ Setlist data processed with aggregation');
+            console.log('Setlist data processed with aggregation');
         } else {
-            console.log('⚠️ No setlist data found in database');
+            console.log('No setlist data found in database');
         }
         
         // Debug: Show detailed summary
-        console.log('📈 SETLIST DATA SUMMARY:');
+        console.log('SETLIST DATA SUMMARY:');
         Object.keys(SETLIST_DATA).forEach(setlistKey => {
             const memberShows = SETLIST_DATA[setlistKey].members;
             const totalShows = Object.values(memberShows).reduce((a, b) => a + b, 0);
             const activeMembers = Object.values(memberShows).filter(shows => shows > 0).length;
             
-            console.log(`\n🎭 ${setlistKey.toUpperCase()}: ${activeMembers} active members, ${totalShows} total shows`);
+            console.log(setlistKey.toUpperCase() + ':', activeMembers, 'active members,', totalShows, 'total shows');
             
             // Show top 10 members for this setlist
             Object.keys(memberShows)
@@ -1239,12 +1240,12 @@ async function loadSetlistData() {
                 .sort((a, b) => memberShows[b] - memberShows[a])
                 .slice(0, 10)
                 .forEach((name, index) => {
-                    console.log(`  ${index + 1}. ${name}: ${memberShows[name]} shows`);
+                    console.log('  ' + (index + 1) + '. ' + name + ': ' + memberShows[name] + ' shows');
                 });
         });
         
     } catch (err) {
-        console.error('❌ Error loading setlist data:', err);
+        console.error('Error loading setlist data:', err);
     }
 }
 
@@ -1294,7 +1295,7 @@ function renderMembers() {
         if (searchQuery) {
             message = `Tidak ada member dengan nama "${searchQuery}"`;
         } else if (currentTeam !== 'all') {
-            message = `Tidak ada member ${currentTeam}`;
+            message = `Belum Tersedia Member ${currentTeam}, Mohon Tunggu`;
         } else if (currentGen !== 'all') {
             message = `Belum ada data untuk Generasi ${currentGen}`;
         } else {
@@ -1316,7 +1317,8 @@ function renderMembers() {
         
         card.addEventListener('click', function() {
             saveCurrentState();
-            window.location.href = 'detail.html?member=' + encodeURIComponent(m.name);
+            // PERUBAHAN DI SINI: mengarahkan ke show.html bukan detail.html
+            window.location.href = 'show.html?member=' + encodeURIComponent(m.name);
         });
         
         const avatarHtml = `
@@ -1378,19 +1380,9 @@ function renderSetlistMembers() {
     });
     
     const activeMembers = setlistMembersArray.filter(m => m.shows > 0);
-    const totalShows = activeMembers.reduce((sum, m) => sum + m.shows, 0);
     
-    // Find maximum shows for dynamic scaling
-    let maxShows = 0;
-    if (activeMembers.length > 0) {
-        maxShows = Math.max(...activeMembers.map(m => m.shows));
-    }
-    // Use dynamic scaling: minimum scale of 5 shows for better visibility
-    const scaleMax = Math.max(maxShows, 5);
-    
-    const avgShows = activeMembers.length > 0 ? (totalShows / activeMembers.length).toFixed(1) : '0.0';
-    
-    const statsText = `${setlistData.title} • ${activeMembers.length} Member Aktif • Total ${totalShows.toLocaleString()} show • Rata-rata ${avgShows} show/member`;
+    // HANYA TAMPILKAN NAMA SETLIST SAJA
+    const statsText = `${setlistData.title}`;
     document.getElementById('setlistStats').innerHTML = statsText;
     document.getElementById('setlistStats').style.display = 'block';
     
@@ -1401,22 +1393,52 @@ function renderSetlistMembers() {
     else if (currentSetlistView === 'pertaruhan') setlistBadge = 'PERTARUHAN';
     else if (currentSetlistView === 'pajama') setlistBadge = 'PAJAMA';
     
+    // PROGRESS BAR SCALING UNLIMITED UNTIL END OF 2026
+    // 1. Cari jumlah maksimal show di setlist ini
+    let maxShows = 0;
+    if (activeMembers.length > 0) {
+        maxShows = Math.max(...activeMembers.map(m => m.shows));
+    }
+    
+    // 2. LOGIKA SCALING UNLIMITED UNTUK 200+ SHOW:
+    // - Jika maksimal ≤ 10: skala 15 (agar progress terlihat)
+    // - Jika 10 < maksimal ≤ 50: skala = maksimal + 10
+    // - Jika 50 < maksimal ≤ 100: skala = maksimal + 20
+    // - Jika 100 < maksimal ≤ 200: skala = maksimal + 30
+    // - Jika > 200: skala = maksimal + 40 (untuk sangat tinggi)
+    let scaleMax = 15; // Default minimal scale
+    
+    if (maxShows > 0) {
+        if (maxShows <= 10) {
+            scaleMax = 15;
+        } else if (maxShows <= 50) {
+            scaleMax = maxShows + 10;
+        } else if (maxShows <= 100) {
+            scaleMax = maxShows + 20;
+        } else if (maxShows <= 200) {
+            scaleMax = maxShows + 30;
+        } else {
+            scaleMax = maxShows + 40; // Untuk 200+ show
+        }
+    }
+    
     // Render all active members (shows > 0)
     activeMembers.forEach((member, index) => {
         const rank = index + 1;
         const memberData = member.memberData;
         
-        // DYNAMIC PROGRESS BAR SCALING
+        // UNLIMITED PROGRESS BAR CALCULATION UNTUK 200+ SHOW
         const percent = Math.min(100, (member.shows / scaleMax) * 100);
         
-        const color = GEN_COLORS[memberData.gen] || setlistData.color || '#6366f1';
+        const color = GEN_COLORS[memberData.gen] || '#6366f1';
         
         const card = document.createElement('div');
         card.className = `card setlist-card rank-${rank <= 3 ? rank : ''}`;
         
         card.addEventListener('click', function() {
             saveCurrentState();
-            window.location.href = 'detail.html?member=' + encodeURIComponent(member.name);
+            // PERUBAHAN DI SINI: mengarahkan ke show.html bukan detail.html
+            window.location.href = 'show.html?member=' + encodeURIComponent(member.name);
         });
         
         const rankBadge = rank <= 10 ? `<div class="rank-badge rank-${rank}">${rank}</div>` : '';
@@ -1447,14 +1469,6 @@ function renderSetlistMembers() {
             </div>
         `;
         list.appendChild(card);
-    });
-    
-    // Debug log in console
-    console.log(`🎯 Rendering ${currentSetlistView}: ${activeMembers.length} active members`);
-    console.log(`📊 Max shows: ${maxShows}, Scale: ${scaleMax}`);
-    activeMembers.forEach((member, index) => {
-        const percent = Math.min(100, (member.shows / scaleMax) * 100);
-        console.log(`${index + 1}. ${member.name}: ${member.shows} shows → ${percent}% progress`);
     });
     
     // If no active members, show message
