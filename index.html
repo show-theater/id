@@ -1274,6 +1274,24 @@ async function updateLastUpdate() {
     document.getElementById('lastUpdate').innerHTML = 'Data tersedia';
 }
 
+// ========== FIXED: Fungsi untuk routing yang benar ==========
+function openMemberPage(memberName) {
+    saveCurrentState();
+    
+    // Logika routing:
+    // 1. Jika sedang dalam mode setlist performance -> ke show.html
+    // 2. Jika sedang filter generasi/team/search/default -> ke detail.html
+    let targetPage;
+    
+    if (currentSetlistView) {
+        targetPage = 'show.html';
+    } else {
+        targetPage = 'detail.html';
+    }
+    
+    window.location.href = targetPage + '?member=' + encodeURIComponent(memberName);
+}
+
 function renderMembers() {
     const list = document.getElementById('list');
     searchQuery = document.getElementById('searchInput').value.trim();
@@ -1315,10 +1333,9 @@ function renderMembers() {
         const card = document.createElement('div');
         card.className = 'card';
         
+        // FIXED: Menggunakan fungsi openMemberPage yang baru
         card.addEventListener('click', function() {
-            saveCurrentState();
-            // PERUBAHAN DI SINI: mengarahkan ke show.html bukan detail.html
-            window.location.href = 'show.html?member=' + encodeURIComponent(m.name);
+            openMemberPage(m.name);
         });
         
         const avatarHtml = `
@@ -1435,10 +1452,9 @@ function renderSetlistMembers() {
         const card = document.createElement('div');
         card.className = `card setlist-card rank-${rank <= 3 ? rank : ''}`;
         
+        // FIXED: Menggunakan fungsi openMemberPage yang baru
         card.addEventListener('click', function() {
-            saveCurrentState();
-            // PERUBAHAN DI SINI: mengarahkan ke show.html bukan detail.html
-            window.location.href = 'show.html?member=' + encodeURIComponent(member.name);
+            openMemberPage(member.name);
         });
         
         const rankBadge = rank <= 10 ? `<div class="rank-badge rank-${rank}">${rank}</div>` : '';
