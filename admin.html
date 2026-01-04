@@ -75,6 +75,8 @@ body.dark .modal-box{background:#111827}
 body.dark .modal-box p{color:#9ca3af}
 .modal-box input,.modal-box select,.modal-box textarea{width:100%;padding:12px;border-radius:12px;border:2px solid #ddd;background:#fff;color:#333;font-size:14px;outline:none;margin-bottom:10px}
 body.dark .modal-box input,body.dark .modal-box select,body.dark .modal-box textarea{background:#0a0e1a;color:#e5e7eb;border-color:#374151}
+input[type="date"]{color-scheme:light}
+body.dark input[type="date"]{color-scheme:dark}
 .input-label{display:block;font-size:12px;font-weight:600;color:#666;margin-bottom:6px}
 body.dark .input-label{color:#9ca3af}
 .modal-buttons{display:flex;gap:10px;margin-top:20px}
@@ -121,7 +123,7 @@ body.dark .tip-text{background:#1f2937;color:#9ca3af}
     <button class="filter" onclick="filterGen(11)" style="background:#f97316;color:#fff">Gen 11</button>
     <button class="filter" onclick="filterGen(12)" style="background:#fde68a;color:#000">Gen 12</button>
     <button class="filter" onclick="filterGen(13)" style="background:#facc15;color:#000">Gen 13</button>
-    <button class="filter" onclick="filterGen(14)" style="background:#f3c6ff;color:#000">Gen 14</button>
+    <button class="filter" onclick="filterGen(14)" style="background:#e879f9;color:#fff">Gen 14</button>
 </div>
 <div class="stats" id="stats"></div>
 <div class="container" id="list"><div class="loading"><div class="spinner"></div><span>Loading data...</span></div></div>
@@ -131,16 +133,16 @@ body.dark .tip-text{background:#1f2937;color:#9ca3af}
 
 <div class="modal" id="logoutModal"><div class="modal-box"><h3>Konfirmasi Logout</h3><p>Apakah Anda yakin ingin keluar?</p><div class="modal-buttons"><button class="btn-cancel" onclick="closeLogoutModal()">Batal</button><button class="btn-confirm" onclick="confirmLogout()">Logout</button></div></div></div>
 
-<div class="modal" id="setlistModal"><div class="modal-box"><h3>Tambah Show dengan Setlist</h3><p id="setlistMemberName">Member: -</p><label class="input-label">Pilih Setlist</label><select id="setlistSelect"><option value="">Pilih Setlist...</option></select><div class="setlist-info" id="setlistInfo" style="display:none"><span class="setlist-badge">INFO</span><span id="setlistDescription"></span></div><div class="modal-buttons"><button class="btn-cancel" onclick="closeSetlistModal()">Batal</button><button class="btn-add" onclick="addShowWithSetlist()">Tambah Show</button></div></div></div>
+<div class="modal" id="setlistModal"><div class="modal-box"><h3>Tambah Show dengan Setlist</h3><p id="setlistMemberName">Member: -</p><label class="input-label">Tanggal Show</label><input type="date" id="showDate"><label class="input-label">Pilih Setlist</label><select id="setlistSelect"><option value="">Pilih Setlist...</option></select><div class="setlist-info" id="setlistInfo" style="display:none"><span class="setlist-badge">INFO</span><span id="setlistDescription"></span></div><div class="modal-buttons"><button class="btn-cancel" onclick="closeSetlistModal()">Batal</button><button class="btn-add" onclick="addShowWithSetlist()">Tambah Show</button></div></div></div>
 
-<div class="modal" id="bulkAddModal"><div class="modal-box" style="max-width:500px"><h3>Bulk Add Show</h3><p>Tambahkan beberapa member sekaligus dalam 1 setlist</p><label class="input-label">Pilih Setlist</label><select id="bulkSetlistSelect"><option value="">Pilih Setlist...</option></select><label class="input-label">Masukkan Nama Member (pisahkan dengan koma)</label><textarea id="bulkMemberNames" placeholder="Contoh: Cynthia, Danella, Eli, Elin, Ella, Fritzy, Indah, Kimmy" style="min-height:120px;resize:vertical"></textarea><div class="tip-text">💡 Tip: Nama harus persis sama dengan database (tidak case sensitive)</div><div class="modal-buttons"><button class="btn-cancel" onclick="closeBulkAddModal()">Batal</button><button class="btn-add" onclick="bulkAddShows()">Tambah Semua</button></div></div></div>
+<div class="modal" id="bulkAddModal"><div class="modal-box" style="max-width:500px"><h3>Bulk Add Show</h3><p>Tambahkan beberapa member sekaligus dalam 1 setlist</p><label class="input-label">Tanggal Show</label><input type="date" id="bulkShowDate"><label class="input-label">Pilih Setlist</label><select id="bulkSetlistSelect"><option value="">Pilih Setlist...</option></select><label class="input-label">Masukkan Nama Member (pisahkan dengan koma)</label><textarea id="bulkMemberNames" placeholder="Contoh: Cynthia, Danella, Eli, Elin, Ella, Fritzy, Indah, Kimmy" style="min-height:120px;resize:vertical"></textarea><div class="tip-text">💡 Tip: Nama harus persis sama dengan database (tidak case sensitive)</div><div class="modal-buttons"><button class="btn-cancel" onclick="closeBulkAddModal()">Batal</button><button class="btn-add" onclick="bulkAddShows()">Tambah Semua</button></div></div></div>
 
 <script>
 var SUPABASE_URL='https://pprxfopqkvpeajeoxzig.supabase.co';
 var SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBwcnhmb3Bxa3ZwZWFqZW94emlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYyNTI4MTIsImV4cCI6MjA4MTgyODgxMn0.iXRO_dAHhtVHRLqGTresG_63RD2zIaopNXtXYNfthdg';
 var ADMIN_ACCOUNTS={'admin@jkt48.com':'jkt48admin','superadmin@jkt48.com':'jkt48super'};
-var GEN_COLORS={3:'#ec4899',6:'#22c55e',7:'#15803d',8:'#1e40af',9:'#06b6d4',10:'#38bdf8',11:'#f97316',12:'#fde68a',13:'#facc15',14:'#f3c6ff'};
-var SETLIST_INTI={'Cara Meminum Ramune':'Setlist segar seperti minuman ramune','Te wo Tsunaginagara':'Setlist sambil bergandengan tangan','Pertaruhan Cinta':'Setlist tentang taruhan cinta untuk member inti'};
+var GEN_COLORS={3:'#ec4899',6:'#22c55e',7:'#15803d',8:'#1e40af',9:'#06b6d4',10:'#38bdf8',11:'#f97316',12:'#fde68a',13:'#facc15',14:'#e879f9'};
+var SETLIST_INTI={'Cara Meminum Ramune':'Setlist segar seperti minuman ramune','Te Wo Tsunaginagara':'Setlist sambil bergandengan tangan','Pertaruhan Cinta':'Setlist tentang taruhan cinta untuk member inti'};
 var SETLIST_TRAINEE={'Pajama Drive':'Setlist klasik untuk member trainee'};
 var SETLIST_INFO=Object.assign({},SETLIST_INTI,SETLIST_TRAINEE);
 var db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
@@ -330,6 +332,10 @@ function openSetlistModal(memberId){
     if(!member) return;
     
     document.getElementById('setlistMemberName').textContent='Member: '+member.name+' ('+(member.status==='trainee'?'TRAINEE':'INTI')+')';
+    
+    var today=new Date().toISOString().split('T')[0];
+    document.getElementById('showDate').value=today;
+    
     var selectEl=document.getElementById('setlistSelect');
     selectEl.innerHTML='<option value="">Pilih Setlist...</option>';
     var setlists=member.status==='trainee'?SETLIST_TRAINEE:SETLIST_INTI;
@@ -347,6 +353,9 @@ function closeSetlistModal(){
 }
 
 function openBulkAddModal(){
+    var today=new Date().toISOString().split('T')[0];
+    document.getElementById('bulkShowDate').value=today;
+    
     var selectEl=document.getElementById('bulkSetlistSelect');
     selectEl.innerHTML='<option value="">Pilih Setlist...</option>';
     for(var key in SETLIST_INFO){
@@ -374,16 +383,24 @@ document.getElementById('setlistSelect').addEventListener('change',function(){
 
 async function addShowWithSetlist(){
     var setlist=document.getElementById('setlistSelect').value;
+    var showDate=document.getElementById('showDate').value;
+    
     if(!setlist){
         showToast('Pilih setlist terlebih dahulu!',true);
         return;
     }
+    
+    if(!showDate){
+        showDate = new Date().toISOString().split('T')[0];
+        console.log('📅 Menggunakan tanggal hari ini:', showDate);
+    }
+    
     if(!currentMemberId) return;
     
     var member=members.find(function(m){return m.id===currentMemberId});
     if(!member) return;
     
-    console.log('Menambah show untuk:', member.name, 'setlist:', setlist);
+    console.log('Menambah show untuk:', member.name, 'setlist:', setlist, 'tanggal:', showDate);
     
     try{
         var newShow=member.show+1;
@@ -403,8 +420,8 @@ async function addShowWithSetlist(){
             setlist_name:setlist,
             show_count:1,
             status:member.status,
-            created_at:new Date().toISOString(),
-            updated_at:new Date().toISOString()
+            show_date:showDate,
+            created_at:new Date().toISOString()
         };
         
         var insertResult=await db.from('setlist_performance')
@@ -425,7 +442,7 @@ async function addShowWithSetlist(){
         renderMembers();
         updateStats();
         closeSetlistModal();
-        showToast(member.name+': '+newShow+' show ('+setlist+')',false);
+        showToast(member.name+': '+newShow+' show ('+setlist+' - '+showDate+')',false);
         
     }catch(err){
         console.error('Exception:',err);
@@ -436,10 +453,16 @@ async function addShowWithSetlist(){
 async function bulkAddShows(){
     var setlist=document.getElementById('bulkSetlistSelect').value;
     var namesInput=document.getElementById('bulkMemberNames').value;
+    var showDate=document.getElementById('bulkShowDate').value;
     
     if(!setlist){
         showToast('Pilih setlist terlebih dahulu!',true);
         return;
+    }
+    
+    if(!showDate){
+        showDate = new Date().toISOString().split('T')[0];
+        console.log('📅 Menggunakan tanggal hari ini:', showDate);
     }
     
     if(!namesInput.trim()){
@@ -485,8 +508,8 @@ async function bulkAddShows(){
                 setlist_name:setlist,
                 show_count:1,
                 status:member.status,
-                created_at:new Date().toISOString(),
-                updated_at:new Date().toISOString()
+                show_date:showDate,
+                created_at:new Date().toISOString()
             };
             
             var insertResult=await db.from('setlist_performance')
@@ -513,10 +536,10 @@ async function bulkAddShows(){
     closeBulkAddModal();
     
     if(failedNames.length>0){
-        showToast('✅ '+successCount+' berhasil, ❌ '+failedNames.length+' gagal',false);
+        showToast('✅ '+successCount+' berhasil, ❌ '+failedNames.length+' gagal ('+showDate+')',false);
         console.log('Gagal:',failedNames);
     }else{
-        showToast('✅ Semua '+successCount+' member berhasil ditambahkan!',false);
+        showToast('✅ Semua '+successCount+' member berhasil ditambahkan! ('+showDate+')',false);
     }
 }
 
@@ -527,7 +550,7 @@ async function updateShow(id, change){
     var setlistResult = await db.from('setlist_performance')
         .select('*')
         .eq('name', member.name)
-        .order('updated_at', { ascending: false })
+        .order('created_at', { ascending: false })
         .limit(1);
     
     var lastSetlist = null;
