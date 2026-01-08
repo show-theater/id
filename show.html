@@ -31,36 +31,33 @@ body.dark .detail-title{color:#e5e7eb}
 body.dark .container{background:#111827;box-shadow:0 2px 8px rgba(0,0,0,0.4)}
 .header{background:linear-gradient(135deg,var(--gen-color),var(--gen-color-dark));padding:18px;text-align:center;position:relative}
 .header h1{font-size:16px;margin:0;color:#fff;font-weight:600}
-.member-info{padding:18px;text-align:center;border-bottom:1px solid #e5e7eb}
+.member-info{padding:20px;text-align:center;border-bottom:1px solid #e5e7eb}
 body.dark .member-info{border-bottom-color:#374151}
-.member-name{font-size:20px;font-weight:bold;color:#333;margin-bottom:5px}
+.member-name{font-size:22px;font-weight:bold;color:#333;margin-bottom:15px}
 body.dark .member-name{color:#e5e7eb}
-.member-stats{display:flex;justify-content:center;gap:20px;margin-top:10px}
+.member-stats{display:flex;justify-content:center;gap:40px}
 .stat-item{text-align:center}
-.stat-number{font-size:24px;font-weight:bold;color:var(--gen-color)}
-.stat-label{font-size:11px;color:#6b7280;font-weight:600;margin-top:2px}
+.stat-number{font-size:28px;font-weight:bold;color:var(--gen-color)}
+.stat-label{font-size:12px;color:#6b7280;font-weight:600;margin-top:5px}
 body.dark .stat-label{color:#9ca3af}
-.filter-section{padding:12px 18px;background:#f9fafb;border-bottom:1px solid #e5e7eb;display:flex;gap:8px;overflow-x:auto}
+.filter-section{padding:15px 20px;background:#f9fafb;border-bottom:1px solid #e5e7eb;display:flex;gap:10px;overflow-x:auto}
 body.dark .filter-section{background:#1f2937;border-bottom-color:#374151}
-.filter-btn{padding:8px 16px;border-radius:20px;border:2px solid #e5e7eb;background:#fff;color:#6b7280;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all 0.3s}
+.filter-section::-webkit-scrollbar{display:none}
+.filter-btn{padding:10px 18px;border-radius:20px;border:2px solid #e5e7eb;background:#fff;color:#6b7280;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all 0.3s}
 body.dark .filter-btn{background:#111827;border-color:#374151;color:#9ca3af}
 .filter-btn.active{background:var(--gen-color);color:#fff;border-color:var(--gen-color)}
-.filter-btn:hover{transform:translateY(-2px)}
-.content{padding:18px}
-.show-list{display:flex;flex-direction:column;gap:10px}
-.show-card{background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;padding:14px;transition:all 0.3s}
+.filter-btn:hover{background:var(--gen-color);color:#fff;border-color:var(--gen-color)}
+.content{padding:20px}
+.show-list{display:flex;flex-direction:column;gap:15px}
+.show-card{background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;padding:18px;transition:all 0.3s}
 body.dark .show-card{background:#1f2937;border-color:#374151}
-.show-card:hover{transform:translateX(5px);box-shadow:0 2px 8px rgba(0,0,0,0.1)}
-.show-header{display:flex;justify-content:space-between;align-items:start;margin-bottom:8px}
-.show-date{font-size:14px;font-weight:bold;color:#333}
+.show-card:hover{border-color:var(--gen-color)}
+.show-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.show-date{font-size:15px;font-weight:bold;color:#333}
 body.dark .show-date{color:#e5e7eb}
-.show-badge{background:var(--gen-color);color:#fff;padding:4px 10px;border-radius:12px;font-size:10px;font-weight:bold}
-.show-setlist{font-size:13px;color:#6b7280;margin-bottom:6px;font-weight:600}
+.show-badge{background:var(--gen-color);color:#fff;padding:5px 12px;border-radius:15px;font-size:11px;font-weight:bold}
+.show-setlist{font-size:14px;color:#6b7280;margin-bottom:8px;font-weight:600}
 body.dark .show-setlist{color:#9ca3af}
-.show-meta{display:flex;align-items:center;gap:12px;font-size:11px;color:#9ca3af}
-body.dark .show-meta{color:#6b7280}
-.show-meta-item{display:flex;align-items:center;gap:4px}
-.show-meta-item svg{width:12px;height:12px}
 .empty-state{text-align:center;padding:60px 20px;color:#6b7280}
 body.dark .empty-state{color:#9ca3af}
 .empty-icon{font-size:64px;margin-bottom:15px;opacity:0.5}
@@ -74,21 +71,23 @@ body.dark .spinner{border-color:rgba(255,255,255,0.1);border-top-color:#9ca3af}
 body.dark .detail-footer{color:#9ca3af;border-top-color:#374151}
 .skeleton-loading{padding:20px;animation:skeleton-pulse 1.5s ease-in-out infinite}
 @keyframes skeleton-pulse{0%,100%{opacity:1}50%{opacity:0.5}}
-.skeleton-info{width:100%;height:80px;background:#e5e7eb;border-radius:12px;margin-bottom:12px}
+.skeleton-info{width:100%;height:100px;background:#e5e7eb;border-radius:12px;margin-bottom:12px}
 body.dark .skeleton-info{background:#374151}
-.skeleton-card{width:100%;height:100px;background:#e5e7eb;border-radius:12px;margin-bottom:10px}
+.skeleton-card{width:100%;height:110px;background:#e5e7eb;border-radius:12px;margin-bottom:15px}
 body.dark .skeleton-card{background:#374151}
-@media (max-width:480px) {
+@media (max-width:480px){
   .container{max-width:calc(100% - 20px);margin:120px 10px 15px;border-radius:16px}
-  .member-info{padding:14px}
-  .member-name{font-size:18px}
-  .stat-number{font-size:20px}
-  .stat-label{font-size:10px}
-  .filter-section{padding:10px 14px}
-  .content{padding:14px}
-  .show-card{padding:12px}
-  .show-date{font-size:13px}
-  .show-setlist{font-size:12px}
+  .member-info{padding:16px}
+  .member-name{font-size:20px;margin-bottom:12px}
+  .member-stats{gap:30px}
+  .stat-number{font-size:24px}
+  .stat-label{font-size:11px}
+  .filter-section{padding:12px 16px}
+  .filter-btn{padding:8px 14px;font-size:12px}
+  .content{padding:16px}
+  .show-card{padding:15px}
+  .show-date{font-size:14px}
+  .show-setlist{font-size:13px}
 }
 </style>
 <script>
@@ -250,11 +249,11 @@ function renderPage() {
       <div class="member-stats">
         <div class="stat-item">
           <div class="stat-number">${showsData.length}</div>
-          <div class="stat-label">TERCATAT</div>
+          <div class="stat-label">TOTAL SHOW</div>
         </div>
         <div class="stat-item">
           <div class="stat-number">${setlists.length}</div>
-          <div class="stat-label">SETLIST</div>
+          <div class="stat-label">JENIS SETLIST</div>
         </div>
       </div>
     </div>
@@ -285,7 +284,14 @@ function renderShowList() {
   if (filtered.length === 0) {
     return `
       <div class="empty-state">
-        <div class="empty-icon">📅</div>
+        <div class="empty-icon">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+        </div>
         <div class="empty-title">Belum Ada Show</div>
         <div class="empty-desc">
           ${currentFilter === 'all' 
@@ -299,26 +305,17 @@ function renderShowList() {
   
   return `
     <div class="show-list">
-      ${filtered.map(show => {
+      ${filtered.map((show, index) => {
         const date = show.show_date ? formatDate(show.show_date) : 'Tanggal tidak tersedia';
-        const timeAgo = show.created_at ? getTimeAgo(show.created_at) : '';
+        const showNumber = showsData.findIndex(s => s.id === show.id) + 1;
         
         return `
           <div class="show-card">
             <div class="show-header">
               <div class="show-date">${date}</div>
-              <div class="show-badge">${show.status === 'trainee' ? 'TRAINEE' : 'INTI'}</div>
+              <div class="show-badge">#${showNumber}</div>
             </div>
             <div class="show-setlist">${show.setlist_name}</div>
-            <div class="show-meta">
-              <div class="show-meta-item">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <polyline points="12 6 12 12 16 14"></polyline>
-                </svg>
-                ${timeAgo}
-              </div>
-            </div>
           </div>
         `;
       }).join('')}
@@ -343,30 +340,6 @@ function formatDate(dateString) {
   return date.toLocaleDateString('id-ID', options);
 }
 
-function getTimeAgo(dateString) {
-  // Parse UTC time from database and convert to local time
-  const date = new Date(dateString);
-  const now = new Date();
-  
-  // Calculate difference in milliseconds
-  const diff = now - date;
-  
-  const seconds = Math.floor(diff / 1000);
-  const minutes = Math.floor(seconds / 60);
-  const hours = Math.floor(minutes / 60);
-  const days = Math.floor(hours / 24);
-  const months = Math.floor(days / 30);
-  const years = Math.floor(days / 365);
-  
-  if (years > 0) return `${years} tahun lalu`;
-  if (months > 0) return `${months} bulan lalu`;
-  if (days > 0) return `${days} hari lalu`;
-  if (hours > 0) return `${hours} jam lalu`;
-  if (minutes > 0) return `${minutes} menit lalu`;
-  if (seconds > 10) return `${seconds} detik lalu`;
-  return 'Baru saja';
-}
-
 function adjustColor(color, amount) {
   const num = parseInt(color.replace('#', ''), 16);
   const r = Math.max(0, Math.min(255, (num >> 16) + amount));
@@ -386,11 +359,17 @@ function goBack() {
 function showError(message) {
   document.getElementById('container').innerHTML = `
     <div class="content" style="padding:60px 20px;text-align:center">
-      <div style="font-size:64px;margin-bottom:20px">😔</div>
+      <div style="font-size:64px;margin-bottom:20px">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#e60012" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+      </div>
       <div style="font-size:18px;font-weight:bold;color:#333;margin-bottom:10px">${message}</div>
       <div style="color:#6b7280;margin-bottom:30px">Data tidak ditemukan atau terjadi kesalahan</div>
       <button onclick="goBack()" style="background:#e60012;color:#fff;border:none;border-radius:12px;padding:12px 24px;font-size:14px;font-weight:600;cursor:pointer">
-        Kembali
+        Kembali ke Beranda
       </button>
     </div>
   `;

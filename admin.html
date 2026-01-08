@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin - JKT48 Show Theater</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Arial,sans-serif;background:#f5f5f5;color:#333;min-height:100vh;padding-bottom:60px}
+body.dark{background:#0a0e1a;color:#e5e7eb}
+header{background:#e60012;text-align:center;padding:20px 70px 20px 20px;font-size:20px;font-weight:bold;color:#fff;display:flex;align-items:center;justify-content:center;gap:10px;position:relative}
+.admin-badge{background:#fff;color:#e60012;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:bold}
+.header-theme-toggle{position:absolute;right:20px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.2);border:none;color:#fff;width:40px;height:40px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:8px}
+.header-theme-toggle svg{width:100%;height:100%}
+.top{padding:15px 20px;background:#fff;border-bottom:1px solid #ddd;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+body.dark .top{background:#111827;border-bottom:1px solid #1f2937}
+.search-box{flex:1;max-width:400px;min-width:200px}
+.search-box input{width:100%;padding:12px 20px;border-radius:25px;border:2px solid #f59e0b;background:#fff;font-size:14px;outline:none;color:#333}
+body.dark .search-box input{background:#0a0e1a;color:#e5e7eb}
+textarea{font-family:Arial,sans-serif}
+body.dark textarea{background:#0a0e1a;color:#e5e7eb;border-color:#374151}
+button{border:none;border-radius:20px;padding:10px 20px;font-weight:bold;cursor:pointer;font-size:14px}
+.bulk-btn{background:#f59e0b;color:#fff}
+.logout-btn{background:#22c55e;color:#fff}
+.activity-section{padding:15px 20px;background:#fff;border-bottom:1px solid #ddd}
+body.dark .activity-section{background:#111827;border-bottom:1px solid #1f2937}
+.activity-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.activity-title{font-size:16px;font-weight:bold}
+.clear-log-btn{background:#ef4444;color:#fff;padding:8px 16px;font-size:12px;border-radius:12px}
+.activity-log{background:#f9fafb;border-radius:12px;padding:15px;border:1px solid #e5e7eb;max-height:250px;overflow-y:auto}
+body.dark .activity-log{background:#1f2937;border-color:#374151}
+.activity-item{display:flex;align-items:center;gap:10px;padding:10px;margin-bottom:6px;background:#fff;border-radius:8px;border-left:3px solid var(--color)}
+body.dark .activity-item{background:#111827}
+.activity-icon{font-size:18px}
+.activity-content{flex:1}
+.activity-text{font-size:12px;font-weight:600}
+.activity-time{font-size:10px;color:#666;margin-top:2px}
+body.dark .activity-time{color:#9ca3af}
+.activity-empty{text-align:center;padding:30px;color:#999;font-size:13px}
+.filters{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:15px 20px;background:#fff;border-bottom:1px solid #ddd}
+body.dark .filters{background:#111827;border-bottom:1px solid #1f2937}
+.filter{padding:8px 16px;font-size:13px;border-radius:20px;border:2px solid transparent;cursor:pointer;font-weight:bold;background:#f0f0f0;color:#333}
+.filter.active{border:2px solid #e60012 !important;box-shadow:0 0 0 1px rgba(230,0,18,0.1)}
+.filter.all{background:#e60012;color:#fff}
+.filter.inti{background:#22c55e;color:#fff}
+.filter.trainee{background:#f59e0b;color:#fff}
+body.dark .filter{background:#1f2937;color:#e5e7eb}
+.stats{text-align:center;padding:10px;font-size:12px;color:#666;background:#fff;border-bottom:1px solid #ddd}
+body.dark .stats{background:#0a0e1a;color:#9ca3af}
+.container{padding:20px;display:grid;grid-template-columns:repeat(4,1fr);gap:15px;max-width:900px;margin:0 auto}
+@media (max-width:600px){.container{grid-template-columns:repeat(4,1fr);gap:10px;padding:15px}}
+.card{background:#fff;border-radius:12px;padding:0;text-align:center;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.1);position:relative}
+.card.trainee{border:2px solid #f59e0b}
+body.dark .card{background:#111827}
+.avatar{width:100%;aspect-ratio:3/4;object-fit:cover;background:#f0f0f0;display:block}
+body.dark .avatar{background:#0a0e1a}
+.card-footer{padding:8px 6px;background:var(--gen-color)}
+.status-badge{position:absolute;top:6px;right:6px;background:rgba(34,197,94,0.95);color:#fff;font-size:7px;font-weight:bold;padding:3px 8px;border-radius:10px;text-transform:uppercase;z-index:10}
+.status-badge.trainee{background:rgba(245,158,11,0.95)}
+.gen-badge{display:inline-block;background:rgba(0,0,0,0.2);color:#fff;font-size:8px;font-weight:bold;padding:2px 6px;border-radius:8px;margin-bottom:4px}
+.name{font-weight:bold;font-size:12px;color:#fff;margin-bottom:3px}
+.show{font-size:10px;color:rgba(255,255,255,0.9);margin-bottom:4px}
+.bar{height:4px;background:rgba(0,0,0,0.2);border-radius:2px;overflow:hidden;margin-bottom:6px}
+.bar span{display:block;height:100%;background:#fff}
+.admin-controls{display:flex;gap:4px;justify-content:center}
+.admin-controls button{min-width:28px;min-height:28px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,0.3);color:#fff;padding:0;font-size:18px;display:flex;align-items:center;justify-content:center}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:999;padding:20px;backdrop-filter:blur(8px)}
+.modal-box{background:#fff;padding:28px;border-radius:20px;width:90%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,0.5);position:relative}
+body.dark .modal-box{background:#111827}
+.modal-theme-toggle{position:absolute;top:20px;right:20px;background:#e60012;border:none;color:#fff;width:36px;height:36px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:7px}
+.modal-theme-toggle svg{width:100%;height:100%}
+.modal-box h3{margin:0 0 8px;font-size:20px}
+.modal-box p{margin:0 0 20px;font-size:14px;color:#666}
+body.dark .modal-box p{color:#9ca3af}
+.modal-box input,.modal-box select,.modal-box textarea{width:100%;padding:12px;border-radius:12px;border:2px solid #ddd;background:#fff;color:#333;font-size:14px;outline:none;margin-bottom:10px}
+body.dark .modal-box input,body.dark .modal-box select,body.dark .modal-box textarea{background:#0a0e1a;color:#e5e7eb;border-color:#374151}
+input[type="date"]{color-scheme:light}
+body.dark input[type="date"]{color-scheme:dark}
+.input-label{display:block;font-size:12px;font-weight:600;color:#666;margin-bottom:6px}
+body.dark .input-label{color:#9ca3af}
+.modal-buttons{display:flex;gap:10px;margin-top:20px}
+.modal-buttons button{flex:1;padding:12px;border-radius:12px;font-weight:bold;font-size:14px}
+.btn-cancel{background:#e5e7eb;color:#333}
+body.dark .btn-cancel{background:#374151;color:#e5e7eb}
+.btn-confirm{background:#ef4444;color:#fff}
+.btn-add{background:#22c55e;color:#fff}
+.error{color:#ef4444;font-size:12px;display:none;margin:8px 0 12px;font-weight:600}
+.msg{grid-column:1/-1;text-align:center;padding:40px 20px;color:#999;background:#fff;border-radius:12px;margin:20px}
+body.dark .msg{background:#111827;color:#6b7280}
+.loading{display:flex;align-items:center;justify-content:center;gap:8px;grid-column:1/-1;padding:60px 20px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner{display:inline-block;width:32px;height:32px;border:3px solid rgba(0,0,0,0.1);border-top-color:#f59e0b;border-radius:50%;animation:spin 0.8s linear infinite}
+body.dark .spinner{border-color:rgba(255,255,255,0.1);border-top-color:#f59e0b}
+.toast{position:fixed;top:20px;right:20px;background:#22c55e;color:#fff;padding:12px 20px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.3);z-index:9999;font-weight:bold;display:none;font-size:13px;max-width:90%}
+.toast.show{display:block}
+.toast.error{background:#ef4444}
+.setlist-info{background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:10px;margin-bottom:10px;font-size:12px;color:#666}
+body.dark .setlist-info{background:#1f2937;border-color:#374151;color:#9ca3af}
+.setlist-badge{display:inline-block;background:#f59e0b;color:#fff;padding:3px 8px;border-radius:6px;font-size:10px;font-weight:bold;margin-right:6px}
+.tip-text{font-size:11px;color:#666;margin-bottom:10px;padding:8px;background:#f9fafb;border-radius:8px}
+body.dark .tip-text{background:#1f2937;color:#9ca3af}
+
+/* Calendar CSS */
+.calendar-container{width:100%;max-width:500px;margin:0 auto}
+.calendar-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
+.calendar-nav{background:#e60012;color:white;border:none;width:36px;height:36px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.calendar-nav:hover{background:#d5000f}
+.calendar-title{font-size:16px;font-weight:bold}
+.calendar-weekdays{display:grid;grid-template-columns:repeat(7,1fr);text-align:center;font-size:12px;font-weight:bold;color:#666;margin-bottom:8px}
+body.dark .calendar-weekdays{color:#9ca3af}
+.calendar-days{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.calendar-day{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;position:relative;padding:2px;background:#f9fafb;border:1px solid transparent}
+body.dark .calendar-day{background:#1f2937}
+.calendar-day.empty{background:transparent;cursor:default}
+.calendar-day.today{background:#e60012;color:white}
+.calendar-day.has-shows{border-color:#22c55e;background:rgba(34,197,94,0.1)}
+body.dark .calendar-day.has-shows{background:rgba(34,197,94,0.2)}
+.calendar-day.selected{border:2px solid #3b82f6;background:rgba(59,130,246,0.1)}
+/* Indicator dot for days with shows - placed below the date */
+.calendar-day.has-shows::after {
+    content: '';
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    background-color: #22c55e;
+    border-radius: 50%;
+}
+.calendar-day-detail{margin-top:15px;padding:15px;background:#f9fafb;border-radius:12px;max-height:200px;overflow-y:auto}
+body.dark .calendar-day-detail{background:#1f2937}
+.calendar-day-detail h4{margin:0 0 10px 0;font-size:14px;color:#333}
+body.dark .calendar-day-detail h4{color:#e5e7eb}
+.calendar-event{display:flex;justify-content:space-between;align-items:center;padding:8px;margin-bottom:6px;background:white;border-radius:8px;border-left:3px solid var(--event-color);font-size:12px}
+body.dark .calendar-event{background:#111827}
+.event-member{font-weight:bold;margin-right:8px}
+.event-setlist{color:#666;font-size:11px}
+body.dark .event-setlist{color:#9ca3af}
+.event-status{font-size:10px;padding:2px 6px;border-radius:10px;background:#f59e0b;color:white;margin-left:8px}
+.event-status.inti{background:#22c55e}
+.no-events{text-align:center;color:#999;font-size:12px;padding:20px}
+body.dark .no-events{color:#6b7280}
+.calendar-actions{display:flex;gap:10px;margin-top:15px}
+.calendar-actions button{flex:1;padding:10px;border-radius:12px;font-weight:bold;font-size:13px}
+.btn-today{background:#e60012;color:white}
+.btn-close-calendar{background:#6b7280;color:white}
+</style>
+</head>
+<body>
+<header>JKT48 SHOW THEATER<span class="admin-badge">ADMIN</span><button class="header-theme-toggle" onclick="toggleTheme()"><svg id="themeIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/></svg></button></header>
+<div class="top">
+    <div class="search-box"><input type="text" id="searchInput" placeholder="Cari member..." oninput="searchMember()"></div>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+    <button onclick="showCalendar()" style="background:#8b5cf6;color:#fff">Kalender</button>
+    <button class="bulk-btn" onclick="openBulkAddModal()">Bulk Add</button>
+</div>
+<div class="activity-section"><div class="activity-header"><div class="activity-title">Activity Log</div><button class="clear-log-btn" onclick="clearActivityLog()">Clear</button></div><div class="activity-log" id="activityLog"><div class="activity-empty">Belum ada aktivitas hari ini</div></div></div>
+<div class="filters">
+    <button class="filter all active" onclick="filterType('all')">ALL</button>
+    <button class="filter inti" onclick="filterType('inti')">INTI</button>
+    <button class="filter trainee" onclick="filterType('trainee')">TRAINEE</button>
+    <button class="filter" onclick="filterGen(3)" style="background:#ec4899;color:#fff">Gen 3</button>
+    <button class="filter" onclick="filterGen(6)" style="background:#22c55e;color:#fff">Gen 6</button>
+    <button class="filter" onclick="filterGen(7)" style="background:#15803d;color:#fff">Gen 7</button>
+    <button class="filter" onclick="filterGen(8)" style="background:#1e40af;color:#fff">Gen 8</button>
+    <button class="filter" onclick="filterGen(9)" style="background:#06b6d4;color:#fff">Gen 9</button>
+    <button class="filter" onclick="filterGen(10)" style="background:#38bdf8;color:#fff">Gen 10</button>
+    <button class="filter" onclick="filterGen(11)" style="background:#f97316;color:#fff">Gen 11</button>
+    <button class="filter" onclick="filterGen(12)" style="background:#fde68a;color:#000">Gen 12</button>
+    <button class="filter" onclick="filterGen(13)" style="background:#facc15;color:#000">Gen 13</button>
+    <button class="filter" onclick="filterGen(14)" style="background:#e879f9;color:#fff">Gen 14</button>
+</div>
+<div class="stats" id="stats"></div>
+<div class="container" id="list"><div class="loading"><div class="spinner"></div><span>Loading data...</span></div></div>
+<div class="toast" id="toast"></div>
+
+<div class="modal" id="loginModal"><div class="modal-box"><button class="modal-theme-toggle" onclick="toggleTheme()"><svg id="modalThemeIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/></svg></button><h3>Admin Login</h3><p>Masukkan kredensial admin</p><label class="input-label">Email</label><input id="email" type="email" placeholder="Masukan email"><label class="input-label">Password</label><input id="password" type="password" placeholder="Masukkan password" onkeypress="if(event.key==='Enter')login()"><div class="error" id="errorMsg"></div><button onclick="login()" style="background:#22c55e;width:100%;margin-top:8px;color:#fff;padding:12px;border-radius:12px">Login</button></div></div>
+
+<div class="modal" id="logoutModal"><div class="modal-box"><h3>Konfirmasi Logout</h3><p>Apakah Anda yakin ingin keluar?</p><div class="modal-buttons"><button class="btn-cancel" onclick="closeLogoutModal()">Batal</button><button class="btn-confirm" onclick="confirmLogout()">Logout</button></div></div></div>
+
+<div class="modal" id="setlistModal"><div class="modal-box"><h3>Tambah Show dengan Setlist</h3><p id="setlistMemberName">Member: -</p><label class="input-label">Tanggal Show</label><input type="date" id="showDate"><label class="input-label">Pilih Setlist</label><select id="setlistSelect"><option value="">Pilih Setlist...</option></select><div class="setlist-info" id="setlistInfo" style="display:none"><span class="setlist-badge">INFO</span><span id="setlistDescription"></span></div><div class="modal-buttons"><button class="btn-cancel" onclick="closeSetlistModal()">Batal</button><button class="btn-add" onclick="addShowWithSetlist()">Tambah Show</button></div></div></div>
+
+<div class="modal" id="bulkAddModal"><div class="modal-box" style="max-width:500px"><h3>Bulk Add Show</h3><p>Tambahkan beberapa member sekaligus dalam 1 setlist</p><label class="input-label">Tanggal Show</label><input type="date" id="bulkShowDate"><label class="input-label">Pilih Setlist</label><select id="bulkSetlistSelect"><option value="">Pilih Setlist...</option></select><label class="input-label">Masukkan Nama Member (pisahkan dengan koma)</label><textarea id="bulkMemberNames" placeholder="Contoh: Cynthia, Danella, Eli, Elin, Ella, Fritzy, Indah, Kimmy" style="min-height:120px;resize:vertical"></textarea><div class="tip-text">💡 Tip: Nama harus persis sama dengan database (tidak case sensitive)</div><div class="modal-buttons"><button class="btn-cancel" onclick="closeBulkAddModal()">Batal</button><button class="btn-add" onclick="bulkAddShows()">Tambah Semua</button></div></div></div>
+
+<div class="modal" id="calendarModal"><div class="modal-box" style="max-width:550px"><h3>Kalender Show</h3>
+    <div class="calendar-static-date" style="text-align:center;padding:10px;margin-bottom:15px;background:#e60012;color:white;border-radius:8px;font-weight:bold;">
+        Kamis, 8 Januari 2026
+    </div>
+    <div class="calendar-container">
+        <div class="calendar-header">
+            <button class="calendar-nav" onclick="calendarPrevMonth()">‹</button>
+            <div class="calendar-title" id="calendarTitle">Januari 2026</div>
+            <button class="calendar-nav" onclick="calendarNextMonth()">›</button>
+        </div>
+        <div class="calendar-weekdays">
+            <div>M</div><div>S</div><div>S</div><div>R</div><div>K</div><div>J</div><div>S</div>
+        </div>
+        <div class="calendar-days" id="calendarDays"></div>
+        <div class="calendar-day-detail" id="calendarDayDetail">
+            <h4 id="detailDate">Pilih tanggal</h4>
+            <div id="detailEvents" class="no-events">Pilih tanggal untuk melihat detail show</div>
+        </div>
+        <div class="calendar-actions">
+            <button class="btn-today" onclick="calendarGoToday()">Hari Ini</button>
+            <button class="btn-close-calendar" onclick="closeCalendarModal()">Tutup</button>
+        </div>
+    </div>
+</div></div>
+
+<script>
+var SUPABASE_URL='https://pprxfopqkvpeajeoxzig.supabase.co';
+var SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBwcnhmb3Bxa3ZwZWFqZW94emlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYyNTI4MTIsImV4cCI6MjA4MTgyODgxMn0.iXRO_dAHhtVHRLqGTresG_63RD2zIaopNXtXYNfthdg';
+var ADMIN_ACCOUNTS={'admin@jkt48.com':'jkt48admin','superadmin@jkt48.com':'jkt48super'};
+var GEN_COLORS={3:'#ec4899',6:'#22c55e',7:'#15803d',8:'#1e40af',9:'#06b6d4',10:'#38bdf8',11:'#f97316',12:'#fde68a',13:'#facc15',14:'#e879f9'};
+var SETLIST_INTI={'Cara Meminum Ramune':'Setlist segar seperti minuman ramune','Te Wo Tsunaginagara':'Setlist sambil bergandengan tangan','Pertaruhan Cinta':'Setlist tentang taruhan cinta untuk member inti'};
+var SETLIST_TRAINEE={'Pajama Drive':'Setlist klasik untuk member trainee'};
+var SETLIST_INFO=Object.assign({},SETLIST_INTI,SETLIST_TRAINEE);
+var db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+var members=[];
+var currentGen='all';
+var currentStatus='all';
+var searchQuery='';
+var activityLog=[];
+var currentMemberId=null;
+
+// Calendar variables
+var calendarDate = new Date(2026, 0, 1); // Set ke Januari 2026
+var calendarShows = {};
+var selectedCalendarDate = null;
+
+function toggleTheme(){
+    var b=document.body;
+    var i=document.getElementById('themeIcon');
+    var m=document.getElementById('modalThemeIcon');
+    b.classList.toggle('dark');
+    if(b.classList.contains('dark')){
+        var s='<path d="M12,17a5,5,0,1,1,5-5A5,5,0,0,1,12,17Zm0-8a3,3,0,1,0,3,3A3,3,0,0,0,12,9Zm0-4a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41L6.34,5A1,1,0,0,0,4.93,6.34ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm.64,5.66a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71a1,1,0,0,0-1.41-1.41ZM12,19a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19Zm6.36-2.34a1,1,0,0,0-1.41,1.41l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-3.64-3.95a1,1,0,0,0,.7.29,1,1,0,0,0,.71-1.7l-.71-.71a1,1,0,0,0-1.41,1.41Z"/>';
+        if(i)i.innerHTML=s;
+        if(m)m.innerHTML=s;
+        localStorage.setItem('jkt48_theme','dark');
+    }else{
+        var n='<path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/>';
+        if(i)i.innerHTML=n;
+        if(m)m.innerHTML=n;
+        localStorage.setItem('jkt48_theme','light');
+    }
+}
+
+var savedTheme=localStorage.getItem('jkt48_theme');
+if(savedTheme==='dark'){
+    document.body.classList.add('dark');
+}
+
+var adminEmail=localStorage.getItem('jkt48_admin_email');
+var loginTime=localStorage.getItem('jkt48_admin_login_time');
+if(!adminEmail||!loginTime){
+    document.getElementById('loginModal').style.display='flex';
+    setTimeout(function(){document.getElementById('email').focus()},100);
+}else{
+    var currentTime=new Date().getTime();
+    var sessionAge=currentTime-parseInt(loginTime);
+    if(sessionAge>86400000){
+        localStorage.removeItem('jkt48_admin_email');
+        localStorage.removeItem('jkt48_admin_login_time');
+        alert('Sesi login berakhir. Silakan login kembali.');
+        document.getElementById('loginModal').style.display='flex';
+    }else{
+        loadData();
+        loadActivityLog();
+    }
+}
+
+async function loadData(){
+    try{
+        console.log('Memuat data dari Supabase...');
+        var result=await db.from('members').select('*').order('show',{ascending:false});
+        
+        if(result.error){
+            console.error('Error dari Supabase:', result.error);
+            throw result.error;
+        }
+        
+        members=result.data||[];
+        console.log('✅ Berhasil memuat '+members.length+' member');
+        
+        renderMembers();
+        updateStats();
+    }catch(err){
+        console.error('Error:',err);
+        document.getElementById('list').innerHTML='<div class="msg" style="color:#ef4444">Error: '+err.message+'</div>';
+        showToast('Gagal memuat data: ' + err.message, true);
+    }
+}
+
+function loadActivityLog(){
+    var saved=localStorage.getItem('jkt48_activity_log');
+    if(saved){
+        activityLog=JSON.parse(saved);
+        var today=new Date().toDateString();
+        activityLog=activityLog.filter(function(log){
+            return new Date(log.time).toDateString()===today;
+        });
+    }
+    renderActivityLog();
+}
+
+function saveActivityLog(){
+    localStorage.setItem('jkt48_activity_log',JSON.stringify(activityLog));
+}
+
+function addActivity(memberName,change,newValue,setlist,status){
+    var activity={
+        member:memberName,
+        change:change,
+        newValue:newValue,
+        setlist:setlist||null,
+        status:status||'inti',
+        time:new Date().toISOString()
+    };
+    activityLog.unshift(activity);
+    if(activityLog.length>50) activityLog=activityLog.slice(0,50);
+    saveActivityLog();
+    renderActivityLog();
+}
+
+function renderActivityLog(){
+    var logEl=document.getElementById('activityLog');
+    if(activityLog.length===0){
+        logEl.innerHTML='<div class="activity-empty">Belum ada aktivitas hari ini</div>';
+        return;
+    }
+    logEl.innerHTML=activityLog.map(function(log){
+        var time=new Date(log.time);
+        var timeStr=time.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+        var icon=log.change>0?'+':'−';
+        var color=log.change>0?'#22c55e':'#ef4444';
+        var action=log.change>0?'+':'';
+        var setlistText=log.setlist?' ('+log.setlist+')':'';
+        var statusBadge=log.status==='trainee'?' [TRAINEE]':'';
+        return'<div class="activity-item" style="--color:'+color+'"><div class="activity-icon">'+icon+'</div><div class="activity-content"><div class="activity-text">'+log.member+statusBadge+' '+action+log.change+' → '+log.newValue+' show'+setlistText+'</div><div class="activity-time">'+timeStr+'</div></div></div>';
+    }).join('');
+}
+
+function clearActivityLog(){
+    if(confirm('Hapus semua activity log?')){
+        activityLog=[];
+        saveActivityLog();
+        renderActivityLog();
+        showToast('Activity log berhasil dihapus',false);
+    }
+}
+
+function renderMembers(){
+    var list=document.getElementById('list');
+    var filtered=members.filter(function(m){
+        var matchGen=currentGen==='all'||m.gen==currentGen;
+        var matchStatus=currentStatus==='all'||m.status===currentStatus;
+        var matchSearch=!searchQuery||m.name.toLowerCase().includes(searchQuery.toLowerCase());
+        return matchGen&&matchStatus&&matchSearch;
+    });
+    
+    if(filtered.length===0){
+        var message = 'Tidak ada data member';
+        if(searchQuery){
+            message = 'Tidak ada member dengan nama "'+searchQuery+'"';
+        }else if(currentStatus!=='all' && currentGen!=='all'){
+            message = 'Tidak ada '+currentStatus+' Generasi '+currentGen;
+        }else if(currentStatus!=='all'){
+            message = 'Tidak ada member '+currentStatus;
+        }else if(currentGen!=='all'){
+            message = 'Tidak ada member Generasi '+currentGen;
+        }
+        list.innerHTML='<div class="msg">'+message+'</div>';
+        return;
+    }
+    
+    list.innerHTML='';
+    var sorted=filtered.sort(function(a,b){return b.show-a.show});
+    sorted.forEach(function(m){
+        var percent=Math.min(100,(m.show/1000)*100);
+        var color=GEN_COLORS[m.gen]||'#6366f1';
+        var card=document.createElement('div');
+        card.className='card'+(m.status==='trainee'?' trainee':'');
+        card.style.setProperty('--gen-color',color);
+        
+        var statusBadgeHtml=m.status==='trainee'?'<div class="status-badge trainee">TRAINEE</div>':'<div class="status-badge">INTI</div>';
+        
+        card.innerHTML=statusBadgeHtml+
+            '<img class="avatar" src="img/'+m.name.toLowerCase()+'.jpg" onerror="this.style.display=\'none\'" alt="'+m.name+'">'+
+            '<div class="card-footer">'+
+                '<div class="gen-badge">Gen '+m.gen+'</div>'+
+                '<div class="name">'+m.name+'</div>'+
+                '<div class="show">'+m.show+' show</div>'+
+                '<div class="bar"><span style="width:'+percent+'%"></span></div>'+
+                '<div class="admin-controls">'+
+                    '<button onclick="updateShow('+m.id+',-1)">−</button>'+
+                    '<button onclick="openSetlistModal('+m.id+')">+</button>'+
+                '</div>'+
+            '</div>';
+        list.appendChild(card);
+    });
+}
+
+function openSetlistModal(memberId){
+    currentMemberId=memberId;
+    var member=members.find(function(m){return m.id===memberId});
+    if(!member) return;
+    
+    document.getElementById('setlistMemberName').textContent='Member: '+member.name+' ('+(member.status==='trainee'?'TRAINEE':'INTI')+')';
+    
+    var today=new Date().toISOString().split('T')[0];
+    document.getElementById('showDate').value=today;
+    
+    var selectEl=document.getElementById('setlistSelect');
+    selectEl.innerHTML='<option value="">Pilih Setlist...</option>';
+    var setlists=member.status==='trainee'?SETLIST_TRAINEE:SETLIST_INTI;
+    for(var key in setlists){
+        selectEl.innerHTML+='<option value="'+key+'">'+key+'</option>';
+    }
+    selectEl.value='';
+    document.getElementById('setlistInfo').style.display='none';
+    document.getElementById('setlistModal').style.display='flex';
+}
+
+function closeSetlistModal(){
+    document.getElementById('setlistModal').style.display='none';
+    currentMemberId=null;
+}
+
+function openBulkAddModal(){
+    var today=new Date().toISOString().split('T')[0];
+    document.getElementById('bulkShowDate').value=today;
+    
+    var selectEl=document.getElementById('bulkSetlistSelect');
+    selectEl.innerHTML='<option value="">Pilih Setlist...</option>';
+    for(var key in SETLIST_INFO){
+        selectEl.innerHTML+='<option value="'+key+'">'+key+'</option>';
+    }
+    document.getElementById('bulkMemberNames').value='';
+    document.getElementById('bulkAddModal').style.display='flex';
+}
+
+function closeBulkAddModal(){
+    document.getElementById('bulkAddModal').style.display='none';
+}
+
+document.getElementById('setlistSelect').addEventListener('change',function(){
+    var setlist=this.value;
+    var infoEl=document.getElementById('setlistInfo');
+    var descEl=document.getElementById('setlistDescription');
+    if(setlist&&SETLIST_INFO[setlist]){
+        descEl.textContent=SETLIST_INFO[setlist];
+        infoEl.style.display='block';
+    }else{
+        infoEl.style.display='none';
+    }
+});
+
+async function addShowWithSetlist(){
+    var setlist=document.getElementById('setlistSelect').value;
+    var showDate=document.getElementById('showDate').value;
+    
+    if(!setlist){
+        showToast('Pilih setlist terlebih dahulu!',true);
+        return;
+    }
+    
+    if(!showDate){
+        showDate = new Date().toISOString().split('T')[0];
+        console.log('📅 Menggunakan tanggal hari ini:', showDate);
+    }
+    
+    if(!currentMemberId) return;
+    
+    var member=members.find(function(m){return m.id===currentMemberId});
+    if(!member) return;
+    
+    console.log('Menambah show untuk:', member.name, 'setlist:', setlist, 'tanggal:', showDate);
+    
+    try{
+        var newShow=member.show+1;
+        var updateResult=await db.from('members')
+            .update({show:newShow})
+            .eq('id',currentMemberId)
+            .select();
+        
+        if(updateResult.error){
+            console.error('Update members error:',updateResult.error);
+            showToast('Gagal update members: '+updateResult.error.message,true);
+            return;
+        }
+        
+        var setlistData={
+            name:member.name,
+            setlist_name:setlist,
+            show_count:1,
+            status:member.status,
+            show_date:showDate,
+            created_at:new Date().toISOString()
+        };
+        
+        var insertResult=await db.from('setlist_performance')
+            .insert([setlistData])
+            .select();
+        
+        if(insertResult.error){
+            console.error('Insert error:',insertResult.error);
+            showToast('Gagal insert setlist: '+insertResult.error.message,true);
+            return;
+        }
+        
+        var insertedId = insertResult.data && insertResult.data[0] ? insertResult.data[0].id : 'auto';
+        console.log('✅ Record inserted dengan ID:',insertedId);
+        
+        member.show=newShow;
+        addActivity(member.name,1,newShow,setlist,member.status);
+        renderMembers();
+        updateStats();
+        closeSetlistModal();
+        showToast(member.name+': '+newShow+' show ('+setlist+' - '+showDate+')',false);
+        
+    }catch(err){
+        console.error('Exception:',err);
+        showToast('Error: '+err.message,true);
+    }
+}
+
+async function bulkAddShows(){
+    var setlist=document.getElementById('bulkSetlistSelect').value;
+    var namesInput=document.getElementById('bulkMemberNames').value;
+    var showDate=document.getElementById('bulkShowDate').value;
+    
+    if(!setlist){
+        showToast('Pilih setlist terlebih dahulu!',true);
+        return;
+    }
+    
+    if(!showDate){
+        showDate = new Date().toISOString().split('T')[0];
+        console.log('📅 Menggunakan tanggal hari ini:', showDate);
+    }
+    
+    if(!namesInput.trim()){
+        showToast('Masukkan nama member!',true);
+        return;
+    }
+    
+    var names=namesInput.split(',').map(function(n){return n.trim()}).filter(function(n){return n.length>0});
+    
+    if(names.length===0){
+        showToast('Tidak ada nama yang valid!',true);
+        return;
+    }
+    
+    var successCount=0;
+    var failedNames=[];
+    
+    showToast('Memproses '+names.length+' member...',false);
+    
+    for(var i=0;i<names.length;i++){
+        var name=names[i];
+        var member=members.find(function(m){return m.name.toLowerCase()===name.toLowerCase()});
+        
+        if(!member){
+            failedNames.push(name+' (tidak ditemukan)');
+            continue;
+        }
+        
+        try{
+            var newShow=member.show+1;
+            var updateResult=await db.from('members')
+                .update({show:newShow})
+                .eq('id',member.id)
+                .select();
+            
+            if(updateResult.error){
+                failedNames.push(name+' (error update)');
+                continue;
+            }
+            
+            var setlistData={
+                name:member.name,
+                setlist_name:setlist,
+                show_count:1,
+                status:member.status,
+                show_date:showDate,
+                created_at:new Date().toISOString()
+            };
+            
+            var insertResult=await db.from('setlist_performance')
+                .insert([setlistData])
+                .select();
+            
+            if(insertResult.error){
+                failedNames.push(name+' (error insert)');
+                await db.from('members').update({show:member.show}).eq('id',member.id);
+                continue;
+            }
+            
+            member.show=newShow;
+            addActivity(member.name,1,newShow,setlist,member.status);
+            successCount++;
+            
+        }catch(err){
+            failedNames.push(name+' (exception)');
+        }
+    }
+    
+    renderMembers();
+    updateStats();
+    closeBulkAddModal();
+    
+    if(failedNames.length>0){
+        showToast('✅ '+successCount+' berhasil, ❌ '+failedNames.length+' gagal ('+showDate+')',false);
+        console.log('Gagal:',failedNames);
+    }else{
+        showToast('✅ Semua '+successCount+' member berhasil ditambahkan! ('+showDate+')',false);
+    }
+}
+
+async function updateShow(id, change){
+    var member = members.find(function(m) { return m.id === id });
+    if (!member) return;
+    
+    var setlistResult = await db.from('setlist_performance')
+        .select('*')
+        .eq('name', member.name)
+        .order('created_at', { ascending: false })
+        .limit(1);
+    
+    var lastSetlist = null;
+    if (setlistResult.data && setlistResult.data.length > 0) {
+        lastSetlist = setlistResult.data[0];
+    }
+    
+    var newShow = Math.max(0, member.show + change);
+    
+    try {
+        var updateResult = await db.from('members')
+            .update({ show: newShow })
+            .eq('id', id)
+            .select();
+        
+        if (updateResult.error) {
+            throw updateResult.error;
+        }
+        
+        if (lastSetlist && change < 0) {
+            await db.from('setlist_performance')
+                .delete()
+                .eq('id', lastSetlist.id);
+            
+            console.log('🗑️ Record dihapus (ID: '+lastSetlist.id+')');
+        }
+        
+        member.show = newShow;
+        
+        if (lastSetlist) {
+            addActivity(member.name, change, newShow, lastSetlist.setlist_name, member.status);
+            showToast(member.name+': '+newShow+' show ('+lastSetlist.setlist_name+')', false);
+        } else {
+            addActivity(member.name, change, newShow, null, member.status);
+            showToast(member.name+': '+newShow+' show', false);
+        }
+        
+        renderMembers();
+        updateStats();
+        
+    } catch (err) {
+        console.error('Update error:', err);
+        showToast('Gagal update: ' + err.message, true);
+    }
+}
+
+function updateStats(){
+    var filtered=members.filter(function(m){
+        var matchGen=currentGen==='all'||m.gen==currentGen;
+        var matchStatus=currentStatus==='all'||m.status===currentStatus;
+        var matchSearch=!searchQuery||m.name.toLowerCase().includes(searchQuery.toLowerCase());
+        return matchGen&&matchStatus&&matchSearch;
+    });
+    
+    var total=filtered.length;
+    var trainee=filtered.filter(function(m){return m.status==='trainee'}).length;
+    var inti=total-trainee;
+    var totalShows=filtered.reduce(function(sum,m){return sum+m.show},0);
+    
+    var statsText=total+' members • '+inti+' Inti • '+trainee+' Trainee • '+totalShows+' total show';
+    if(currentGen!=='all') statsText+=' • Gen '+currentGen;
+    if(currentStatus!=='all') statsText+=' • '+currentStatus.toUpperCase();
+    if(searchQuery) statsText+=' • Search: "'+searchQuery+'"';
+    
+    document.getElementById('stats').innerHTML=statsText;
+}
+
+function filterType(status){
+    currentStatus = status;
+    currentGen = 'all';
+    document.querySelectorAll('.filter').forEach(function(f) {
+        f.classList.remove('active');
+    });
+    event.target.classList.add('active');
+    renderMembers();
+    updateStats();
+}
+
+function filterGen(gen){
+    currentGen = gen;
+    currentStatus = 'all';
+    document.querySelectorAll('.filter').forEach(function(f) {
+        f.classList.remove('active');
+    });
+    event.target.classList.add('active');
+    renderMembers();
+    updateStats();
+}
+
+function searchMember(){
+    searchQuery=document.getElementById('searchInput').value.toLowerCase();
+    renderMembers();
+    updateStats();
+}
+
+function login(){
+    var email=document.getElementById('email').value.trim();
+    var password=document.getElementById('password').value.trim();
+    var error=document.getElementById('errorMsg');
+    
+    error.style.display='none';
+    
+    if(!email||!password){
+        error.textContent='Email dan password harus diisi';
+        error.style.display='block';
+        return;
+    }
+    
+    if(ADMIN_ACCOUNTS[email]===password){
+        var loginTime=new Date().getTime();
+        localStorage.setItem('jkt48_admin_email',email);
+        localStorage.setItem('jkt48_admin_login_time',loginTime.toString());
+        document.getElementById('loginModal').style.display='none';
+        loadData();
+        loadActivityLog();
+        showToast('Login berhasil!',false);
+    }else{
+        error.textContent='Email atau password salah';
+        error.style.display='block';
+    }
+}
+
+function logout(){
+    document.getElementById('logoutModal').style.display='flex';
+}
+
+function closeLogoutModal(){
+    document.getElementById('logoutModal').style.display='none';
+}
+
+function confirmLogout(){
+    localStorage.removeItem('jkt48_admin_email');
+    localStorage.removeItem('jkt48_admin_login_time');
+    closeLogoutModal();
+    document.getElementById('loginModal').style.display='flex';
+    showToast('Logout berhasil',false);
+}
+
+function showToast(message,isError){
+    var toast=document.getElementById('toast');
+    toast.textContent=message;
+    toast.className='toast'+(isError?' error':'');
+    toast.classList.add('show');
+    setTimeout(function(){
+        toast.classList.remove('show');
+    },3000);
+}
+
+// ==================== CALENDAR FUNCTIONS ====================
+
+async function showCalendar() {
+    document.getElementById('calendarModal').style.display = 'flex';
+    
+    // Load show data for calendar
+    await loadCalendarShows();
+    renderCalendar();
+}
+
+function closeCalendarModal() {
+    document.getElementById('calendarModal').style.display = 'none';
+    selectedCalendarDate = null;
+}
+
+async function loadCalendarShows() {
+    try {
+        // Get shows from Januari 2026
+        var startDate = new Date(2026, 0, 1); // 1 Januari 2026
+        var endDate = new Date(2026, 0, 31); // 31 Januari 2026
+        
+        var result = await db.from('setlist_performance')
+            .select('*')
+            .gte('show_date', startDate.toISOString().split('T')[0])
+            .lte('show_date', endDate.toISOString().split('T')[0]);
+        
+        if (result.error) throw result.error;
+        
+        calendarShows = {};
+        if (result.data) {
+            result.data.forEach(function(show) {
+                var dateStr = show.show_date;
+                if (!calendarShows[dateStr]) {
+                    calendarShows[dateStr] = [];
+                }
+                calendarShows[dateStr].push(show);
+            });
+        }
+        
+        console.log('📅 Loaded calendar data for Januari 2026:', Object.keys(calendarShows).length + ' days with shows');
+    } catch (err) {
+        console.error('Error loading calendar data:', err);
+        showToast('Gagal memuat data kalender', true);
+    }
+}
+
+function renderCalendar() {
+    var year = calendarDate.getFullYear();
+    var month = calendarDate.getMonth();
+    
+    // Update calendar title - HANYA Januari 2026
+    document.getElementById('calendarTitle').textContent = 'Januari 2026';
+    
+    // Get first day of month and total days (Januari 2026)
+    var firstDay = new Date(2026, 0, 1);
+    var lastDay = new Date(2026, 0, 31);
+    var daysInMonth = 31; // Januari 2026 has 31 days
+    var startingDay = firstDay.getDay(); // 0 = Sunday, 1 = Monday, etc.
+    
+    // Adjust for Indonesian week (Monday first)
+    var startingIndex = startingDay === 0 ? 6 : startingDay - 1;
+    
+    // 8 Januari 2026 is selected date
+    var selectedDateStr = '2026-01-08';
+    
+    var calendarHTML = '';
+    var dayCount = 0;
+    
+    // Empty cells for days before the first day of month
+    for (var i = 0; i < startingIndex; i++) {
+        calendarHTML += '<div class="calendar-day empty"></div>';
+        dayCount++;
+    }
+    
+    // Days of the month (Januari 2026)
+    for (var day = 1; day <= daysInMonth; day++) {
+        var dateStr = '2026-01-' + String(day).padStart(2, '0');
+        var dayShows = calendarShows[dateStr] || [];
+        var isSelected = selectedCalendarDate === dateStr;
+        
+        var dayClass = 'calendar-day';
+        if (day === 8) dayClass += ' today'; // 8 Januari sebagai hari ini
+        if (dayShows.length > 0) dayClass += ' has-shows';
+        if (isSelected) dayClass += ' selected';
+        
+        calendarHTML += '<div class="' + dayClass + '" onclick="selectCalendarDate(\'' + dateStr + '\')">' +
+                        day + '</div>';
+        dayCount++;
+    }
+    
+    // Fill remaining cells
+    while (dayCount % 7 !== 0) {
+        calendarHTML += '<div class="calendar-day empty"></div>';
+        dayCount++;
+    }
+    
+    document.getElementById('calendarDays').innerHTML = calendarHTML;
+    
+    // Automatically select 8 Januari 2026
+    if (!selectedCalendarDate) {
+        selectedCalendarDate = '2026-01-08';
+    }
+    renderCalendarDayDetail(selectedCalendarDate);
+}
+
+function selectCalendarDate(dateStr) {
+    selectedCalendarDate = dateStr;
+    renderCalendar();
+    renderCalendarDayDetail(dateStr);
+}
+
+function renderCalendarDayDetail(dateStr) {
+    var dayShows = calendarShows[dateStr] || [];
+    var date = new Date(dateStr);
+    var dayNames = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+    var monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
+                     'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+    
+    var dayName = dayNames[date.getDay()];
+    var formattedDate = dayName + ', ' + date.getDate() + ' ' + monthNames[date.getMonth()] + ' ' + date.getFullYear();
+    
+    document.getElementById('detailDate').textContent = formattedDate;
+    
+    var detailHTML = '';
+    if (dayShows.length === 0) {
+        detailHTML = '<div class="no-events">Tidak ada show pada tanggal ini</div>';
+    } else {
+        dayShows.forEach(function(show) {
+            var color = show.status === 'trainee' ? '#f59e0b' : '#22c55e';
+            detailHTML += '<div class="calendar-event" style="--event-color:' + color + '">' +
+                         '<div><span class="event-member">' + show.name + '</span>' +
+                         '<span class="event-setlist">' + show.setlist_name + '</span></div>' +
+                         '<div class="event-status ' + show.status + '">' + 
+                         (show.status === 'trainee' ? 'TRAINEE' : 'INTI') + '</div>' +
+                         '</div>';
+        });
+    }
+    
+    document.getElementById('detailEvents').innerHTML = detailHTML;
+    document.getElementById('detailEvents').className = dayShows.length === 0 ? 'no-events' : '';
+}
+
+function calendarPrevMonth() {
+    // Disable navigation - tetap di Januari 2026
+    showToast('Kalender hanya menampilkan Januari 2026', false);
+}
+
+function calendarNextMonth() {
+    // Disable navigation - tetap di Januari 2026
+    showToast('Kalender hanya menampilkan Januari 2026', false);
+}
+
+function calendarGoToday() {
+    // Tetap ke 8 Januari 2026
+    selectedCalendarDate = '2026-01-08';
+    renderCalendar();
+    renderCalendarDayDetail(selectedCalendarDate);
+    showToast('Kembali ke 8 Januari 2026', false);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    if(savedTheme==='dark'){
+        document.body.classList.add('dark');
+    }
+});
+</script>
+</body>
+</html>
