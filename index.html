@@ -12,12 +12,146 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:Arial,sans-serif;background:#f5f5f5;color:#333;min-height:100vh;padding-bottom:60px;transition:background 0.3s,color 0.3s}
 body.dark{background:#0a0e1a;color:#e5e7eb}
+
+/* Header */
 header{background:#e60012;text-align:center;padding:20px 60px 20px 20px;font-size:24px;font-weight:bold;color:#fff;position:relative;display:flex;align-items:center;justify-content:center}
 .theme-toggle{position:absolute;right:20px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.2);border:none;color:#fff;width:40px;height:40px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:8px;transition:all 0.3s}
 .theme-toggle:hover{background:rgba(255,255,255,0.3);transform:translateY(-50%) scale(1.1)}
 .theme-toggle svg{width:20px;height:20px;transition:transform 0.3s}
 .theme-toggle:hover svg{transform:rotate(20deg)}
 body.dark .theme-toggle{background:rgba(0,0,0,0.2)}
+
+/* Live Show Banner - SIMPLIFIED */
+.live-show-banner {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+    padding: 14px 20px;
+    margin: 0;
+    border-bottom: 3px solid #f59e0b;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.live-show-banner:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.live-show-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%);
+    animation: shimmer 3s infinite;
+    pointer-events: none;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.live-show-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.live-show-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+}
+
+.live-badge {
+    background: rgba(255,255,255,0.2);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.live-dot {
+    width: 8px;
+    height: 8px;
+    background: #fff;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.live-show-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+}
+
+.live-show-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.live-show-time {
+    font-size: 13px;
+    opacity: 0.9;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.live-show-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.see-detail-link {
+    color: #fbbf24;
+    font-size: 13px;
+    font-weight: bold;
+    text-decoration: none;
+    white-space: nowrap;
+    padding: 8px 16px;
+    border-radius: 20px;
+    transition: all 0.3s;
+    background: rgba(251,191,36,0.1);
+    border: 1px solid rgba(251,191,36,0.3);
+}
+
+.see-detail-link:hover {
+    background: rgba(251,191,36,0.2);
+    color: #f59e0b;
+    transform: translateX(4px);
+}
+
+/* Top section */
 .top{padding:15px 20px;background:#fff;border-bottom:1px solid #ddd;text-align:center;transition:background 0.3s,border-color 0.3s}
 body.dark .top{background:#1b1f3a;border-bottom:1px solid #2d3548}
 .search-box{display:inline-block;width:100%;max-width:400px;position:relative}
@@ -27,6 +161,8 @@ body.dark .search-box input{background:#0a0e1a;color:#e5e7eb;border-color:#66656
 .last-update{text-align:center;padding:8px;font-size:11px;color:#9ca3af;background:#fff;transition:background 0.3s;display:flex;align-items:center;justify-content:center;gap:6px}
 body.dark .last-update{background:#0a0e1a;color:#6b7280}
 .last-update .spinner{width:12px;height:12px;border-width:2px}
+
+/* Top member section */
 .top-member-section{padding:15px 20px;background:#fff;border-bottom:1px solid #ddd;transition:background 0.3s,border-color 0.3s}
 body.dark .top-member-section{background:#1b1f3a;border-bottom:1px solid #2d3548}
 .top-member-title{font-size:12px;font-weight:600;color:#6b7280;margin-bottom:8px;text-align:center}
@@ -44,6 +180,8 @@ body.dark .top-member-filter.setlist-pertaruhan{background:#900603;color:#fff}
 body.dark .top-member-filter.setlist-pajama{background:#00006d;color:#fff}
 body.dark .top-member-filter{background:#1f2937;color:#e5e7eb}
 body.dark .top-member-filter.active{border-color:#f87171}
+
+/* Filters */
 .filters{padding:15px 20px;background:#fff;border-bottom:1px solid #ddd;transition:background 0.3s,border-color 0.3s}
 body.dark .filters{background:#1b1f3a;border-bottom:1px solid #2d3548}
 .filter-section{margin-bottom:15px}
@@ -57,15 +195,20 @@ body.dark .filter-section-title{color:#9ca3af}
 body.dark .filter{background:#1f2937;color:#e5e7eb}
 body.dark .filter.active{background:#0a0e1a}
 body.dark .filter.gen-search{background:#4f46e5;color:#fff}
+
+/* Stats */
 .stats{text-align:center;padding:8px;font-size:12px;color:#9ca3af;background:#fff;transition:background 0.3s}
 body.dark .stats{background:#0a0e1a;color:#6b7280}
 .setlist-stats{text-align:center;padding:12px 20px;font-size:16px;font-weight:bold;color:#333;background:#fff;border-top:2px solid #f59e0b;display:none;margin:0;transition:background 0.3s,color 0.3s}
 body.dark .setlist-stats{background:#1b1f3a;color:#e5e7eb;border-top:2px solid #d97706}
+
+/* Container & Cards */
 .container{padding:20px;display:grid;gap:15px;max-width:1400px;margin:0 auto;width:100%}
 @media (max-width:767px){.container{grid-template-columns:repeat(4,1fr);gap:10px;padding:15px}}
 @media (min-width:768px) and (max-width:1023px){.container{grid-template-columns:repeat(8,1fr);gap:12px;padding:18px}}
 @media (min-width:1024px){.container{grid-template-columns:repeat(10,1fr);gap:15px;padding:20px}}
 @media (min-width:1200px){.container{grid-template-columns:repeat(12,1fr);gap:16px;padding:24px}}
+
 .card{background:#fff;border-radius:12px;overflow:hidden;text-align:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.1);transition:all 0.3s;display:flex;flex-direction:column;height:100%}
 .card:hover{transform:translateY(-4px);box-shadow:0 6px 16px rgba(0,0,0,0.15)}
 body.dark .card{background:#1b1f3a;box-shadow:0 2px 8px rgba(0,0,0,0.4)}
@@ -74,12 +217,14 @@ body.dark .card:hover{box-shadow:0 6px 16px rgba(0,0,0,0.6)}
 .card.setlist-card.rank-1{border-color:#f59e0b;box-shadow:0 0 15px rgba(245,158,11,0.3)}
 .card.setlist-card.rank-2{border-color:#9ca3af;box-shadow:0 0 10px rgba(156,163,175,0.2)}
 .card.setlist-card.rank-3{border-color:#d97706;box-shadow:0 0 8px rgba(217,119,6,0.2)}
+
 .avatar-container{width:100%;height:0;padding-bottom:133%;position:relative;overflow:hidden;background:#f0f0f0}
 body.dark .avatar-container{background:#0a0e1a}
 .avatar{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.3s}
 .card:hover .avatar{transform:scale(1.05)}
 .avatar-placeholder{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#f0f0f0,#e0e0e0);color:#9ca3af;font-size:14px;font-weight:bold}
 body.dark .avatar-placeholder{background:linear-gradient(135deg,#1f2937,#0a0e1a);color:#6b7280}
+
 .card-footer{padding:8px 6px;display:flex;flex-direction:column;flex-grow:1;min-height:80px;justify-content:space-between}
 .gen-badge{display:inline-block;background:rgba(0,0,0,0.3);color:#fff;font-size:9px;font-weight:bold;padding:2px 6px;border-radius:10px;margin-bottom:2px;letter-spacing:0.3px;align-self:center;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:90%}
 .name-container{margin:2px 0;min-height:28px;display:flex;align-items:center;justify-content:center}
@@ -90,18 +235,26 @@ body.dark .avatar-placeholder{background:linear-gradient(135deg,#1f2937,#0a0e1a)
 .bar span{display:block;height:100%;background:#fff;transition:width 0.5s ease}
 body.dark .bar{background:rgba(255,255,255,0.15)}
 body.dark .bar span{background:rgba(255,255,255,0.9)}
+
 .rank-badge{position:absolute;top:6px;left:6px;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:11px;z-index:2;box-shadow:0 2px 4px rgba(0,0,0,0.3)}
 .rank-badge.rank-1{background:#f59e0b;color:#000}
 .rank-badge.rank-2{background:#9ca3af;color:#fff}
 .rank-badge.rank-3{background:#d97706;color:#fff}
 .rank-badge.rank-4,.rank-badge.rank-5,.rank-badge.rank-6,.rank-badge.rank-7,.rank-badge.rank-8,.rank-badge.rank-9,.rank-badge.rank-10{background:#4b5563;color:#fff}
 .photo-setlist-badge{position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,0.85);color:#fff;font-size:8px;padding:2px 6px;border-radius:8px;z-index:2;font-weight:bold;letter-spacing:0.5px}
+
+/* Messages */
 .msg{grid-column:1/-1;text-align:center;padding:40px 20px;color:#9ca3af;font-size:14px}
 body.dark .msg{color:#6b7280}
 .loading{display:flex;align-items:center;justify-content:center;gap:8px;grid-column:1/-1;padding:60px 20px}
 @keyframes spin{to{transform:rotate(360deg)}}
 .spinner{display:inline-block;width:32px;height:32px;border:3px solid rgba(0,0,0,0.1);border-top-color:#f59e0b;border-radius:50%;animation:spin 0.8s linear infinite}
 body.dark .spinner{border-color:rgba(255,255,255,0.1);border-top-color:#f59e0b}
+.simple-message{grid-column:1/-1;text-align:center;padding:40px 20px;color:#6b7280;font-size:14px}
+body.dark .simple-message{color:#9ca3af}
+.simple-message .icon{font-size:32px;margin-bottom:12px;opacity:0.5}
+
+/* Modal */
 .modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:1000;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
 .modal-overlay.active{display:flex}
 .modal{background:#fff;border-radius:16px;padding:24px;max-width:420px;width:90%;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.3);animation:modalSlide 0.3s ease-out}
@@ -132,23 +285,52 @@ body.dark .modal-close:hover{background:#374151;color:#e5e7eb}
 .gen-option.gen-12{background:#fde047;color:#000}
 .gen-option.gen-13{background:#facc15;color:#000}
 .gen-option.gen-14{background:#e879f9;color:#fff}
+
+/* Responsive */
 @media (max-width:767px){
-.name{font-size:11px}
-.show-info{font-size:9px;margin:2px 0 5px 0}
-.gen-badge{font-size:8px;padding:1px 5px}
-.bar{height:3px}
-.rank-badge{width:20px;height:20px;font-size:10px}
-.photo-setlist-badge{font-size:7px;padding:1px 4px}
-.card-footer{padding:6px 4px;min-height:75px}
-.name-container{min-height:26px}
-header{position:sticky;top:0;z-index:100;padding:15px 50px 15px 15px;font-size:20px}
-.theme-toggle{width:35px;height:35px;right:15px}
-.top-member-filter{min-width:110px;padding:8px 12px;font-size:12px}
-.filter{min-width:100px;padding:8px 12px;font-size:12px}
+    .name{font-size:11px}
+    .show-info{font-size:9px;margin:2px 0 5px 0}
+    .gen-badge{font-size:8px;padding:1px 5px}
+    .bar{height:3px}
+    .rank-badge{width:20px;height:20px;font-size:10px}
+    .photo-setlist-badge{font-size:7px;padding:1px 4px}
+    .card-footer{padding:6px 4px;min-height:75px}
+    .name-container{min-height:26px}
+    header{position:sticky;top:0;z-index:100;padding:15px 50px 15px 15px;font-size:20px}
+    .theme-toggle{width:35px;height:35px;right:15px}
+    .top-member-filter{min-width:110px;padding:8px 12px;font-size:12px}
+    .filter{min-width:100px;padding:8px 12px;font-size:12px}
+    
+    /* Live show responsive */
+    .live-show-content {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+    
+    .live-show-left {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .live-show-info {
+        width: 100%;
+    }
+    
+    .live-show-title {
+        font-size: 14px;
+    }
+    
+    .live-show-time {
+        font-size: 12px;
+    }
+    
+    .live-show-right {
+        width: 100%;
+        justify-content: flex-end;
+    }
 }
-.simple-message{grid-column:1/-1;text-align:center;padding:40px 20px;color:#6b7280;font-size:14px}
-body.dark .simple-message{color:#9ca3af}
-.simple-message .icon{font-size:32px;margin-bottom:12px;opacity:0.5}
 </style>
 </head>
 <body>
@@ -161,6 +343,29 @@ JKT48 SHOW THEATER
 </button>
 </header>
 
+<!-- Live Show Banner - SIMPLIFIED -->
+<div class="live-show-banner" id="liveShowBanner" onclick="openLiveShowDetail()">
+    <div class="live-show-content">
+        <div class="live-show-left">
+            <div class="live-badge">
+                <span class="live-dot"></span>
+                LIVE NOW
+            </div>
+            <div class="live-show-info">
+                <h3 class="live-show-title" id="liveShowTitle">Loading live shows...</h3>
+                <div class="live-show-time" id="liveShowTime">-</div>
+            </div>
+        </div>
+        
+        <div class="live-show-right">
+            <div class="see-detail-link">
+                Lihat Detail →
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Existing Content -->
 <div class="top">
 <div class="search-box">
 <input type="text" id="searchInput" placeholder="Cari member..." oninput="searchMember()" aria-label="Cari member">
@@ -245,6 +450,8 @@ let searchQuery='';
 let isDataLoaded=false;
 let scrollSaveTimeout;
 let currentSetlistView=null;
+let currentLiveShowData=null;
+let liveShowRefreshInterval=null;
 
 function initializeTheme(){
 const savedTheme=localStorage.getItem('jkt48_theme')||'light';
@@ -280,6 +487,132 @@ localStorage.setItem('jkt48_theme','dark');
 icon.innerHTML='<path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/>';
 localStorage.setItem('jkt48_theme','light');
 }
+}
+
+async function checkLiveShows() {
+    try {
+        const now = new Date();
+        const today = now.toISOString().split('T')[0];
+        const currentHour = now.getHours();
+        const currentMinute = now.getMinutes();
+        
+        console.log('Checking live shows for:', today, 'Current time:', currentHour + ':' + currentMinute);
+        
+        const { data: shows, error } = await db
+            .from('setlist_performance')
+            .select('*')
+            .eq('show_date', today)
+            .order('show_time', { ascending: true });
+        
+        if (error) {
+            console.error('Error fetching live shows:', error);
+            return null;
+        }
+        
+        if (!shows || shows.length === 0) {
+            console.log('No shows found for today');
+            return null;
+        }
+        
+        const liveShows = shows.filter(show => {
+            if (!show.show_time) return false;
+            
+            const [showHour, showMinute] = show.show_time.split(':').map(Number);
+            const showTotalMinutes = showHour * 60 + (showMinute || 0);
+            const currentTotalMinutes = currentHour * 60 + currentMinute;
+            
+            return Math.abs(showTotalMinutes - currentTotalMinutes) <= 150;
+        });
+        
+        console.log('Live shows found:', liveShows.length);
+        
+        if (liveShows.length === 0) {
+            return null;
+        }
+        
+        
+        console.log('Live shows found:', liveShows.length);
+        
+        if (liveShows.length === 0) {
+            return null;
+        }
+        
+        const showsBySetlist = {};
+        liveShows.forEach(show => {
+            const setlistName = show.setlist_name;
+            if (!showsBySetlist[setlistName]) {
+                showsBySetlist[setlistName] = [];
+            }
+            showsBySetlist[setlistName].push(show);
+        });
+        
+        let largestSetlist = null;
+        let maxMembers = 0;
+        
+        Object.keys(showsBySetlist).forEach(setlistName => {
+            const memberCount = new Set(showsBySetlist[setlistName].map(s => s.name)).size;
+            if (memberCount > maxMembers) {
+                maxMembers = memberCount;
+                largestSetlist = {
+                    name: setlistName,
+                    shows: showsBySetlist[setlistName],
+                    memberCount: memberCount,
+                    earliestTime: getEarliestTime(showsBySetlist[setlistName])
+                };
+            }
+        });
+        
+        return largestSetlist;
+        
+    } catch (err) {
+        console.error('Error in checkLiveShows:', err);
+        return null;
+    }
+}
+
+function getEarliestTime(shows) {
+    if (!shows || shows.length === 0) return null;
+    
+    let earliest = shows[0].show_time;
+    shows.forEach(show => {
+        if (show.show_time && show.show_time < earliest) {
+            earliest = show.show_time;
+        }
+    });
+    
+    return earliest;
+}
+
+async function updateLiveShowBanner() {
+    const banner = document.getElementById('liveShowBanner');
+    const title = document.getElementById('liveShowTitle');
+    const timeElement = document.getElementById('liveShowTime');
+    
+    const liveShowData = await checkLiveShows();
+    currentLiveShowData = liveShowData;
+    
+    if (!liveShowData) {
+        banner.style.display = 'none';
+        return;
+    }
+    
+    banner.style.display = 'block';
+    title.textContent = liveShowData.name;
+    
+    if (liveShowData.earliestTime) {
+        const timeStr = liveShowData.earliestTime.slice(0, 5);
+        timeElement.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> ${timeStr} WIB`;
+    } else {
+        timeElement.textContent = 'Hari ini';
+    }
+}
+
+function openLiveShowDetail() {
+    if (!currentLiveShowData) return;
+    
+    const setlistName = encodeURIComponent(currentLiveShowData.name);
+    const today = new Date().toISOString().split('T')[0];
+    window.location.href = `liveshow.html?setlist=${setlistName}&date=${today}`;
 }
 
 function openGenModal(){
@@ -340,6 +673,7 @@ members=membersData||[];
 allMembersData=[...members];
 console.log('Data members loaded:',members.length,'members');
 await loadSetlistData();
+await updateLiveShowBanner();
 restoreState();
 if(members.length===0){
 document.getElementById('list').innerHTML='<div class="msg">Tidak ada data member</div>';
@@ -747,6 +1081,11 @@ saveCurrentState();
 document.addEventListener('DOMContentLoaded',function(){
 initializeTheme();
 loadData();
+    
+if (liveShowRefreshInterval) {
+clearInterval(liveShowRefreshInterval);
+}
+liveShowRefreshInterval = setInterval(updateLiveShowBanner, 60000);
 });
 </script>
 </body>

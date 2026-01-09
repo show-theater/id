@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live Show - JKT48 Show Theater</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Arial,sans-serif;background:#f5f5f5;color:#333;min-height:100vh;padding-bottom:60px;transition:background 0.3s,color 0.3s}
+body.dark{background:#0a0e1a;color:#e5e7eb}
+
+/* Header */
+.main-header{position:fixed;top:0;left:0;right:0;background:#fff;z-index:1001;border-bottom:1px solid #ddd;transition:background 0.3s,border-color 0.3s}
+body.dark .main-header{background:#111827;border-color:#1f2937}
+.theater-header{text-align:center;padding:10px 20px;font-size:14px;font-weight:bold;color:#333;letter-spacing:1px}
+body.dark .theater-header{color:#e5e7eb}
+.detail-header{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:#fff;border-top:1px solid #eee;border-bottom:1px solid #ddd;transition:background 0.3s,border-color 0.3s}
+body.dark .detail-header{background:#111827;border-color:#1f2937}
+.back-btn{background:transparent;border:none;color:#333;font-size:16px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;padding:8px 0;transition:all 0.3s}
+body.dark .back-btn{color:#e5e7eb}
+.back-btn:hover{opacity:0.7}
+.detail-title{font-size:16px;font-weight:bold;color:#333;text-align:center;flex:1}
+body.dark .detail-title{color:#e5e7eb}
+.header-controls{display:flex;align-items:center;gap:10px}
+.theme-toggle-detail{background:#e60012;border:none;width:40px;height:40px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:8px;transition:all 0.3s}
+.theme-toggle-detail:hover{background:#d5000f;transform:scale(1.1)}
+.theme-toggle-detail svg{width:100%;height:100%;color:#fff}
+
+/* Container */
+.container{max-width:800px;width:100%;margin:140px auto 30px;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.1);transition:background 0.3s,box-shadow 0.3s}
+body.dark .container{background:#111827;box-shadow:0 2px 8px rgba(0,0,0,0.4)}
+
+/* Live Show Header */
+.live-show-header{background:linear-gradient(135deg, #ef4444 0%, #dc2626 100%);padding:25px;text-align:center;position:relative;overflow:hidden}
+.live-show-header::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%);animation:shimmer 3s infinite;pointer-events:none}
+@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.live-badge-main{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.2);padding:8px 16px;border-radius:20px;font-size:14px;font-weight:bold;margin-bottom:15px;color:#fff}
+.live-dot-main{width:10px;height:10px;background:#fff;border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+.live-show-header h1{font-size:22px;font-weight:bold;color:#fff;margin:0 0 10px 0}
+.live-show-date-time{display:flex;align-items:center;justify-content:center;gap:15px;color:rgba(255,255,255,0.9);font-size:14px;flex-wrap:wrap}
+.live-show-date-time div{display:flex;align-items:center;gap:6px}
+.live-show-date-time svg{width:16px;height:16px;flex-shrink:0}
+
+/* Show Info */
+.show-info-section{padding:20px;border-bottom:1px solid #e5e7eb}
+body.dark .show-info-section{border-bottom-color:#374151}
+.show-info-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:15px;margin-bottom:20px}
+.show-info-item{background:#f9fafb;padding:15px;border-radius:12px;text-align:center}
+body.dark .show-info-item{background:#1f2937}
+.show-info-label{font-size:12px;color:#6b7280;margin-bottom:5px;font-weight:600}
+body.dark .show-info-label{color:#9ca3af}
+.show-info-value{font-size:18px;font-weight:bold;color:#333}
+body.dark .show-info-value{color:#e5e7eb}
+.show-description{margin-top:15px;padding:15px;background:#f0f9ff;border-radius:12px;border-left:4px solid #3b82f6}
+body.dark .show-description{background:rgba(59,130,246,0.1);border-left-color:#3b82f6}
+.show-description h3{font-size:14px;color:#1e40af;margin:0 0 8px 0}
+body.dark .show-description h3{color:#93c5fd}
+.show-description p{font-size:13px;color:#374151;margin:0;line-height:1.5}
+body.dark .show-description p{color:#d1d5db}
+
+/* Members Section */
+.members-section{padding:20px}
+.section-title{font-size:18px;font-weight:bold;color:#333;margin-bottom:15px;display:flex;align-items:center;gap:8px}
+body.dark .section-title{color:#e5e7eb}
+.members-count{background:#e60012;color:#fff;padding:2px 8px;border-radius:10px;font-size:12px;font-weight:bold}
+.members-grid{display:grid;grid-template-columns:repeat(auto-fill, minmax(120px, 1fr));gap:15px}
+.member-card{background:#fff;border-radius:12px;overflow:hidden;cursor:pointer;transition:all 0.3s;box-shadow:0 2px 4px rgba(0,0,0,0.1);border:2px solid transparent}
+body.dark .member-card{background:#1f2937;box-shadow:0 2px 4px rgba(0,0,0,0.3)}
+.member-card:hover{transform:translateY(-4px);box-shadow:0 6px 12px rgba(0,0,0,0.15);border-color:#e60012}
+.member-avatar{width:100%;aspect-ratio:3/4;overflow:hidden;background:#f0f0f0}
+body.dark .member-avatar{background:#0a0e1a}
+.member-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.member-info{padding:10px;text-align:center}
+.member-name{font-size:12px;font-weight:bold;color:#333;margin-bottom:4px;line-height:1.2}
+body.dark .member-name{color:#e5e7eb}
+.member-gen{font-size:10px;color:#6b7280;font-weight:600}
+body.dark .member-gen{color:#9ca3af}
+
+/* No Shows Message */
+.no-shows-message{text-align:center;padding:60px 20px;color:#6b7280}
+body.dark .no-shows-message{color:#9ca3af}
+.no-shows-icon{font-size:64px;margin-bottom:20px;opacity:0.5}
+.no-shows-title{font-size:18px;font-weight:bold;margin-bottom:10px}
+.no-shows-desc{font-size:14px;line-height:1.5;margin-bottom:30px}
+
+/* Loading */
+.loading{text-align:center;padding:80px 20px;color:#6b7280;display:flex;align-items:center;justify-content:center;gap:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner{display:inline-block;width:32px;height:32px;border:3px solid rgba(0,0,0,0.1);border-top-color:#9ca3af;border-radius:50%;animation:spin 0.8s linear infinite}
+body.dark .spinner{border-color:rgba(255,255,255,0.1);border-top-color:#9ca3af}
+
+/* Footer */
+.detail-footer{text-align:center;padding:12px;color:#6b7280;font-size:10px;border-top:1px solid #e5e7eb;margin-top:20px}
+body.dark .detail-footer{color:#9ca3af;border-top-color:#374151}
+
+/* Responsive */
+@media (max-width:600px){
+    .container{max-width:calc(100% - 20px);margin:120px 10px 15px;border-radius:16px}
+    .live-show-header{padding:20px 15px}
+    .live-show-header h1{font-size:18px}
+    .live-show-date-time{flex-direction:column;gap:8px;font-size:13px}
+    .show-info-grid{grid-template-columns:1fr;gap:10px}
+    .members-grid{grid-template-columns:repeat(auto-fill, minmax(100px, 1fr));gap:10px}
+    .member-name{font-size:11px}
+    .section-title{font-size:16px}
+}
+</style>
+<script>
+(function() {
+  const savedTheme = localStorage.getItem('jkt48_theme') || 'light';
+  if (savedTheme === 'dark') {
+    document.documentElement.classList.add('dark');
+  }
+})();
+</script>
+</head>
+<body>
+<header class="main-header">
+  <div class="theater-header">JKT48 SHOW THEATER</div>
+  <div class="detail-header">
+    <button onclick="goBack()" class="back-btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+      Kembali
+    </button>
+    <div class="detail-title">Live Show Detail</div>
+    <div class="header-controls">
+      <button class="theme-toggle-detail" onclick="toggleTheme()">
+        <svg id="themeIconDetail" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="container" id="container">
+  <div class="loading">
+    <div class="spinner"></div>
+    <span>Memuat detail show...</span>
+  </div>
+</div>
+
+<footer class="detail-footer">
+  <p>JKT48 Show Theater • Detail Live Show</p>
+</footer>
+
+<script>
+const SUPABASE_URL = "https://pprxfopqkvpeajeoxzig.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBwcnhmb3Bxa3ZwZWFqZW94emlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYyNTI4MTIsImV4cCI6MjA4MTgyODgxMn0.iXRO_dAHhtVHRLqGTresG_63RD2zIaopNXtXYNfthdg";
+
+const urlParams = new URLSearchParams(window.location.search);
+const SETLIST_NAME = decodeURIComponent(urlParams.get('setlist') || '');
+const SHOW_DATE = urlParams.get('date') || new Date().toISOString().split('T')[0];
+
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const GEN_COLORS = {
+  3: '#ec4899', 6: '#22c55e', 7: '#15803d', 8: '#1e40af',
+  9: '#06b6d4', 10: '#38bdf8', 11: '#f97316', 12: '#fde047',
+  13: '#facc15', 14: '#e879f9'
+};
+
+const SETLIST_DESCRIPTIONS = {
+  'Cara Meminum Ramune': 'Setlist segar seperti minuman ramune, penuh energi dan keceriaan.',
+  'Te Wo Tsunaginagara': 'Setlist tentang kebersamaan dan persahabatan.',
+  'Pertaruhan Cinta': 'Setlist romantis tentang cinta dan pengorbanan.',
+  'Pajama Drive': 'Setlist klasik untuk member trainee dengan konsep piyama party.'
+};
+
+let showData = [];
+let membersData = [];
+
+function initializeTheme() {
+  const savedTheme = localStorage.getItem('jkt48_theme') || 'light';
+  const icon = document.getElementById('themeIconDetail');
+  
+  if (savedTheme === 'dark') {
+    document.documentElement.classList.add('dark');
+    document.body.classList.add('dark');
+    if (icon) {
+      icon.innerHTML = '<path d="M12,17a5,5,0,1,1,5-5A5,5,0,0,1,12,17Zm0-8a3,3,0,1,0,3,3A3,3,0,0,0,12,9Zm0-4a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41L6.34,5A1,1,0,0,0,4.93,6.34ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm.64,5.66a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71a1,1,0,0,0-1.41-1.41ZM12,19a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19Zm6.36-2.34a1,1,0,0,0-1.41,1.41l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-3.64-3.95a1,1,0,0,0,.7.29,1,1,0,0,0,.71-1.7l-.71-.71a1,1,0,0,0-1.41,1.41Z"/>';
+    }
+  } else {
+    document.documentElement.classList.remove('dark');
+    document.body.classList.remove('dark');
+    if (icon) {
+      icon.innerHTML = '<path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/>';
+    }
+  }
+}
+
+function toggleTheme() {
+  const body = document.body;
+  const icon = document.getElementById('themeIconDetail');
+  const html = document.documentElement;
+  
+  body.classList.toggle('dark');
+  html.classList.toggle('dark');
+  
+  if (body.classList.contains('dark')) {
+    icon.innerHTML = '<path d="M12,17a5,5,0,1,1,5-5A5,5,0,0,1,12,17Zm0-8a3,3,0,1,0,3,3A3,3,0,0,0,12,9Zm0-4a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41L6.34,5A1,1,0,0,0,4.93,6.34ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm.64,5.66a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71a1,1,0,0,0-1.41-1.41ZM12,19a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19Zm6.36-2.34a1,1,0,0,0-1.41,1.41l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-3.64-3.95a1,1,0,0,0,.7.29,1,1,0,0,0,.71-1.7l-.71-.71a1,1,0,0,0-1.41,1.41Z"/>';
+    localStorage.setItem('jkt48_theme', 'dark');
+  } else {
+    icon.innerHTML = '<path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/>';
+    localStorage.setItem('jkt48_theme', 'light');
+  }
+}
+
+async function loadData() {
+  if (!SETLIST_NAME) {
+    showError('Setlist tidak ditemukan');
+    return;
+  }
+
+  try {
+    // Load shows data
+    const { data: shows, error: showsError } = await db
+      .from('setlist_performance')
+      .select('*')
+      .eq('setlist_name', SETLIST_NAME)
+      .eq('show_date', SHOW_DATE)
+      .order('show_time', { ascending: true });
+
+    if (showsError) throw showsError;
+    
+    showData = shows || [];
+    
+    if (showData.length === 0) {
+      showNoShowsMessage();
+      return;
+    }
+
+    // Get unique member names
+    const memberNames = [...new Set(showData.map(show => show.name))];
+    
+    // Load member details
+    const { data: members, error: membersError } = await db
+      .from('members')
+      .select('*')
+      .in('name', memberNames);
+
+    if (membersError) throw membersError;
+    
+    membersData = members || [];
+    
+    renderPage();
+    
+  } catch (err) {
+    console.error('Error:', err);
+    showError('Gagal memuat data. Coba refresh halaman.');
+  }
+}
+
+function renderPage() {
+  // Get show times
+  const showTimes = [...new Set(showData.map(show => show.show_time))].sort();
+  const earliestTime = showTimes[0] ? showTimes[0].slice(0, 5) : '-';
+  const latestTime = showTimes.length > 1 ? showTimes[showTimes.length - 1].slice(0, 5) : earliestTime;
+  
+  // Format date
+  const date = new Date(SHOW_DATE);
+  const dayNames = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+  const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
+                     'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+  const formattedDate = `${dayNames[date.getDay()]}, ${date.getDate()} ${monthNames[date.getMonth()]} ${date.getFullYear()}`;
+  
+  // Get setlist description
+  const setlistDescription = SETLIST_DESCRIPTIONS[SETLIST_NAME] || 'Setlist khusus JKT48 Theater';
+  
+  document.getElementById('container').innerHTML = `
+    <div class="live-show-header">
+      <div class="live-badge-main">
+        <span class="live-dot-main"></span>
+        LIVE NOW
+      </div>
+      <h1>${SETLIST_NAME}</h1>
+      <div class="live-show-date-time">
+        <div>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          ${formattedDate}
+        </div>
+        <div>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          ${earliestTime} ${showTimes.length > 1 ? `- ${latestTime}` : ''} WIB
+        </div>
+      </div>
+    </div>
+    
+    <div class="show-info-section">
+      <div class="show-info-grid">
+        <div class="show-info-item">
+          <div class="show-info-label">TOTAL SHOW</div>
+          <div class="show-info-value">${showData.length}</div>
+        </div>
+        <div class="show-info-item">
+          <div class="show-info-label">JUMLAH MEMBER</div>
+          <div class="show-info-value">${membersData.length}</div>
+        </div>
+        <div class="show-info-item">
+          <div class="show-info-label">WAKTU SHOW</div>
+          <div class="show-info-value">${showTimes.length} sesi</div>
+        </div>
+      </div>
+      
+      <div class="show-description">
+        <h3>Tentang Setlist</h3>
+        <p>${setlistDescription}</p>
+      </div>
+    </div>
+    
+    <div class="members-section">
+      <div class="section-title">
+        <span>Member yang Tampil</span>
+        <span class="members-count">${membersData.length}</span>
+      </div>
+      
+      <div class="members-grid" id="membersGrid">
+        ${renderMembersGrid()}
+      </div>
+    </div>
+  `;
+}
+
+function renderMembersGrid() {
+  if (membersData.length === 0) {
+    return '<div class="no-shows-message">Tidak ada data member</div>';
+  }
+  
+  return membersData.map(member => {
+    const memberShows = showData.filter(show => show.name === member.name);
+    const showCount = memberShows.length;
+    const earliestShow = memberShows[0] ? memberShows[0].show_time.slice(0, 5) : '-';
+    
+    return `
+      <div class="member-card" onclick="openMemberPage('${member.name}')">
+        <div class="member-avatar">
+          <img src="img/${member.name.toLowerCase()}.jpg" 
+               alt="${member.name}"
+               loading="lazy"
+               onerror="this.onerror=null; this.style.display='none'; this.parentNode.style.background='linear-gradient(135deg, ${GEN_COLORS[member.gen] || '#6366f1'}, ${adjustColor(GEN_COLORS[member.gen] || '#6366f1', -20)})'; this.parentNode.innerHTML='<div style=\\'width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:white;font-size:24px;font-weight:bold\\'>${member.name.charAt(0)}</div>'">
+        </div>
+        <div class="member-info" style="border-top: 3px solid ${GEN_COLORS[member.gen] || '#6366f1'}">
+          <div class="member-name">${member.name}</div>
+          <div class="member-gen">Gen ${member.gen} • ${showCount} show</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function adjustColor(color, amount) {
+  const num = parseInt(color.replace('#', ''), 16);
+  const r = Math.max(0, Math.min(255, (num >> 16) + amount));
+  const g = Math.max(0, Math.min(255, ((num >> 8) & 0x00FF) + amount));
+  const b = Math.max(0, Math.min(255, (num & 0x0000FF) + amount));
+  return '#' + ((r << 16) | (g << 8) | b).toString(16).padStart(6, '0');
+}
+
+function openMemberPage(memberName) {
+  window.location.href = 'show.html?member=' + encodeURIComponent(memberName);
+}
+
+function showNoShowsMessage() {
+  document.getElementById('container').innerHTML = `
+    <div class="no-shows-message">
+      <div class="no-shows-icon">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+      </div>
+      <div class="no-shows-title">Tidak Ada Show</div>
+      <div class="no-shows-desc">
+        Tidak ada show untuk setlist "${SETLIST_NAME}" pada tanggal ${formatDate(SHOW_DATE)}.
+      </div>
+      <button onclick="goBack()" style="background:#e60012;color:#fff;border:none;border-radius:12px;padding:12px 24px;font-size:14px;font-weight:600;cursor:pointer">
+        Kembali ke Beranda
+      </button>
+    </div>
+  `;
+}
+
+function showError(message) {
+  document.getElementById('container').innerHTML = `
+    <div class="no-shows-message">
+      <div class="no-shows-icon">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+      </div>
+      <div class="no-shows-title">Error</div>
+      <div class="no-shows-desc">${message}</div>
+      <button onclick="goBack()" style="background:#e60012;color:#fff;border:none;border-radius:12px;padding:12px 24px;font-size:14px;font-weight:600;cursor:pointer">
+        Kembali ke Beranda
+      </button>
+    </div>
+  `;
+}
+
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  const options = { day: 'numeric', month: 'long', year: 'numeric' };
+  return date.toLocaleDateString('id-ID', options);
+}
+
+function goBack() {
+  if (window.history.length > 1) {
+    window.history.back();
+  } else {
+    window.location.href = 'index.html';
+  }
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  initializeTheme();
+  loadData();
+});
+</script>
+</body>
+</html>
