@@ -63,7 +63,9 @@ body.dark .show-time{color:#9ca3af}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.7}}
 .live-dot{width:6px;height:6px;background:#fff;border-radius:50%;animation:blink 1s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
-.badge-container{display:flex;gap:6px;align-items:center}
+.birthday-badge{background:linear-gradient(135deg,#ec4899,#be185d);color:#fff;padding:6px 12px;border-radius:15px;font-size:11px;font-weight:bold;display:flex;align-items:center;gap:4px;box-shadow:0 2px 4px rgba(236,72,153,0.4);animation:birthday-glow 2s ease-in-out infinite}
+@keyframes birthday-glow{0%,100%{box-shadow:0 2px 4px rgba(236,72,153,0.4)}50%{box-shadow:0 4px 12px rgba(236,72,153,0.6)}}
+.badge-container{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .show-setlist{font-size:14px;color:#6b7280;margin-bottom:8px;font-weight:600}
 body.dark .show-setlist{color:#9ca3af}
 .empty-state{text-align:center;padding:60px 20px;color:#6b7280}
@@ -87,7 +89,7 @@ body.dark .skeleton-card{background:#374151}
   .container{max-width:calc(100% - 20px);margin:120px 10px 15px;border-radius:16px}
   .member-info{padding:16px}
   .member-name{font-size:20px;margin-bottom:12px}
-  .member-stats{gap:30px}
+  .member-stats{gap:20px;flex-wrap:wrap}
   .stat-number{font-size:24px}
   .stat-label{font-size:11px}
   .filter-section{padding:12px 16px}
@@ -160,6 +162,7 @@ const GEN_COLORS = {
 let memberData = null;
 let showsData = [];
 let currentFilter = 'all';
+let birthdayShowCount = 0;
 
 function initializeTheme() {
   const savedTheme = localStorage.getItem('jkt48_theme') || 'light';
@@ -232,6 +235,10 @@ async function loadData() {
     
     showsData = shows || [];
     
+    birthdayShowCount = showsData.filter(s => 
+      s.is_birthday_show && s.birthday_member === memberData.name
+    ).length;
+    
     renderPage();
     
   } catch (err) {
@@ -262,6 +269,10 @@ function renderPage() {
           <div class="stat-label">TOTAL SHOW</div>
         </div>
         <div class="stat-item">
+          <div class="stat-number">${birthdayShowCount}</div>
+          <div class="stat-label">BIRTHDAY SHOW</div>
+        </div>
+        <div class="stat-item">
           <div class="stat-number">${setlists.length}</div>
           <div class="stat-label">JENIS SETLIST</div>
         </div>
@@ -272,6 +283,11 @@ function renderPage() {
       <button class="filter-btn ${currentFilter === 'all' ? 'active' : ''}" onclick="filterShows('all')">
         Semua (${showsData.length})
       </button>
+      ${birthdayShowCount > 0 ? `
+        <button class="filter-btn ${currentFilter === 'birthday' ? 'active' : ''}" onclick="filterShows('birthday')">
+          🎂 Birthday (${birthdayShowCount})
+        </button>
+      ` : ''}
       ${setlists.map(setlist => {
         const count = showsData.filter(s => s.setlist_name === setlist).length;
         return `<button class="filter-btn ${currentFilter === setlist ? 'active' : ''}" onclick="filterShows('${setlist}')">${setlist} (${count})</button>`;
@@ -287,22 +303,24 @@ function renderPage() {
 function renderShowList() {
   let filtered = showsData;
   
-  if (currentFilter !== 'all') {
+  if (currentFilter === 'birthday') {
+    filtered = showsData.filter(s => 
+      s.is_birthday_show && s.birthday_member === memberData.name
+    );
+  } else if (currentFilter !== 'all') {
     filtered = showsData.filter(s => s.setlist_name === currentFilter);
   }
   
-  // Buat array yang sudah diurutkan dari terlama ke terbaru untuk show yang difilter
   const sortedFilteredShows = [...filtered].sort((a, b) => {
     const dateA = new Date(a.show_date + ' ' + a.show_time);
     const dateB = new Date(b.show_date + ' ' + b.show_time);
-    return dateA - dateB; // Terlama ke terbaru untuk penomoran
+    return dateA - dateB;
   });
   
-  // Buat array untuk tampilan (terbaru ke terlama)
   const showsForDisplay = [...filtered].sort((a, b) => {
     const dateA = new Date(a.show_date + ' ' + a.show_time);
     const dateB = new Date(b.show_date + ' ' + b.show_time);
-    return dateB - dateA; // Terbaru ke terlama untuk tampilan
+    return dateB - dateA;
   });
   
   if (filtered.length === 0) {
@@ -320,6 +338,8 @@ function renderShowList() {
         <div class="empty-desc">
           ${currentFilter === 'all' 
             ? 'Belum ada riwayat show yang tercatat untuk member ini' 
+            : currentFilter === 'birthday'
+            ? 'Belum ada birthday show untuk member ini'
             : `Belum ada show dengan setlist "${currentFilter}"`
           }
         </div>
@@ -332,12 +352,9 @@ function renderShowList() {
       ${showsForDisplay.map((show, index) => {
         const date = show.show_date ? formatDate(show.show_date) : 'Tanggal tidak tersedia';
         const time = show.show_time ? formatTime(show.show_time) : null;
-        
-        // Cari nomor show berdasarkan urutan kronologis dari terlama ke terbaru
-        // untuk setlist yang aktif (filtered)
         const showNumber = sortedFilteredShows.findIndex(s => s.id === show.id) + 1;
-        
         const isLive = isShowLive(show.show_date, show.show_time);
+        const isMemberBirthday = show.is_birthday_show && show.birthday_member === memberData.name;
         
         return `
           <div class="show-card">
@@ -361,10 +378,17 @@ function renderShowList() {
                     LIVE
                   </div>
                 ` : ''}
+                ${isMemberBirthday ? `
+                  <div class="birthday-badge">
+                    🎂 STS
+                  </div>
+                ` : ''}
                 <div class="show-badge">#${showNumber}</div>
               </div>
             </div>
-            <div class="show-setlist">${show.setlist_name}</div>
+            <div class="show-setlist">
+              ${show.setlist_name}${show.is_birthday_show && show.birthday_member ? ` (STS ${show.birthday_member})` : ''}
+            </div>
           </div>
         `;
       }).join('')}
@@ -392,7 +416,6 @@ function formatDate(dateString) {
 function formatTime(timeString) {
   if (!timeString) return null;
   
-  // Handle both HH:MM:SS and HH:MM formats
   const parts = timeString.split(':');
   const hours = parts[0];
   const minutes = parts[1];
@@ -406,20 +429,15 @@ function isShowLive(showDate, showTime) {
   const now = new Date();
   const showDateTime = new Date(showDate);
   
-  // Parse show time
   const timeParts = showTime.split(':');
   const showHours = parseInt(timeParts[0]);
   const showMinutes = parseInt(timeParts[1]);
   
   showDateTime.setHours(showHours, showMinutes, 0, 0);
   
-  // Calculate time difference in minutes
   const diffMs = now - showDateTime;
   const diffMins = Math.floor(diffMs / 60000);
   
-  // Consider live if:
-  // - Show started within last 30 minutes and hasn't passed 3 hours
-  // (Assuming average show duration is ~2-3 hours)
   return diffMins >= -5 && diffMins <= 180;
 }
 

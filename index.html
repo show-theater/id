@@ -23,7 +23,6 @@ body.dark .theme-toggle{background:rgba(0,0,0,0.2)}
 
 /* Live Show Banner - SIMPLIFIED */
 .live-show-banner {
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
     color: white;
     padding: 14px 20px;
     margin: 0;
@@ -36,9 +35,8 @@ body.dark .theme-toggle{background:rgba(0,0,0,0.2)}
 }
 
 .live-show-banner:hover {
-    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .live-show-banner::before {
@@ -56,6 +54,28 @@ body.dark .theme-toggle{background:rgba(0,0,0,0.2)}
 @keyframes shimmer {
     0% { transform: translateX(-100%); }
     100% { transform: translateX(100%); }
+}
+
+/* LIVE NOW Styling */
+.live-show-banner.live-now {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    border-bottom-color: #f59e0b;
+}
+
+.live-show-banner.live-now:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+/* UPCOMING Styling */
+.live-show-banner.upcoming {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    border-bottom-color: #60a5fa;
+}
+
+.live-show-banner.upcoming:hover {
+    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
 .live-show-content {
@@ -145,10 +165,21 @@ body.dark .theme-toggle{background:rgba(0,0,0,0.2)}
     border: 1px solid rgba(251,191,36,0.3);
 }
 
+.live-show-banner.upcoming .see-detail-link {
+    color: #93c5fd;
+    background: rgba(147, 197, 253, 0.1);
+    border: 1px solid rgba(147, 197, 253, 0.3);
+}
+
 .see-detail-link:hover {
     background: rgba(251,191,36,0.2);
     color: #f59e0b;
     transform: translateX(4px);
+}
+
+.live-show-banner.upcoming .see-detail-link:hover {
+    background: rgba(147, 197, 253, 0.2);
+    color: #60a5fa;
 }
 
 /* Top section */
@@ -345,9 +376,9 @@ JKT48 SHOW THEATER
 <div class="live-show-banner" id="liveShowBanner" onclick="openLiveShowDetail()">
     <div class="live-show-content">
         <div class="live-show-left">
-            <div class="live-badge">
+            <div class="live-badge" id="liveBadge">
                 <span class="live-dot"></span>
-                LIVE NOW
+                <span id="liveStatusText">LIVE NOW</span>
             </div>
             <div class="live-show-info">
                 <h3 class="live-show-title" id="liveShowTitle">Loading live shows...</h3>
@@ -438,6 +469,14 @@ const SUPABASE_URL="https://pprxfopqkvpeajeoxzig.supabase.co";
 const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBwcnhmb3Bxa3ZwZWFqZW94emlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYyNTI4MTIsImV4cCI6MjA4MTgyODgxMn0.iXRO_dAHhtVHRLqGTresG_63RD2zIaopNXtXYNfthdg";
 const GEN_COLORS={3:'#ec4899',6:'#22c55e',7:'#15803d',8:'#1e40af',9:'#06b6d4',10:'#38bdf8',11:'#f97316',12:'#fde047',13:'#facc15',14:'#e879f9'};
 const SETLIST_DATA={ramune:{id:'ramune',title:'Cara Meminum Ramune',members:{}},tte:{id:'tte',title:'Te Wo Tsunaginagara',members:{}},pertaruhan:{id:'pertaruhan',title:'Pertaruhan Cinta',members:{}},pajama:{id:'pajama',title:'Pajama Drive',members:{}}};
+
+// TIME CONFIGURATION
+const TIME_CONFIG = {
+    LIVE_BEFORE: 5,      // 5 menit sebelum = LIVE
+    LIVE_AFTER: 150,     // 150 menit sesudah = LIVE (2.5 jam show)
+    UPCOMING_BEFORE: 15  // 15 menit sebelum = UPCOMING
+};
+
 const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 let members=[];
 let allMembersData=[];
@@ -494,9 +533,9 @@ async function checkLiveShows() {
         const currentMinute = now.getMinutes();
         const currentTotalMinutes = currentHour * 60 + currentMinute;
         
-        console.log('Checking live shows for:', today, 'Current time:', currentHour + ':' + currentMinute, 'Total minutes:', currentTotalMinutes);
+        console.log('Checking shows for:', today, 'Current time:', currentHour + ':' + currentMinute);
         
-        // Ambil data show untuk hari ini
+        // Ambil semua show untuk hari ini
         const { data: shows, error } = await db
             .from('setlist_performance')
             .select('*')
@@ -504,86 +543,85 @@ async function checkLiveShows() {
             .order('show_time', { ascending: true });
         
         if (error) {
-            console.error('Error fetching live shows:', error);
+            console.error('Error fetching shows:', error);
             return null;
         }
-        
-        console.log('Shows found for today:', shows?.length || 0);
         
         if (!shows || shows.length === 0) {
-            console.log('No shows found for today');
             return null;
         }
         
-        // Debug: tampilkan semua show yang ditemukan
-        shows.forEach(show => {
-            const [showHour, showMinute] = show.show_time ? show.show_time.split(':').map(Number) : [0, 0];
-            const showTotalMinutes = showHour * 60 + (showMinute || 0);
-            console.log(`Show: ${show.setlist_name} at ${show.show_time || 'No time'} (${showTotalMinutes} minutes)`);
-        });
+        // Kategorisasi show
+        const liveShows = [];
+        const upcomingShows = [];
         
-        // Cari show yang sedang live atau akan segera dimulai
-        const liveShows = shows.filter(show => {
-            if (!show.show_time) return false;
+        shows.forEach(show => {
+            if (!show.show_time) return;
             
             const [showHour, showMinute] = show.show_time.split(':').map(Number);
             const showTotalMinutes = showHour * 60 + (showMinute || 0);
-            
-            // PERUBAHAN DI SINI:
-            // - 5 menit sebelum show (akan dimulai)
-            // - 150 menit setelah show (sedang berlangsung, asumsi show 2.5 jam)
             const timeDiff = showTotalMinutes - currentTotalMinutes;
-            return timeDiff >= -5 && timeDiff <= 150; // 5 menit sebelum, 150 menit sesudah
-        });
-        
-        console.log('Live shows found:', liveShows.length);
-        
-        if (liveShows.length === 0) {
-            console.log('No shows within live time range');
-            return null;
-        }
-        
-        // Kelompokkan berdasarkan setlist
-        const showsBySetlist = {};
-        liveShows.forEach(show => {
-            const setlistName = show.setlist_name || 'Unknown Setlist';
-            if (!showsBySetlist[setlistName]) {
-                showsBySetlist[setlistName] = [];
-            }
-            showsBySetlist[setlistName].push(show);
-        });
-        
-        console.log('Shows grouped by setlist:', Object.keys(showsBySetlist));
-        
-        // Cari setlist dengan member terbanyak
-        let largestSetlist = null;
-        let maxMembers = 0;
-        
-        Object.keys(showsBySetlist).forEach(setlistName => {
-            const memberCount = new Set(showsBySetlist[setlistName].map(s => s.name)).size;
-            console.log(`Setlist ${setlistName}: ${memberCount} members`);
             
-            if (memberCount > maxMembers) {
-                maxMembers = memberCount;
-                largestSetlist = {
-                    name: setlistName,
-                    shows: showsBySetlist[setlistName],
-                    memberCount: memberCount,
-                    earliestTime: getEarliestTime(showsBySetlist[setlistName])
-                };
+            // LIVE: -5 to 150 menit
+            if (timeDiff >= -TIME_CONFIG.LIVE_BEFORE && timeDiff <= TIME_CONFIG.LIVE_AFTER) {
+                liveShows.push(show);
+            }
+            // UPCOMING: tepat 15 menit sebelum
+            else if (timeDiff > 0 && timeDiff <= TIME_CONFIG.UPCOMING_BEFORE) {
+                upcomingShows.push(show);
             }
         });
         
-        if (largestSetlist) {
-            console.log('Selected setlist for banner:', largestSetlist.name);
+        console.log('Live shows found:', liveShows.length, 'Upcoming shows found:', upcomingShows.length);
+        
+        // Prioritaskan LIVE dulu, baru UPCOMING
+        if (liveShows.length > 0) {
+            return prepareShowData(liveShows, 'live');
+        } else if (upcomingShows.length > 0) {
+            return prepareShowData(upcomingShows, 'upcoming');
         }
         
-        return largestSetlist;
+        return null;
         
     } catch (err) {
         console.error('Error in checkLiveShows:', err);
         return null;
     }
+}
+
+function prepareShowData(shows, status) {
+    // Kelompokkan berdasarkan setlist
+    const showsBySetlist = {};
+    shows.forEach(show => {
+        const setlistName = show.setlist_name || 'Unknown Setlist';
+        if (!showsBySetlist[setlistName]) {
+            showsBySetlist[setlistName] = [];
+        }
+        showsBySetlist[setlistName].push(show);
+    });
+    
+    // Cari setlist dengan member terbanyak
+    let bestSetlist = null;
+    let maxMembers = 0;
+    
+    Object.keys(showsBySetlist).forEach(setlistName => {
+        const memberCount = new Set(showsBySetlist[setlistName].map(s => s.name)).size;
+        
+        if (memberCount > maxMembers) {
+            maxMembers = memberCount;
+            bestSetlist = {
+                name: setlistName,
+                shows: showsBySetlist[setlistName],
+                memberCount: memberCount,
+                earliestTime: getEarliestTime(showsBySetlist[setlistName]),
+                status: status,  // 'live' atau 'upcoming'
+                isBirthdayShow: showsBySetlist[setlistName][0]?.is_birthday_show || false,
+                birthdayMember: showsBySetlist[setlistName][0]?.birthday_member || null
+            };
+        }
+    });
+    
+    return bestSetlist;
 }
 
 function getEarliestTime(shows) {
@@ -599,37 +637,82 @@ function getEarliestTime(shows) {
     return earliest;
 }
 
+function calculateTimeUntil(showTime) {
+    const now = new Date();
+    const currentTotalMinutes = now.getHours() * 60 + now.getMinutes();
+    
+    const [showHour, showMinute] = showTime.split(':').map(Number);
+    const showTotalMinutes = showHour * 60 + (showMinute || 0);
+    
+    const diffMinutes = showTotalMinutes - currentTotalMinutes;
+    
+    if (diffMinutes <= 5) {
+        return 'sebentar lagi';
+    } else if (diffMinutes < 60) {
+        return `dalam ${diffMinutes} menit`;
+    } else {
+        const hours = Math.floor(diffMinutes / 60);
+        const minutes = diffMinutes % 60;
+        return minutes > 0 ? `dalam ${hours} jam ${minutes} menit` : `dalam ${hours} jam`;
+    }
+}
+
 async function updateLiveShowBanner() {
     const banner = document.getElementById('liveShowBanner');
     const title = document.getElementById('liveShowTitle');
     const timeElement = document.getElementById('liveShowTime');
+    const statusText = document.getElementById('liveStatusText');
     
     try {
-        const liveShowData = await checkLiveShows();
-        currentLiveShowData = liveShowData;
+        const showData = await checkLiveShows();
+        currentLiveShowData = showData;
         
-        if (!liveShowData) {
-            console.log('No live show data found, hiding banner');
+        if (!showData) {
             banner.style.display = 'none';
             return;
         }
         
-        console.log('Displaying live show banner for:', liveShowData.name);
-        
         banner.style.display = 'block';
-        title.textContent = liveShowData.name;
         
-        if (liveShowData.earliestTime) {
-            const timeStr = liveShowData.earliestTime.slice(0, 5);
-            timeElement.innerHTML = `
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <polyline points="12 6 12 12 16 14"></polyline>
-                </svg> 
-                ${timeStr} WIB • ${liveShowData.memberCount} members
-            `;
+        // Update class dan styling berdasarkan status
+        banner.className = 'live-show-banner ' + (showData.status === 'live' ? 'live-now' : 'upcoming');
+        
+        // Update status text
+        statusText.textContent = showData.status === 'live' ? 'LIVE NOW' : 'UPCOMING';
+        
+        // Tampilkan title dengan info birthday
+        let displayTitle = showData.name;
+        if (showData.isBirthdayShow && showData.birthdayMember) {
+            displayTitle += ` (STS ${showData.birthdayMember})`;
+        }
+        title.textContent = displayTitle;
+        
+        // Tampilkan waktu sesuai status
+        if (showData.earliestTime) {
+            const timeStr = showData.earliestTime.slice(0, 5);
+            
+            if (showData.status === 'live') {
+                timeElement.innerHTML = `
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg> 
+                    ${timeStr} WIB • ${showData.memberCount} members
+                `;
+            } else if (showData.status === 'upcoming') {
+                const timeUntil = calculateTimeUntil(showData.earliestTime);
+                timeElement.innerHTML = `
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg> 
+                    ${timeStr} WIB • Mulai ${timeUntil} • ${showData.memberCount} members
+                `;
+            }
         } else {
-            timeElement.textContent = `Hari ini • ${liveShowData.memberCount} members`;
+            timeElement.textContent = showData.status === 'live' 
+                ? `Hari ini • ${showData.memberCount} members`
+                : `Akan dimulai • ${showData.memberCount} members`;
         }
         
     } catch (err) {
@@ -1116,7 +1199,8 @@ loadData();
 if (liveShowRefreshInterval) {
 clearInterval(liveShowRefreshInterval);
 }
-liveShowRefreshInterval = setInterval(updateLiveShowBanner, 60000);
+// Update banner setiap 30 detik
+liveShowRefreshInterval = setInterval(updateLiveShowBanner, 30000);
 });
 </script>
 </body>

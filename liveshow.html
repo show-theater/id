@@ -41,6 +41,27 @@ body.dark .container{background:#111827;box-shadow:0 2px 8px rgba(0,0,0,0.4)}
 .live-badge-main{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.2);padding:8px 16px;border-radius:20px;font-size:14px;font-weight:bold;margin-bottom:15px;color:#fff}
 .live-dot-main{width:10px;height:10px;background:#fff;border-radius:50%;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+
+/* Birthday Badge in Header */
+.birthday-badge-header {
+    background: rgba(255,255,255,0.2);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 15px;
+    font-size: 13px;
+    font-weight: bold;
+    margin-top: 10px;
+    color: #fff;
+    animation: birthday-glow-header 2s ease-in-out infinite;
+}
+
+@keyframes birthday-glow-header {
+    0%, 100% { box-shadow: 0 0 10px rgba(255,255,255,0.3); }
+    50% { box-shadow: 0 0 20px rgba(255,255,255,0.5); }
+}
+
 .live-show-header h1{font-size:22px;font-weight:bold;color:#fff;margin:0 0 15px 0;line-height:1.3;padding:0 10px}
 .live-show-date-time{display:flex;align-items:center;justify-content:center;gap:20px;color:rgba(255,255,255,0.9);font-size:14px;flex-wrap:wrap}
 .live-show-date-time div{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center}
@@ -65,6 +86,35 @@ body.dark .member-name{color:#e5e7eb}
 .member-gen{font-size:10px;color:#6b7280;font-weight:600;line-height:1.2}
 body.dark .member-gen{color:#9ca3af}
 
+/* Birthday Member Card */
+.birthday-member-card {
+    border: 2px solid #f59e0b;
+    position: relative;
+    overflow: visible;
+}
+
+.birthday-member-card::before {
+    content: '🎂';
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: #f59e0b;
+    color: #000;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    z-index: 2;
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.5);
+}
+
+.birthday-member-card .member-info {
+    border-top: 3px solid #f59e0b;
+}
+
 /* No Shows Message */
 .no-shows-message{text-align:center;padding:60px 20px;color:#6b7280}
 body.dark .no-shows-message{color:#9ca3af}
@@ -83,7 +133,6 @@ body.dark .spinner{border-color:rgba(255,255,255,0.1);border-top-color:#9ca3af}
 body.dark .detail-footer{color:#9ca3af;border-top-color:#374151}
 
 /* Responsive Breakpoints */
-/* Tablet */
 @media (max-width:1024px){
     .container{max-width:90%;margin:130px auto 25px}
 }
@@ -125,6 +174,20 @@ body.dark .detail-footer{color:#9ca3af;border-top-color:#374151}
     .detail-title{font-size:14px;margin:0 5px}
     .theme-toggle-detail{width:36px;height:36px}
     .theater-header{font-size:13px;padding:8px 15px}
+    
+    .birthday-badge-header {
+        font-size: 12px;
+        padding: 5px 12px;
+        margin-top: 8px;
+    }
+    
+    .birthday-member-card::before {
+        width: 20px;
+        height: 20px;
+        font-size: 10px;
+        top: -8px;
+        right: -8px;
+    }
 }
 
 /* Extra Small Mobile */
@@ -207,6 +270,8 @@ const GEN_COLORS = {
 
 let showData = [];
 let membersData = [];
+let isBirthdayShow = false;
+let birthdayMember = null;
 
 function initializeTheme() {
   const savedTheme = localStorage.getItem('jkt48_theme') || 'light';
@@ -268,6 +333,10 @@ async function loadData() {
       return;
     }
 
+    // Check if this is a birthday show
+    isBirthdayShow = showData[0]?.is_birthday_show || false;
+    birthdayMember = showData[0]?.birthday_member || null;
+    
     // Get unique member names
     const memberNames = [...new Set(showData.map(show => show.name))];
     
@@ -301,13 +370,24 @@ function renderPage() {
                      'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
   const formattedDate = `${dayNames[date.getDay()]}, ${date.getDate()} ${monthNames[date.getMonth()]} ${date.getFullYear()}`;
   
+  // Title dengan info birthday
+  let displayTitle = SETLIST_NAME;
+  if (isBirthdayShow && birthdayMember) {
+    displayTitle += ` (STS ${birthdayMember})`;
+  }
+  
   document.getElementById('container').innerHTML = `
     <div class="live-show-header">
       <div class="live-badge-main">
         <span class="live-dot-main"></span>
         LIVE NOW
       </div>
-      <h1>${SETLIST_NAME}</h1>
+      <h1>${displayTitle}</h1>
+      ${isBirthdayShow && birthdayMember ? `
+        <div class="birthday-badge-header">
+          🎂 Birthday Show ${birthdayMember}
+        </div>
+      ` : ''}
       <div class="live-show-date-time">
         <div>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -350,15 +430,17 @@ function renderMembersGrid() {
     const memberShows = showData.filter(show => show.name === member.name);
     const showCount = memberShows.length;
     
+    const isBirthdayStar = isBirthdayShow && birthdayMember === member.name;
+    
     return `
-      <div class="member-card" onclick="openMemberPage('${member.name}')">
+      <div class="member-card ${isBirthdayStar ? 'birthday-member-card' : ''}" onclick="openMemberPage('${member.name}')">
         <div class="member-avatar">
           <img src="img/${member.name.toLowerCase()}.jpg" 
                alt="${member.name}"
                loading="lazy"
                onerror="this.onerror=null; this.style.display='none'; this.parentNode.style.background='linear-gradient(135deg, ${GEN_COLORS[member.gen] || '#6366f1'}, ${adjustColor(GEN_COLORS[member.gen] || '#6366f1', -20)})'; this.parentNode.innerHTML='<div style=\\'width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:white;font-size:24px;font-weight:bold\\'>${member.name.charAt(0)}</div>'">
         </div>
-        <div class="member-info" style="border-top: 3px solid ${GEN_COLORS[member.gen] || '#6366f1'}">
+        <div class="member-info" style="border-top: 3px solid ${isBirthdayStar ? '#f59e0b' : (GEN_COLORS[member.gen] || '#6366f1')}">
           <div class="member-name">${member.name}</div>
           <div class="member-gen">Gen ${member.gen} • ${showCount} show</div>
         </div>

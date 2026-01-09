@@ -147,6 +147,50 @@ body.dark .no-events{color:#6b7280}
 .calendar-actions button{flex:1;padding:10px;border-radius:12px;font-weight:bold;font-size:13px}
 .btn-today{background:#e60012;color:white}
 .btn-close-calendar{background:#6b7280;color:white}
+
+/* Birthday Show CSS */
+.birthday-section {
+  margin: 15px 0;
+  padding: 15px;
+  background: #fff5f5;
+  border-radius: 12px;
+  border: 2px solid #fecaca;
+}
+body.dark .birthday-section {
+  background: #1f1818;
+  border-color: #7f1d1d;
+}
+.birthday-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 14px;
+  margin-bottom: 0;
+}
+.birthday-checkbox-label input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  margin: 0;
+}
+.birthday-dropdown {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #fecaca;
+  display: none;
+}
+body.dark .birthday-dropdown {
+  border-top-color: #7f1d1d;
+}
+.birthday-dropdown.show {
+  display: block;
+}
+.birthday-dropdown .input-label {
+  margin-bottom: 6px;
+  display: block;
+}
 </style>
 </head>
 <body>
@@ -181,9 +225,91 @@ body.dark .no-events{color:#6b7280}
 
 <div class="modal" id="logoutModal"><div class="modal-box"><h3>Konfirmasi Logout</h3><p>Apakah Anda yakin ingin keluar?</p><div class="modal-buttons"><button class="btn-cancel" onclick="closeLogoutModal()">Batal</button><button class="btn-confirm" onclick="confirmLogout()">Logout</button></div></div></div>
 
-<div class="modal" id="setlistModal"><div class="modal-box"><h3>Tambah Show dengan Setlist</h3><p id="setlistMemberName">Member: -</p><label class="input-label">Tanggal Show</label><input type="date" id="showDate"><label class="input-label">Jam Show (HH:MM)</label><input type="time" id="showTime" placeholder="19:00"><label class="input-label">Pilih Setlist</label><select id="setlistSelect"><option value="">Pilih Setlist...</option></select><div class="setlist-info" id="setlistInfo" style="display:none"><span class="setlist-badge">INFO</span><span id="setlistDescription"></span></div><div class="modal-buttons"><button class="btn-cancel" onclick="closeSetlistModal()">Batal</button><button class="btn-add" onclick="addShowWithSetlist()">Tambah Show</button></div></div></div>
+<div class="modal" id="setlistModal">
+  <div class="modal-box">
+    <h3>Tambah Show dengan Setlist</h3>
+    <p id="setlistMemberName">Member: -</p>
+    
+    <label class="input-label">Tanggal Show</label>
+    <input type="date" id="showDate">
+    
+    <label class="input-label">Jam Show (HH:MM)</label>
+    <input type="time" id="showTime" placeholder="19:00">
+    
+    <label class="input-label">Pilih Setlist</label>
+    <select id="setlistSelect">
+      <option value="">Pilih Setlist...</option>
+    </select>
+    
+    <div class="setlist-info" id="setlistInfo" style="display:none">
+      <span class="setlist-badge">INFO</span>
+      <span id="setlistDescription"></span>
+    </div>
+    
+    <!-- BIRTHDAY SHOW SECTION - NEW -->
+    <div class="birthday-section">
+      <label class="birthday-checkbox-label">
+        <input type="checkbox" id="isBirthdayShow" onchange="toggleBirthdayField()">
+        <span>Birthday Show (STS)</span>
+      </label>
+      
+      <div class="birthday-dropdown" id="birthdayMemberField">
+        <label class="input-label">Member yang Ulang Tahun</label>
+        <select id="birthdayMember">
+          <option value="">-- Pilih Member --</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="modal-buttons">
+      <button class="btn-cancel" onclick="closeSetlistModal()">Batal</button>
+      <button class="btn-add" onclick="addShowWithSetlist()">Tambah Show</button>
+    </div>
+  </div>
+</div>
 
-<div class="modal" id="bulkAddModal"><div class="modal-box" style="max-width:500px"><h3>Bulk Add Show</h3><p>Tambahkan beberapa member sekaligus dalam 1 setlist</p><label class="input-label">Tanggal Show</label><input type="date" id="bulkShowDate"><label class="input-label">Jam Show (HH:MM)</label><input type="time" id="bulkShowTime" placeholder="19:00"><label class="input-label">Pilih Setlist</label><select id="bulkSetlistSelect"><option value="">Pilih Setlist...</option></select><label class="input-label">Masukkan Nama Member (pisahkan dengan koma)</label><textarea id="bulkMemberNames" placeholder="Contoh: Cynthia, Danella, Eli, Elin, Ella, Fritzy, Indah, Kimmy" style="min-height:120px;resize:vertical"></textarea><div class="tip-text">💡 Tip: Nama harus persis sama dengan database (tidak case sensitive)</div><div class="modal-buttons"><button class="btn-cancel" onclick="closeBulkAddModal()">Batal</button><button class="btn-add" onclick="bulkAddShows()">Tambah Semua</button></div></div></div>
+<div class="modal" id="bulkAddModal">
+  <div class="modal-box" style="max-width:500px">
+    <h3>Bulk Add Show</h3>
+    <p>Tambahkan beberapa member sekaligus dalam 1 setlist</p>
+    
+    <label class="input-label">Tanggal Show</label>
+    <input type="date" id="bulkShowDate">
+    
+    <label class="input-label">Jam Show (HH:MM)</label>
+    <input type="time" id="bulkShowTime" placeholder="19:00">
+    
+    <label class="input-label">Pilih Setlist</label>
+    <select id="bulkSetlistSelect">
+      <option value="">Pilih Setlist...</option>
+    </select>
+    
+    <!-- BIRTHDAY SHOW SECTION - NEW -->
+    <div class="birthday-section">
+      <label class="birthday-checkbox-label">
+        <input type="checkbox" id="bulkIsBirthdayShow" onchange="toggleBulkBirthdayField()">
+        <span>Birthday Show (STS)</span>
+      </label>
+      
+      <div class="birthday-dropdown" id="bulkBirthdayMemberField">
+        <label class="input-label">Member yang Ulang Tahun</label>
+        <select id="bulkBirthdayMember">
+          <option value="">-- Pilih Member --</option>
+        </select>
+      </div>
+    </div>
+    
+    <label class="input-label">Masukkan Nama Member (pisahkan dengan koma)</label>
+    <textarea id="bulkMemberNames" placeholder="Contoh: Cynthia, Danella, Eli, Elin, Ella, Fritzy, Indah, Kimmy" style="min-height:120px;resize:vertical"></textarea>
+    
+    <div class="tip-text">💡 Tip: Nama harus persis sama dengan database (tidak case sensitive)</div>
+    
+    <div class="modal-buttons">
+      <button class="btn-cancel" onclick="closeBulkAddModal()">Batal</button>
+      <button class="btn-add" onclick="bulkAddShows()">Tambah Semua</button>
+    </div>
+  </div>
+</div>
 
 <div class="modal" id="calendarModal"><div class="modal-box" style="max-width:550px"><h3>Kalender Show</h3>
     <div class="calendar-static-date" style="text-align:center;padding:10px;margin-bottom:15px;background:#e60012;color:white;border-radius:8px;font-weight:bold;">
@@ -284,7 +410,7 @@ async function loadData(){
         }
         
         members=result.data||[];
-        console.log('✅ Berhasil memuat '+members.length+' member');
+        console.log('Berhasil memuat '+members.length+' member');
         
         renderMembers();
         updateStats();
@@ -413,7 +539,7 @@ function openSetlistModal(memberId){
     
     var today=new Date().toISOString().split('T')[0];
     document.getElementById('showDate').value=today;
-    document.getElementById('showTime').value = '19:00'; // Default time
+    document.getElementById('showTime').value = '19:00';
     
     var selectEl=document.getElementById('setlistSelect');
     selectEl.innerHTML='<option value="">Pilih Setlist...</option>';
@@ -423,6 +549,12 @@ function openSetlistModal(memberId){
     }
     selectEl.value='';
     document.getElementById('setlistInfo').style.display='none';
+    
+    // Reset birthday fields
+    document.getElementById('isBirthdayShow').checked = false;
+    document.getElementById('birthdayMember').value = '';
+    document.getElementById('birthdayMemberField').classList.remove('show');
+    
     document.getElementById('setlistModal').style.display='flex';
 }
 
@@ -434,7 +566,7 @@ function closeSetlistModal(){
 function openBulkAddModal(){
     var today=new Date().toISOString().split('T')[0];
     document.getElementById('bulkShowDate').value=today;
-    document.getElementById('bulkShowTime').value = '19:00'; // Default time
+    document.getElementById('bulkShowTime').value = '19:00';
     
     var selectEl=document.getElementById('bulkSetlistSelect');
     selectEl.innerHTML='<option value="">Pilih Setlist...</option>';
@@ -442,6 +574,12 @@ function openBulkAddModal(){
         selectEl.innerHTML+='<option value="'+key+'">'+key+'</option>';
     }
     document.getElementById('bulkMemberNames').value='';
+    
+    // Reset birthday fields
+    document.getElementById('bulkIsBirthdayShow').checked = false;
+    document.getElementById('bulkBirthdayMember').value = '';
+    document.getElementById('bulkBirthdayMemberField').classList.remove('show');
+    
     document.getElementById('bulkAddModal').style.display='flex';
 }
 
@@ -461,10 +599,86 @@ document.getElementById('setlistSelect').addEventListener('change',function(){
     }
 });
 
+// ==================== BIRTHDAY SHOW FUNCTIONS ====================
+
+function toggleBirthdayField() {
+    var checkbox = document.getElementById('isBirthdayShow');
+    var field = document.getElementById('birthdayMemberField');
+    
+    if (checkbox.checked) {
+        field.classList.add('show');
+        loadMembersForBirthday();
+    } else {
+        field.classList.remove('show');
+        document.getElementById('birthdayMember').value = '';
+    }
+}
+
+function toggleBulkBirthdayField() {
+    var checkbox = document.getElementById('bulkIsBirthdayShow');
+    var field = document.getElementById('bulkBirthdayMemberField');
+    
+    if (checkbox.checked) {
+        field.classList.add('show');
+        loadMembersForBulkBirthday();
+    } else {
+        field.classList.remove('show');
+        document.getElementById('bulkBirthdayMember').value = '';
+    }
+}
+
+async function loadMembersForBirthday() {
+    var dropdown = document.getElementById('birthdayMember');
+    dropdown.innerHTML = '<option value="">-- Pilih Member --</option>';
+    
+    var sortedMembers = members.slice().sort(function(a, b) {
+        return a.name.localeCompare(b.name);
+    });
+    
+    sortedMembers.forEach(function(member) {
+        dropdown.innerHTML += '<option value="' + member.name + '">' + member.name + '</option>';
+    });
+}
+
+async function loadMembersForBulkBirthday() {
+    var dropdown = document.getElementById('bulkBirthdayMember');
+    dropdown.innerHTML = '<option value="">-- Pilih Member --</option>';
+    
+    var sortedMembers = members.slice().sort(function(a, b) {
+        return a.name.localeCompare(b.name);
+    });
+    
+    sortedMembers.forEach(function(member) {
+        dropdown.innerHTML += '<option value="' + member.name + '">' + member.name + '</option>';
+    });
+}
+
+function validateBirthdayShow(isBirthday, birthdayMember, performingMembers) {
+    if (!isBirthday) return true;
+    
+    if (!birthdayMember) {
+        showToast('Pilih member yang berulang tahun!', true);
+        return false;
+    }
+    
+    var memberNames = performingMembers.map(function(m) {
+        return m.toLowerCase();
+    });
+    
+    if (!memberNames.includes(birthdayMember.toLowerCase())) {
+        showToast('Member yang berulang tahun (' + birthdayMember + ') harus ada di daftar performing members!', true);
+        return false;
+    }
+    
+    return true;
+}
+
 async function addShowWithSetlist(){
     var setlist=document.getElementById('setlistSelect').value;
     var showDate=document.getElementById('showDate').value;
     var showTime=document.getElementById('showTime').value;
+    var isBirthdayShow=document.getElementById('isBirthdayShow').checked;
+    var birthdayMember=document.getElementById('birthdayMember').value;
     
     if(!setlist){
         showToast('Pilih setlist terlebih dahulu!',true);
@@ -473,13 +687,11 @@ async function addShowWithSetlist(){
     
     if(!showDate){
         showDate = new Date().toISOString().split('T')[0];
-        console.log('📅 Menggunakan tanggal hari ini:', showDate);
     }
     
     if(!showTime){
-        showTime = '19:00:00'; // Default time
+        showTime = '19:00:00';
     } else {
-        // Ensure time format is HH:MM:SS
         if (showTime.length === 5) {
             showTime = showTime + ':00';
         }
@@ -490,7 +702,12 @@ async function addShowWithSetlist(){
     var member=members.find(function(m){return m.id===currentMemberId});
     if(!member) return;
     
-    console.log('Menambah show untuk:', member.name, 'setlist:', setlist, 'tanggal:', showDate, 'jam:', showTime);
+    // Validasi birthday show
+    if (!validateBirthdayShow(isBirthdayShow, birthdayMember, [member.name])) {
+        return;
+    }
+    
+    console.log('Menambah show untuk:', member.name, 'setlist:', setlist, 'birthday:', isBirthdayShow, 'birthday member:', birthdayMember);
     
     try{
         var newShow=member.show+1;
@@ -512,6 +729,8 @@ async function addShowWithSetlist(){
             status:member.status,
             show_date:showDate,
             show_time:showTime,
+            is_birthday_show: isBirthdayShow,
+            birthday_member: isBirthdayShow ? birthdayMember : null,
             created_at:new Date().toISOString()
         };
         
@@ -525,15 +744,15 @@ async function addShowWithSetlist(){
             return;
         }
         
-        var insertedId = insertResult.data && insertResult.data[0] ? insertResult.data[0].id : 'auto';
-        console.log('✅ Record inserted dengan ID:',insertedId);
-        
         member.show=newShow;
-        addActivity(member.name,1,newShow,setlist,member.status);
+        var activityText = setlist + (isBirthdayShow ? ' (STS ' + birthdayMember + ')' : '');
+        addActivity(member.name,1,newShow,activityText,member.status);
         renderMembers();
         updateStats();
         closeSetlistModal();
-        showToast(member.name+': '+newShow+' show ('+setlist+' - '+formatDate(showDate)+' '+formatTime(showTime)+')',false);
+        
+        var toastMessage = member.name+': '+newShow+' show ('+activityText+' - '+formatDate(showDate)+' '+formatTime(showTime)+')';
+        showToast(toastMessage,false);
         
     }catch(err){
         console.error('Exception:',err);
@@ -546,6 +765,8 @@ async function bulkAddShows(){
     var namesInput=document.getElementById('bulkMemberNames').value;
     var showDate=document.getElementById('bulkShowDate').value;
     var showTime=document.getElementById('bulkShowTime').value;
+    var isBirthdayShow=document.getElementById('bulkIsBirthdayShow').checked;
+    var birthdayMember=document.getElementById('bulkBirthdayMember').value;
     
     if(!setlist){
         showToast('Pilih setlist terlebih dahulu!',true);
@@ -554,13 +775,11 @@ async function bulkAddShows(){
     
     if(!showDate){
         showDate = new Date().toISOString().split('T')[0];
-        console.log('📅 Menggunakan tanggal hari ini:', showDate);
     }
     
     if(!showTime){
-        showTime = '19:00:00'; // Default time
+        showTime = '19:00:00';
     } else {
-        // Ensure time format is HH:MM:SS
         if (showTime.length === 5) {
             showTime = showTime + ':00';
         }
@@ -575,6 +794,11 @@ async function bulkAddShows(){
     
     if(names.length===0){
         showToast('Tidak ada nama yang valid!',true);
+        return;
+    }
+    
+    // Validasi birthday show
+    if (!validateBirthdayShow(isBirthdayShow, birthdayMember, names)) {
         return;
     }
     
@@ -611,6 +835,8 @@ async function bulkAddShows(){
                 status:member.status,
                 show_date:showDate,
                 show_time:showTime,
+                is_birthday_show: isBirthdayShow,
+                birthday_member: isBirthdayShow ? birthdayMember : null,
                 created_at:new Date().toISOString()
             };
             
@@ -625,7 +851,8 @@ async function bulkAddShows(){
             }
             
             member.show=newShow;
-            addActivity(member.name,1,newShow,setlist,member.status);
+            var activityText = setlist + (isBirthdayShow ? ' (STS ' + birthdayMember + ')' : '');
+            addActivity(member.name,1,newShow,activityText,member.status);
             successCount++;
             
         }catch(err){
@@ -637,11 +864,14 @@ async function bulkAddShows(){
     updateStats();
     closeBulkAddModal();
     
+    var toastDateInfo = formatDate(showDate)+' '+formatTime(showTime);
+    var toastBirthdayInfo = isBirthdayShow ? ' (STS ' + birthdayMember + ')' : '';
+    
     if(failedNames.length>0){
-        showToast('✅ '+successCount+' berhasil, ❌ '+failedNames.length+' gagal ('+formatDate(showDate)+' '+formatTime(showTime)+')',false);
+        showToast('✅ '+successCount+' berhasil, ❌ '+failedNames.length+' gagal'+toastBirthdayInfo+' ('+toastDateInfo+')',false);
         console.log('Gagal:',failedNames);
     }else{
-        showToast('✅ Semua '+successCount+' member berhasil ditambahkan! ('+formatDate(showDate)+' '+formatTime(showTime)+')',false);
+        showToast('✅ Semua '+successCount+' member berhasil ditambahkan!'+toastBirthdayInfo+' ('+toastDateInfo+')',false);
     }
 }
 
