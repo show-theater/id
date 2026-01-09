@@ -55,7 +55,15 @@ body.dark .show-card{background:#1f2937;border-color:#374151}
 .show-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
 .show-date{font-size:15px;font-weight:bold;color:#333}
 body.dark .show-date{color:#e5e7eb}
+.show-time{display:flex;align-items:center;gap:6px;font-size:13px;color:#6b7280;margin-top:5px;font-weight:500}
+body.dark .show-time{color:#9ca3af}
+.show-time svg{width:14px;height:14px}
 .show-badge{background:var(--gen-color);color:#fff;padding:5px 12px;border-radius:15px;font-size:11px;font-weight:bold}
+.live-badge{background:#ef4444;color:#fff;padding:6px 12px;border-radius:15px;font-size:11px;font-weight:bold;display:flex;align-items:center;gap:5px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.7}}
+.live-dot{width:6px;height:6px;background:#fff;border-radius:50%;animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.badge-container{display:flex;gap:6px;align-items:center}
 .show-setlist{font-size:14px;color:#6b7280;margin-bottom:8px;font-weight:600}
 body.dark .show-setlist{color:#9ca3af}
 .empty-state{text-align:center;padding:60px 20px;color:#6b7280}
@@ -87,6 +95,7 @@ body.dark .skeleton-card{background:#374151}
   .content{padding:16px}
   .show-card{padding:15px}
   .show-date{font-size:14px}
+  .show-time{font-size:12px}
   .show-setlist{font-size:13px}
 }
 </style>
@@ -216,7 +225,8 @@ async function loadData() {
       .from('setlist_performance')
       .select('*')
       .eq('name', MEMBER_NAME)
-      .order('show_date', { ascending: false });
+      .order('show_date', { ascending: false })
+      .order('show_time', { ascending: false });
 
     if (showsError) throw showsError;
     
@@ -307,13 +317,34 @@ function renderShowList() {
     <div class="show-list">
       ${filtered.map((show, index) => {
         const date = show.show_date ? formatDate(show.show_date) : 'Tanggal tidak tersedia';
+        const time = show.show_time ? formatTime(show.show_time) : null;
         const showNumber = showsData.findIndex(s => s.id === show.id) + 1;
+        const isLive = isShowLive(show.show_date, show.show_time);
         
         return `
           <div class="show-card">
             <div class="show-header">
-              <div class="show-date">${date}</div>
-              <div class="show-badge">#${showNumber}</div>
+              <div>
+                <div class="show-date">${date}</div>
+                ${time ? `
+                  <div class="show-time">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    ${time}
+                  </div>
+                ` : ''}
+              </div>
+              <div class="badge-container">
+                ${isLive ? `
+                  <div class="live-badge">
+                    <span class="live-dot"></span>
+                    LIVE
+                  </div>
+                ` : ''}
+                <div class="show-badge">#${showNumber}</div>
+              </div>
             </div>
             <div class="show-setlist">${show.setlist_name}</div>
           </div>
@@ -338,6 +369,40 @@ function formatDate(dateString) {
   const date = new Date(dateString);
   const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
   return date.toLocaleDateString('id-ID', options);
+}
+
+function formatTime(timeString) {
+  if (!timeString) return null;
+  
+  // Handle both HH:MM:SS and HH:MM formats
+  const parts = timeString.split(':');
+  const hours = parts[0];
+  const minutes = parts[1];
+  
+  return `${hours}:${minutes} WIB`;
+}
+
+function isShowLive(showDate, showTime) {
+  if (!showDate || !showTime) return false;
+  
+  const now = new Date();
+  const showDateTime = new Date(showDate);
+  
+  // Parse show time
+  const timeParts = showTime.split(':');
+  const showHours = parseInt(timeParts[0]);
+  const showMinutes = parseInt(timeParts[1]);
+  
+  showDateTime.setHours(showHours, showMinutes, 0, 0);
+  
+  // Calculate time difference in minutes
+  const diffMs = now - showDateTime;
+  const diffMins = Math.floor(diffMs / 60000);
+  
+  // Consider live if:
+  // - Show started within last 30 minutes and hasn't passed 3 hours
+  // (Assuming average show duration is ~2-3 hours)
+  return diffMins >= -5 && diffMins <= 180;
 }
 
 function adjustColor(color, amount) {
