@@ -301,7 +301,6 @@ body.dark .modal-close:hover{background:#374151;color:#e5e7eb}
     .top-member-filter{min-width:110px;padding:8px 12px;font-size:12px}
     .filter{min-width:100px;padding:8px 12px;font-size:12px}
     
-    /* Live show responsive */
     .live-show-content {
         flex-direction: column;
         align-items: stretch;
@@ -343,7 +342,6 @@ JKT48 SHOW THEATER
 </button>
 </header>
 
-<!-- Live Show Banner - SIMPLIFIED -->
 <div class="live-show-banner" id="liveShowBanner" onclick="openLiveShowDetail()">
     <div class="live-show-content">
         <div class="live-show-left">
@@ -359,13 +357,12 @@ JKT48 SHOW THEATER
         
         <div class="live-show-right">
             <div class="see-detail-link">
-                Lihat Detail →
+                Lihat Detail
             </div>
         </div>
     </div>
 </div>
 
-<!-- Existing Content -->
 <div class="top">
 <div class="search-box">
 <input type="text" id="searchInput" placeholder="Cari member..." oninput="searchMember()" aria-label="Cari member">
@@ -495,9 +492,11 @@ async function checkLiveShows() {
         const today = now.toISOString().split('T')[0];
         const currentHour = now.getHours();
         const currentMinute = now.getMinutes();
+        const currentTotalMinutes = currentHour * 60 + currentMinute;
         
-        console.log('Checking live shows for:', today, 'Current time:', currentHour + ':' + currentMinute);
+        console.log('Checking live shows for:', today, 'Current time:', currentHour + ':' + currentMinute, 'Total minutes:', currentTotalMinutes);
         
+        // Ambil data show untuk hari ini
         const { data: shows, error } = await db
             .from('setlist_performance')
             .select('*')
@@ -509,48 +508,61 @@ async function checkLiveShows() {
             return null;
         }
         
+        console.log('Shows found for today:', shows?.length || 0);
+        
         if (!shows || shows.length === 0) {
             console.log('No shows found for today');
             return null;
         }
         
+        // Debug: tampilkan semua show yang ditemukan
+        shows.forEach(show => {
+            const [showHour, showMinute] = show.show_time ? show.show_time.split(':').map(Number) : [0, 0];
+            const showTotalMinutes = showHour * 60 + (showMinute || 0);
+            console.log(`Show: ${show.setlist_name} at ${show.show_time || 'No time'} (${showTotalMinutes} minutes)`);
+        });
+        
+        // Cari show yang sedang live atau akan segera dimulai
         const liveShows = shows.filter(show => {
             if (!show.show_time) return false;
             
             const [showHour, showMinute] = show.show_time.split(':').map(Number);
             const showTotalMinutes = showHour * 60 + (showMinute || 0);
-            const currentTotalMinutes = currentHour * 60 + currentMinute;
             
-            return Math.abs(showTotalMinutes - currentTotalMinutes) <= 150;
+            // Perluas rentang waktu:
+            // - 30 menit sebelum show (akan dimulai)
+            // - 180 menit setelah show (sedang berlangsung, asumsi show 3 jam)
+            const timeDiff = showTotalMinutes - currentTotalMinutes;
+            return timeDiff >= -30 && timeDiff <= 180;
         });
         
         console.log('Live shows found:', liveShows.length);
         
         if (liveShows.length === 0) {
+            console.log('No shows within live time range');
             return null;
         }
         
-        
-        console.log('Live shows found:', liveShows.length);
-        
-        if (liveShows.length === 0) {
-            return null;
-        }
-        
+        // Kelompokkan berdasarkan setlist
         const showsBySetlist = {};
         liveShows.forEach(show => {
-            const setlistName = show.setlist_name;
+            const setlistName = show.setlist_name || 'Unknown Setlist';
             if (!showsBySetlist[setlistName]) {
                 showsBySetlist[setlistName] = [];
             }
             showsBySetlist[setlistName].push(show);
         });
         
+        console.log('Shows grouped by setlist:', Object.keys(showsBySetlist));
+        
+        // Cari setlist dengan member terbanyak
         let largestSetlist = null;
         let maxMembers = 0;
         
         Object.keys(showsBySetlist).forEach(setlistName => {
             const memberCount = new Set(showsBySetlist[setlistName].map(s => s.name)).size;
+            console.log(`Setlist ${setlistName}: ${memberCount} members`);
+            
             if (memberCount > maxMembers) {
                 maxMembers = memberCount;
                 largestSetlist = {
@@ -561,6 +573,10 @@ async function checkLiveShows() {
                 };
             }
         });
+        
+        if (largestSetlist) {
+            console.log('Selected setlist for banner:', largestSetlist.name);
+        }
         
         return largestSetlist;
         
@@ -588,22 +604,37 @@ async function updateLiveShowBanner() {
     const title = document.getElementById('liveShowTitle');
     const timeElement = document.getElementById('liveShowTime');
     
-    const liveShowData = await checkLiveShows();
-    currentLiveShowData = liveShowData;
-    
-    if (!liveShowData) {
+    try {
+        const liveShowData = await checkLiveShows();
+        currentLiveShowData = liveShowData;
+        
+        if (!liveShowData) {
+            console.log('No live show data found, hiding banner');
+            banner.style.display = 'none';
+            return;
+        }
+        
+        console.log('Displaying live show banner for:', liveShowData.name);
+        
+        banner.style.display = 'block';
+        title.textContent = liveShowData.name;
+        
+        if (liveShowData.earliestTime) {
+            const timeStr = liveShowData.earliestTime.slice(0, 5);
+            timeElement.innerHTML = `
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg> 
+                ${timeStr} WIB • ${liveShowData.memberCount} members
+            `;
+        } else {
+            timeElement.textContent = `Hari ini • ${liveShowData.memberCount} members`;
+        }
+        
+    } catch (err) {
+        console.error('Error updating live show banner:', err);
         banner.style.display = 'none';
-        return;
-    }
-    
-    banner.style.display = 'block';
-    title.textContent = liveShowData.name;
-    
-    if (liveShowData.earliestTime) {
-        const timeStr = liveShowData.earliestTime.slice(0, 5);
-        timeElement.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> ${timeStr} WIB`;
-    } else {
-        timeElement.textContent = 'Hari ini';
     }
 }
 
@@ -720,7 +751,7 @@ const setName=setlistName.toLowerCase();
 let setlistKey=null;
 if(setName.includes('ramune')||setName.includes('mennhum')){
 setlistKey='ramune';
-}else if(setName.includes('tsunaginagara')||setName.includes('tsumaginagara')||setName.includes('tte')){
+}else if(setName.includes('tsunaginagara')||setName.includes('tsunaginagara')||setName.includes('tte')){
 setlistKey='tte';
 }else if(setName.includes('pertaruhan')||setName.includes('cinta')){
 setlistKey='pertaruhan';
@@ -868,10 +899,10 @@ const statsText=`${setlistData.title}`;
 document.getElementById('setlistStats').innerHTML=statsText;
 document.getElementById('setlistStats').style.display='block';
 let setlistBadge='';
-if(currentSetlistView==='ramune')setlistBadge='RAMUNE';
-else if(currentSetlistView==='tte')setlistBadge='TTE';
-else if(currentSetlistView==='pertaruhan')setlistBadge='PERTARUHAN';
-else if(currentSetlistView==='pajama')setlistBadge='PAJAMA';
+if(currentSetlistView==='ramune')setlistBadge='CMR';
+else if(currentSetlistView==='tte')setlistBadge='TWT';
+else if(currentSetlistView==='pertaruhan')setlistBadge='PC';
+else if(currentSetlistView==='pajama')setlistBadge='PD';
 let maxShows=0;
 if(activeMembers.length>0){
 maxShows=Math.max(...activeMembers.map(m=>m.shows));

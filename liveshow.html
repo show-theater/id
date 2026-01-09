@@ -23,7 +23,7 @@ body.dark .detail-header{background:#111827;border-color:#1f2937}
 .back-btn{background:transparent;border:none;color:#333;font-size:16px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;padding:8px 0;transition:all 0.3s}
 body.dark .back-btn{color:#e5e7eb}
 .back-btn:hover{opacity:0.7}
-.detail-title{font-size:16px;font-weight:bold;color:#333;text-align:center;flex:1}
+.detail-title{font-size:16px;font-weight:bold;color:#333;text-align:center;flex:1;margin:0 10px}
 body.dark .detail-title{color:#e5e7eb}
 .header-controls{display:flex;align-items:center;gap:10px}
 .theme-toggle-detail{background:#e60012;border:none;width:40px;height:40px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:8px;transition:all 0.3s}
@@ -41,44 +41,28 @@ body.dark .container{background:#111827;box-shadow:0 2px 8px rgba(0,0,0,0.4)}
 .live-badge-main{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.2);padding:8px 16px;border-radius:20px;font-size:14px;font-weight:bold;margin-bottom:15px;color:#fff}
 .live-dot-main{width:10px;height:10px;background:#fff;border-radius:50%;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
-.live-show-header h1{font-size:22px;font-weight:bold;color:#fff;margin:0 0 10px 0}
-.live-show-date-time{display:flex;align-items:center;justify-content:center;gap:15px;color:rgba(255,255,255,0.9);font-size:14px;flex-wrap:wrap}
-.live-show-date-time div{display:flex;align-items:center;gap:6px}
-.live-show-date-time svg{width:16px;height:16px;flex-shrink:0}
-
-/* Show Info */
-.show-info-section{padding:20px;border-bottom:1px solid #e5e7eb}
-body.dark .show-info-section{border-bottom-color:#374151}
-.show-info-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:15px;margin-bottom:20px}
-.show-info-item{background:#f9fafb;padding:15px;border-radius:12px;text-align:center}
-body.dark .show-info-item{background:#1f2937}
-.show-info-label{font-size:12px;color:#6b7280;margin-bottom:5px;font-weight:600}
-body.dark .show-info-label{color:#9ca3af}
-.show-info-value{font-size:18px;font-weight:bold;color:#333}
-body.dark .show-info-value{color:#e5e7eb}
-.show-description{margin-top:15px;padding:15px;background:#f0f9ff;border-radius:12px;border-left:4px solid #3b82f6}
-body.dark .show-description{background:rgba(59,130,246,0.1);border-left-color:#3b82f6}
-.show-description h3{font-size:14px;color:#1e40af;margin:0 0 8px 0}
-body.dark .show-description h3{color:#93c5fd}
-.show-description p{font-size:13px;color:#374151;margin:0;line-height:1.5}
-body.dark .show-description p{color:#d1d5db}
+.live-show-header h1{font-size:22px;font-weight:bold;color:#fff;margin:0 0 15px 0;line-height:1.3;padding:0 10px}
+.live-show-date-time{display:flex;align-items:center;justify-content:center;gap:20px;color:rgba(255,255,255,0.9);font-size:14px;flex-wrap:wrap}
+.live-show-date-time div{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center}
+.live-show-date-time svg{width:18px;height:18px;flex-shrink:0}
 
 /* Members Section */
-.members-section{padding:20px}
-.section-title{font-size:18px;font-weight:bold;color:#333;margin-bottom:15px;display:flex;align-items:center;gap:8px}
+.members-section{padding:25px 20px}
+.section-title{font-size:18px;font-weight:bold;color:#333;margin-bottom:20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 body.dark .section-title{color:#e5e7eb}
-.members-count{background:#e60012;color:#fff;padding:2px 8px;border-radius:10px;font-size:12px;font-weight:bold}
+.members-count{background:#e60012;color:#fff;padding:4px 10px;border-radius:12px;font-size:12px;font-weight:bold;min-width:30px;text-align:center}
 .members-grid{display:grid;grid-template-columns:repeat(auto-fill, minmax(120px, 1fr));gap:15px}
-.member-card{background:#fff;border-radius:12px;overflow:hidden;cursor:pointer;transition:all 0.3s;box-shadow:0 2px 4px rgba(0,0,0,0.1);border:2px solid transparent}
-body.dark .member-card{background:#1f2937;box-shadow:0 2px 4px rgba(0,0,0,0.3)}
-.member-card:hover{transform:translateY(-4px);box-shadow:0 6px 12px rgba(0,0,0,0.15);border-color:#e60012}
+.member-card{background:#fff;border-radius:12px;overflow:hidden;cursor:pointer;transition:all 0.3s;box-shadow:0 2px 8px rgba(0,0,0,0.1);border:2px solid transparent}
+body.dark .member-card{background:#1f2937;box-shadow:0 2px 8px rgba(0,0,0,0.3)}
+.member-card:hover{transform:translateY(-4px);box-shadow:0 6px 16px rgba(0,0,0,0.15);border-color:#e60012}
 .member-avatar{width:100%;aspect-ratio:3/4;overflow:hidden;background:#f0f0f0}
 body.dark .member-avatar{background:#0a0e1a}
-.member-avatar img{width:100%;height:100%;object-fit:cover;display:block}
-.member-info{padding:10px;text-align:center}
-.member-name{font-size:12px;font-weight:bold;color:#333;margin-bottom:4px;line-height:1.2}
+.member-avatar img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.3s}
+.member-card:hover .member-avatar img{transform:scale(1.05)}
+.member-info{padding:12px 8px;text-align:center}
+.member-name{font-size:12px;font-weight:bold;color:#333;margin-bottom:4px;line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:28px}
 body.dark .member-name{color:#e5e7eb}
-.member-gen{font-size:10px;color:#6b7280;font-weight:600}
+.member-gen{font-size:10px;color:#6b7280;font-weight:600;line-height:1.2}
 body.dark .member-gen{color:#9ca3af}
 
 /* No Shows Message */
@@ -89,25 +73,79 @@ body.dark .no-shows-message{color:#9ca3af}
 .no-shows-desc{font-size:14px;line-height:1.5;margin-bottom:30px}
 
 /* Loading */
-.loading{text-align:center;padding:80px 20px;color:#6b7280;display:flex;align-items:center;justify-content:center;gap:8px}
+.loading{text-align:center;padding:80px 20px;color:#6b7280;display:flex;align-items:center;justify-content:center;gap:12px;flex-direction:column}
 @keyframes spin{to{transform:rotate(360deg)}}
 .spinner{display:inline-block;width:32px;height:32px;border:3px solid rgba(0,0,0,0.1);border-top-color:#9ca3af;border-radius:50%;animation:spin 0.8s linear infinite}
 body.dark .spinner{border-color:rgba(255,255,255,0.1);border-top-color:#9ca3af}
 
 /* Footer */
-.detail-footer{text-align:center;padding:12px;color:#6b7280;font-size:10px;border-top:1px solid #e5e7eb;margin-top:20px}
+.detail-footer{text-align:center;padding:15px;color:#6b7280;font-size:10px;border-top:1px solid #e5e7eb;margin-top:20px}
 body.dark .detail-footer{color:#9ca3af;border-top-color:#374151}
 
-/* Responsive */
-@media (max-width:600px){
-    .container{max-width:calc(100% - 20px);margin:120px 10px 15px;border-radius:16px}
+/* Responsive Breakpoints */
+/* Tablet */
+@media (max-width:1024px){
+    .container{max-width:90%;margin:130px auto 25px}
+}
+
+/* Large Mobile */
+@media (max-width:768px){
+    .container{max-width:95%;margin:120px auto 20px;border-radius:16px}
     .live-show-header{padding:20px 15px}
-    .live-show-header h1{font-size:18px}
-    .live-show-date-time{flex-direction:column;gap:8px;font-size:13px}
-    .show-info-grid{grid-template-columns:1fr;gap:10px}
-    .members-grid{grid-template-columns:repeat(auto-fill, minmax(100px, 1fr));gap:10px}
-    .member-name{font-size:11px}
-    .section-title{font-size:16px}
+    .live-show-header h1{font-size:20px;margin-bottom:12px}
+    .live-show-date-time{gap:12px;font-size:13px}
+    .live-show-date-time div{gap:6px}
+    .live-show-date-time svg{width:16px;height:16px}
+    .members-section{padding:20px 15px}
+    .section-title{font-size:17px;margin-bottom:18px}
+}
+
+/* Small Mobile */
+@media (max-width:480px){
+    .main-header{position:sticky}
+    .container{margin:0 auto 15px;border-radius:0;box-shadow:none;width:100%;max-width:100%}
+    body.dark .container{box-shadow:none}
+    .live-show-header{padding:15px}
+    .live-show-header h1{font-size:18px;margin-bottom:10px}
+    .live-badge-main{padding:6px 12px;font-size:13px;margin-bottom:12px}
+    .live-dot-main{width:8px;height:8px}
+    .live-show-date-time{flex-direction:column;gap:8px;font-size:12px}
+    .live-show-date-time div{gap:5px}
+    .live-show-date-time svg{width:14px;height:14px}
+    .members-section{padding:15px}
+    .section-title{font-size:16px;margin-bottom:15px}
+    .members-grid{grid-template-columns:repeat(auto-fill, minmax(100px, 1fr));gap:12px}
+    .member-card{border-radius:10px}
+    .member-info{padding:10px 6px}
+    .member-name{font-size:11px;min-height:24px}
+    .member-gen{font-size:9px}
+    .detail-header{padding:10px 15px}
+    .back-btn{font-size:14px;gap:4px}
+    .back-btn svg{width:14px;height:14px}
+    .detail-title{font-size:14px;margin:0 5px}
+    .theme-toggle-detail{width:36px;height:36px}
+    .theater-header{font-size:13px;padding:8px 15px}
+}
+
+/* Extra Small Mobile */
+@media (max-width:360px){
+    .members-grid{grid-template-columns:repeat(auto-fill, minmax(90px, 1fr));gap:10px}
+    .live-show-header h1{font-size:16px}
+    .live-badge-main{font-size:12px}
+    .live-show-date-time{font-size:11px}
+    .section-title{font-size:15px}
+    .member-name{font-size:10px}
+    .member-gen{font-size:8px}
+}
+
+/* Landscape Mode */
+@media (max-height:600px) and (orientation:landscape){
+    .main-header{position:relative}
+    .container{margin:20px auto}
+    .live-show-header{padding:15px}
+    .live-show-header h1{font-size:18px;margin-bottom:10px}
+    .live-badge-main{margin-bottom:10px}
+    .members-grid{grid-template-columns:repeat(auto-fill, minmax(110px, 1fr))}
 }
 </style>
 <script>
@@ -165,13 +203,6 @@ const GEN_COLORS = {
   3: '#ec4899', 6: '#22c55e', 7: '#15803d', 8: '#1e40af',
   9: '#06b6d4', 10: '#38bdf8', 11: '#f97316', 12: '#fde047',
   13: '#facc15', 14: '#e879f9'
-};
-
-const SETLIST_DESCRIPTIONS = {
-  'Cara Meminum Ramune': 'Setlist segar seperti minuman ramune, penuh energi dan keceriaan.',
-  'Te Wo Tsunaginagara': 'Setlist tentang kebersamaan dan persahabatan.',
-  'Pertaruhan Cinta': 'Setlist romantis tentang cinta dan pengorbanan.',
-  'Pajama Drive': 'Setlist klasik untuk member trainee dengan konsep piyama party.'
 };
 
 let showData = [];
@@ -262,7 +293,6 @@ function renderPage() {
   // Get show times
   const showTimes = [...new Set(showData.map(show => show.show_time))].sort();
   const earliestTime = showTimes[0] ? showTimes[0].slice(0, 5) : '-';
-  const latestTime = showTimes.length > 1 ? showTimes[showTimes.length - 1].slice(0, 5) : earliestTime;
   
   // Format date
   const date = new Date(SHOW_DATE);
@@ -270,9 +300,6 @@ function renderPage() {
   const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
                      'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
   const formattedDate = `${dayNames[date.getDay()]}, ${date.getDate()} ${monthNames[date.getMonth()]} ${date.getFullYear()}`;
-  
-  // Get setlist description
-  const setlistDescription = SETLIST_DESCRIPTIONS[SETLIST_NAME] || 'Setlist khusus JKT48 Theater';
   
   document.getElementById('container').innerHTML = `
     <div class="live-show-header">
@@ -296,30 +323,8 @@ function renderPage() {
             <circle cx="12" cy="12" r="10"></circle>
             <polyline points="12 6 12 12 16 14"></polyline>
           </svg>
-          ${earliestTime} ${showTimes.length > 1 ? `- ${latestTime}` : ''} WIB
+          ${earliestTime} - Sampai selesai WIB
         </div>
-      </div>
-    </div>
-    
-    <div class="show-info-section">
-      <div class="show-info-grid">
-        <div class="show-info-item">
-          <div class="show-info-label">TOTAL SHOW</div>
-          <div class="show-info-value">${showData.length}</div>
-        </div>
-        <div class="show-info-item">
-          <div class="show-info-label">JUMLAH MEMBER</div>
-          <div class="show-info-value">${membersData.length}</div>
-        </div>
-        <div class="show-info-item">
-          <div class="show-info-label">WAKTU SHOW</div>
-          <div class="show-info-value">${showTimes.length} sesi</div>
-        </div>
-      </div>
-      
-      <div class="show-description">
-        <h3>Tentang Setlist</h3>
-        <p>${setlistDescription}</p>
       </div>
     </div>
     
@@ -344,7 +349,6 @@ function renderMembersGrid() {
   return membersData.map(member => {
     const memberShows = showData.filter(show => show.name === member.name);
     const showCount = memberShows.length;
-    const earliestShow = memberShows[0] ? memberShows[0].show_time.slice(0, 5) : '-';
     
     return `
       <div class="member-card" onclick="openMemberPage('${member.name}')">

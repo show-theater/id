@@ -291,6 +291,20 @@ function renderShowList() {
     filtered = showsData.filter(s => s.setlist_name === currentFilter);
   }
   
+  // Buat array yang sudah diurutkan dari terlama ke terbaru untuk show yang difilter
+  const sortedFilteredShows = [...filtered].sort((a, b) => {
+    const dateA = new Date(a.show_date + ' ' + a.show_time);
+    const dateB = new Date(b.show_date + ' ' + b.show_time);
+    return dateA - dateB; // Terlama ke terbaru untuk penomoran
+  });
+  
+  // Buat array untuk tampilan (terbaru ke terlama)
+  const showsForDisplay = [...filtered].sort((a, b) => {
+    const dateA = new Date(a.show_date + ' ' + a.show_time);
+    const dateB = new Date(b.show_date + ' ' + b.show_time);
+    return dateB - dateA; // Terbaru ke terlama untuk tampilan
+  });
+  
   if (filtered.length === 0) {
     return `
       <div class="empty-state">
@@ -315,10 +329,14 @@ function renderShowList() {
   
   return `
     <div class="show-list">
-      ${filtered.map((show, index) => {
+      ${showsForDisplay.map((show, index) => {
         const date = show.show_date ? formatDate(show.show_date) : 'Tanggal tidak tersedia';
         const time = show.show_time ? formatTime(show.show_time) : null;
-        const showNumber = showsData.findIndex(s => s.id === show.id) + 1;
+        
+        // Cari nomor show berdasarkan urutan kronologis dari terlama ke terbaru
+        // untuk setlist yang aktif (filtered)
+        const showNumber = sortedFilteredShows.findIndex(s => s.id === show.id) + 1;
+        
         const isLive = isShowLive(show.show_date, show.show_time);
         
         return `
