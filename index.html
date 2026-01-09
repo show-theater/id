@@ -529,11 +529,11 @@ async function checkLiveShows() {
             const [showHour, showMinute] = show.show_time.split(':').map(Number);
             const showTotalMinutes = showHour * 60 + (showMinute || 0);
             
-            // Perluas rentang waktu:
-            // - 30 menit sebelum show (akan dimulai)
-            // - 180 menit setelah show (sedang berlangsung, asumsi show 3 jam)
+            // PERUBAHAN DI SINI:
+            // - 5 menit sebelum show (akan dimulai)
+            // - 150 menit setelah show (sedang berlangsung, asumsi show 2.5 jam)
             const timeDiff = showTotalMinutes - currentTotalMinutes;
-            return timeDiff >= -30 && timeDiff <= 180;
+            return timeDiff >= -5 && timeDiff <= 150; // 5 menit sebelum, 150 menit sesudah
         });
         
         console.log('Live shows found:', liveShows.length);
