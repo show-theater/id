@@ -63,8 +63,7 @@ body.dark .show-time{color:#9ca3af}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.7}}
 .live-dot{width:6px;height:6px;background:#fff;border-radius:50%;animation:blink 1s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
-.birthday-badge{background:linear-gradient(135deg,#ec4899,#be185d);color:#fff;padding:6px 12px;border-radius:15px;font-size:11px;font-weight:bold;display:flex;align-items:center;gap:4px;box-shadow:0 2px 4px rgba(236,72,153,0.4);animation:birthday-glow 2s ease-in-out infinite}
-@keyframes birthday-glow{0%,100%{box-shadow:0 2px 4px rgba(236,72,153,0.4)}50%{box-shadow:0 4px 12px rgba(236,72,153,0.6)}}
+.sts-badge{background:#ec4899;color:#fff;padding:6px 12px;border-radius:15px;font-size:11px;font-weight:bold;display:flex;align-items:center;gap:4px}
 .badge-container{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .show-setlist{font-size:14px;color:#6b7280;margin-bottom:8px;font-weight:600}
 body.dark .show-setlist{color:#9ca3af}
@@ -162,7 +161,6 @@ const GEN_COLORS = {
 let memberData = null;
 let showsData = [];
 let currentFilter = 'all';
-let birthdayShowCount = 0;
 
 function initializeTheme() {
   const savedTheme = localStorage.getItem('jkt48_theme') || 'light';
@@ -235,10 +233,6 @@ async function loadData() {
     
     showsData = shows || [];
     
-    birthdayShowCount = showsData.filter(s => 
-      s.is_birthday_show && s.birthday_member === memberData.name
-    ).length;
-    
     renderPage();
     
   } catch (err) {
@@ -269,10 +263,6 @@ function renderPage() {
           <div class="stat-label">TOTAL SHOW</div>
         </div>
         <div class="stat-item">
-          <div class="stat-number">${birthdayShowCount}</div>
-          <div class="stat-label">BIRTHDAY SHOW</div>
-        </div>
-        <div class="stat-item">
           <div class="stat-number">${setlists.length}</div>
           <div class="stat-label">JENIS SETLIST</div>
         </div>
@@ -283,11 +273,6 @@ function renderPage() {
       <button class="filter-btn ${currentFilter === 'all' ? 'active' : ''}" onclick="filterShows('all')">
         Semua (${showsData.length})
       </button>
-      ${birthdayShowCount > 0 ? `
-        <button class="filter-btn ${currentFilter === 'birthday' ? 'active' : ''}" onclick="filterShows('birthday')">
-          🎂 Birthday (${birthdayShowCount})
-        </button>
-      ` : ''}
       ${setlists.map(setlist => {
         const count = showsData.filter(s => s.setlist_name === setlist).length;
         return `<button class="filter-btn ${currentFilter === setlist ? 'active' : ''}" onclick="filterShows('${setlist}')">${setlist} (${count})</button>`;
@@ -303,11 +288,7 @@ function renderPage() {
 function renderShowList() {
   let filtered = showsData;
   
-  if (currentFilter === 'birthday') {
-    filtered = showsData.filter(s => 
-      s.is_birthday_show && s.birthday_member === memberData.name
-    );
-  } else if (currentFilter !== 'all') {
+  if (currentFilter !== 'all') {
     filtered = showsData.filter(s => s.setlist_name === currentFilter);
   }
   
@@ -338,8 +319,6 @@ function renderShowList() {
         <div class="empty-desc">
           ${currentFilter === 'all' 
             ? 'Belum ada riwayat show yang tercatat untuk member ini' 
-            : currentFilter === 'birthday'
-            ? 'Belum ada birthday show untuk member ini'
             : `Belum ada show dengan setlist "${currentFilter}"`
           }
         </div>
@@ -379,8 +358,8 @@ function renderShowList() {
                   </div>
                 ` : ''}
                 ${isMemberBirthday ? `
-                  <div class="birthday-badge">
-                    🎂 STS
+                  <div class="sts-badge">
+                    STS
                   </div>
                 ` : ''}
                 <div class="show-badge">#${showNumber}</div>

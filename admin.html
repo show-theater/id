@@ -18,7 +18,7 @@ body.dark .top{background:#111827;border-bottom:1px solid #1f2937}
 .search-box{flex:1;max-width:400px;min-width:200px}
 .search-box input{width:100%;padding:12px 20px;border-radius:25px;border:2px solid #f59e0b;background:#fff;font-size:14px;outline:none;color:#333}
 body.dark .search-box input{background:#0a0e1a;color:#e5e7eb}
-textarea{font-family:Arial,sans-serif}
+textarea{font-family:Arial,sans-serif;max-height:150px;min-height:100px;resize:vertical}
 body.dark textarea{background:#0a0e1a;color:#e5e7eb;border-color:#374151}
 button{border:none;border-radius:20px;padding:10px 20px;font-weight:bold;cursor:pointer;font-size:14px}
 .bulk-btn{background:#f59e0b;color:#fff}
@@ -66,21 +66,20 @@ body.dark .avatar{background:#0a0e1a}
 .admin-controls{display:flex;gap:4px;justify-content:center}
 .admin-controls button{min-width:28px;min-height:28px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,0.3);color:#fff;padding:0;font-size:18px;display:flex;align-items:center;justify-content:center}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:999;padding:20px;backdrop-filter:blur(8px)}
-.modal-box{background:#fff;padding:28px;border-radius:20px;width:90%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,0.5);position:relative}
+.modal-box{background:#fff;padding:28px;border-radius:20px;width:90%;max-width:380px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.5);position:relative}
 body.dark .modal-box{background:#111827}
 .modal-theme-toggle{position:absolute;top:20px;right:20px;background:#e60012;border:none;color:#fff;width:36px;height:36px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:7px}
 .modal-theme-toggle svg{width:100%;height:100%}
 .modal-box h3{margin:0 0 8px;font-size:20px}
-.modal-box p{margin:0 0 20px;font-size:14px;color:#666}
+.modal-box p{margin:0 0 15px;font-size:14px;color:#666}
 body.dark .modal-box p{color:#9ca3af}
 .modal-box input,.modal-box select,.modal-box textarea{width:100%;padding:12px;border-radius:12px;border:2px solid #ddd;background:#fff;color:#333;font-size:14px;outline:none;margin-bottom:10px}
 body.dark .modal-box input,body.dark .modal-box select,body.dark .modal-box textarea{background:#0a0e1a;color:#e5e7eb;border-color:#374151}
 input[type="date"]{color-scheme:light}
 body.dark input[type="date"]{color-scheme:dark}
-.input-label{display:block;font-size:12px;font-weight:600;color:#666;margin-bottom:6px}
+.input-label{display:block;font-size:12px;font-weight:600;color:#666;margin-bottom:6px;margin-top:10px}
 body.dark .input-label{color:#9ca3af}
-.modal-buttons{display:flex;gap:10px;margin-top:20px}
-.modal-buttons button{flex:1;padding:12px;border-radius:12px;font-weight:bold;font-size:14px}
+.modal-buttons{display:flex;gap:10px;margin-top:20px;position:sticky;bottom:0;background:inherit;padding-top:10px;z-index:10}
 .btn-cancel{background:#e5e7eb;color:#333}
 body.dark .btn-cancel{background:#374151;color:#e5e7eb}
 .btn-confirm{background:#ef4444;color:#fff}
@@ -191,6 +190,12 @@ body.dark .birthday-dropdown {
   margin-bottom: 6px;
   display: block;
 }
+
+/* Bulk Add Modal khusus */
+#bulkAddModal .modal-box {
+  max-width: 500px;
+  max-height: 85vh;
+}
 </style>
 </head>
 <body>
@@ -246,7 +251,6 @@ body.dark .birthday-dropdown {
       <span id="setlistDescription"></span>
     </div>
     
-    <!-- BIRTHDAY SHOW SECTION - NEW -->
     <div class="birthday-section">
       <label class="birthday-checkbox-label">
         <input type="checkbox" id="isBirthdayShow" onchange="toggleBirthdayField()">
@@ -269,7 +273,7 @@ body.dark .birthday-dropdown {
 </div>
 
 <div class="modal" id="bulkAddModal">
-  <div class="modal-box" style="max-width:500px">
+  <div class="modal-box">
     <h3>Bulk Add Show</h3>
     <p>Tambahkan beberapa member sekaligus dalam 1 setlist</p>
     
@@ -284,7 +288,6 @@ body.dark .birthday-dropdown {
       <option value="">Pilih Setlist...</option>
     </select>
     
-    <!-- BIRTHDAY SHOW SECTION - NEW -->
     <div class="birthday-section">
       <label class="birthday-checkbox-label">
         <input type="checkbox" id="bulkIsBirthdayShow" onchange="toggleBulkBirthdayField()">
@@ -300,7 +303,7 @@ body.dark .birthday-dropdown {
     </div>
     
     <label class="input-label">Masukkan Nama Member (pisahkan dengan koma)</label>
-    <textarea id="bulkMemberNames" placeholder="Contoh: Cynthia, Danella, Eli, Elin, Ella, Fritzy, Indah, Kimmy" style="min-height:120px;resize:vertical"></textarea>
+    <textarea id="bulkMemberNames" placeholder="Contoh: Cynthia, Danella, Eli, Elin, Ella, Fritzy, Indah, Kimmy"></textarea>
     
     <div class="tip-text">💡 Tip: Nama harus persis sama dengan database (tidak case sensitive)</div>
     
@@ -312,13 +315,10 @@ body.dark .birthday-dropdown {
 </div>
 
 <div class="modal" id="calendarModal"><div class="modal-box" style="max-width:550px"><h3>Kalender Show</h3>
-    <div class="calendar-static-date" style="text-align:center;padding:10px;margin-bottom:15px;background:#e60012;color:white;border-radius:8px;font-weight:bold;">
-        Kamis, 8 Januari 2026
-    </div>
     <div class="calendar-container">
         <div class="calendar-header">
             <button class="calendar-nav" onclick="calendarPrevMonth()">‹</button>
-            <div class="calendar-title" id="calendarTitle">Januari 2026</div>
+            <div class="calendar-title" id="calendarTitle"></div>
             <button class="calendar-nav" onclick="calendarNextMonth()">›</button>
         </div>
         <div class="calendar-weekdays">
@@ -352,10 +352,24 @@ var searchQuery='';
 var activityLog=[];
 var currentMemberId=null;
 
-// Calendar variables
-var calendarDate = new Date(2026, 0, 1); // Set ke Januari 2026
+var calendarDate = new Date();
 var calendarShows = {};
 var selectedCalendarDate = null;
+
+function getTodayDate() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+function getCurrentTime() {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    return `${hours}:${minutes}`;
+}
 
 function toggleTheme(){
     var b=document.body;
@@ -537,8 +551,7 @@ function openSetlistModal(memberId){
     
     document.getElementById('setlistMemberName').textContent='Member: '+member.name+' ('+(member.status==='trainee'?'TRAINEE':'INTI')+')';
     
-    var today=new Date().toISOString().split('T')[0];
-    document.getElementById('showDate').value=today;
+    document.getElementById('showDate').value = getTodayDate();
     document.getElementById('showTime').value = '19:00';
     
     var selectEl=document.getElementById('setlistSelect');
@@ -550,7 +563,6 @@ function openSetlistModal(memberId){
     selectEl.value='';
     document.getElementById('setlistInfo').style.display='none';
     
-    // Reset birthday fields
     document.getElementById('isBirthdayShow').checked = false;
     document.getElementById('birthdayMember').value = '';
     document.getElementById('birthdayMemberField').classList.remove('show');
@@ -564,8 +576,7 @@ function closeSetlistModal(){
 }
 
 function openBulkAddModal(){
-    var today=new Date().toISOString().split('T')[0];
-    document.getElementById('bulkShowDate').value=today;
+    document.getElementById('bulkShowDate').value = getTodayDate();
     document.getElementById('bulkShowTime').value = '19:00';
     
     var selectEl=document.getElementById('bulkSetlistSelect');
@@ -575,7 +586,6 @@ function openBulkAddModal(){
     }
     document.getElementById('bulkMemberNames').value='';
     
-    // Reset birthday fields
     document.getElementById('bulkIsBirthdayShow').checked = false;
     document.getElementById('bulkBirthdayMember').value = '';
     document.getElementById('bulkBirthdayMemberField').classList.remove('show');
@@ -598,8 +608,6 @@ document.getElementById('setlistSelect').addEventListener('change',function(){
         infoEl.style.display='none';
     }
 });
-
-// ==================== BIRTHDAY SHOW FUNCTIONS ====================
 
 function toggleBirthdayField() {
     var checkbox = document.getElementById('isBirthdayShow');
@@ -686,7 +694,7 @@ async function addShowWithSetlist(){
     }
     
     if(!showDate){
-        showDate = new Date().toISOString().split('T')[0];
+        showDate = getTodayDate();
     }
     
     if(!showTime){
@@ -702,7 +710,6 @@ async function addShowWithSetlist(){
     var member=members.find(function(m){return m.id===currentMemberId});
     if(!member) return;
     
-    // Validasi birthday show
     if (!validateBirthdayShow(isBirthdayShow, birthdayMember, [member.name])) {
         return;
     }
@@ -774,7 +781,7 @@ async function bulkAddShows(){
     }
     
     if(!showDate){
-        showDate = new Date().toISOString().split('T')[0];
+        showDate = getTodayDate();
     }
     
     if(!showTime){
@@ -797,7 +804,6 @@ async function bulkAddShows(){
         return;
     }
     
-    // Validasi birthday show
     if (!validateBirthdayShow(isBirthdayShow, birthdayMember, names)) {
         return;
     }
@@ -1031,11 +1037,10 @@ function showToast(message,isError){
     },3000);
 }
 
-// Helper functions for formatting
 function formatDate(dateString) {
     if (!dateString) return '-';
     const date = new Date(dateString);
-    const options = { day: 'numeric', month: 'short', year: 'numeric' };
+    const options = { day: 'numeric', month: 'long', year: 'numeric' };
     return date.toLocaleDateString('id-ID', options);
 }
 
@@ -1045,12 +1050,9 @@ function formatTime(timeString) {
     return `${parts[0]}:${parts[1]}`;
 }
 
-// ==================== CALENDAR FUNCTIONS ====================
-
 async function showCalendar() {
     document.getElementById('calendarModal').style.display = 'flex';
     
-    // Load show data for calendar
     await loadCalendarShows();
     renderCalendar();
 }
@@ -1062,15 +1064,18 @@ function closeCalendarModal() {
 
 async function loadCalendarShows() {
     try {
-        // Get shows from Januari 2026
-        var startDate = new Date(2026, 0, 1); // 1 Januari 2026
-        var endDate = new Date(2026, 0, 31); // 31 Januari 2026
+        // Hitung tanggal awal dan akhir bulan yang ditampilkan
+        var year = calendarDate.getFullYear();
+        var month = calendarDate.getMonth();
+        
+        var startDate = new Date(year, month, 1);
+        var endDate = new Date(year, month + 1, 0);
         
         var result = await db.from('setlist_performance')
             .select('*')
             .gte('show_date', startDate.toISOString().split('T')[0])
             .lte('show_date', endDate.toISOString().split('T')[0])
-            .order('show_time', { ascending: true }); // Order by time
+            .order('show_time', { ascending: true });
         
         if (result.error) throw result.error;
         
@@ -1085,7 +1090,8 @@ async function loadCalendarShows() {
             });
         }
         
-        console.log('📅 Loaded calendar data for Januari 2026:', Object.keys(calendarShows).length + ' days with shows');
+        var monthName = calendarDate.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+        console.log('📅 Loaded calendar data for ' + monthName + ':', Object.keys(calendarShows).length + ' days with shows');
     } catch (err) {
         console.error('Error loading calendar data:', err);
         showToast('Gagal memuat data kalender', true);
@@ -1096,38 +1102,42 @@ function renderCalendar() {
     var year = calendarDate.getFullYear();
     var month = calendarDate.getMonth();
     
-    // Update calendar title - HANYA Januari 2026
-    document.getElementById('calendarTitle').textContent = 'Januari 2026';
+    // Update title dengan bulan dan tahun yang benar
+    var monthName = calendarDate.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+    document.getElementById('calendarTitle').textContent = monthName.charAt(0).toUpperCase() + monthName.slice(1);
     
-    // Get first day of month and total days (Januari 2026)
-    var firstDay = new Date(2026, 0, 1);
-    var lastDay = new Date(2026, 0, 31);
-    var daysInMonth = 31; // Januari 2026 has 31 days
-    var startingDay = firstDay.getDay(); // 0 = Sunday, 1 = Monday, etc.
+    var firstDay = new Date(year, month, 1);
+    var lastDay = new Date(year, month + 1, 0);
+    var daysInMonth = lastDay.getDate();
+    var startingDay = firstDay.getDay();
     
-    // Adjust for Indonesian week (Monday first)
+    // Indonesia: Senin = 1, Minggu = 0 -> kita ubah ke Senin = 0, Minggu = 6
     var startingIndex = startingDay === 0 ? 6 : startingDay - 1;
     
-    // 8 Januari 2026 is selected date
-    var selectedDateStr = '2026-01-08';
+    var today = new Date();
+    var todayStr = getTodayDate();
+    var todayYear = today.getFullYear();
+    var todayMonth = today.getMonth();
+    var todayDate = today.getDate();
     
     var calendarHTML = '';
     var dayCount = 0;
     
-    // Empty cells for days before the first day of month
+    // Hari kosong di awal bulan
     for (var i = 0; i < startingIndex; i++) {
         calendarHTML += '<div class="calendar-day empty"></div>';
         dayCount++;
     }
     
-    // Days of the month (Januari 2026)
+    // Hari dalam bulan
     for (var day = 1; day <= daysInMonth; day++) {
-        var dateStr = '2026-01-' + String(day).padStart(2, '0');
+        var dateStr = year + '-' + String(month + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
         var dayShows = calendarShows[dateStr] || [];
         var isSelected = selectedCalendarDate === dateStr;
+        var isToday = (year === todayYear && month === todayMonth && day === todayDate);
         
         var dayClass = 'calendar-day';
-        if (day === 8) dayClass += ' today'; // 8 Januari sebagai hari ini
+        if (isToday) dayClass += ' today';
         if (dayShows.length > 0) dayClass += ' has-shows';
         if (isSelected) dayClass += ' selected';
         
@@ -1136,7 +1146,7 @@ function renderCalendar() {
         dayCount++;
     }
     
-    // Fill remaining cells
+    // Hari kosong di akhir bulan
     while (dayCount % 7 !== 0) {
         calendarHTML += '<div class="calendar-day empty"></div>';
         dayCount++;
@@ -1144,11 +1154,10 @@ function renderCalendar() {
     
     document.getElementById('calendarDays').innerHTML = calendarHTML;
     
-    // Automatically select 8 Januari 2026
     if (!selectedCalendarDate) {
-        selectedCalendarDate = '2026-01-08';
+        selectedCalendarDate = getTodayDate();
+        renderCalendarDayDetail(selectedCalendarDate);
     }
-    renderCalendarDayDetail(selectedCalendarDate);
 }
 
 function selectCalendarDate(dateStr) {
@@ -1176,9 +1185,10 @@ function renderCalendarDayDetail(dateStr) {
         dayShows.forEach(function(show) {
             var color = show.status === 'trainee' ? '#f59e0b' : '#22c55e';
             var timeText = show.show_time ? formatTime(show.show_time) + ' WIB' : '';
+            var birthdayBadge = show.is_birthday_show ? ' 🎂' : '';
             detailHTML += '<div class="calendar-event" style="--event-color:' + color + '">' +
                          '<div><span class="event-member">' + show.name + '</span>' +
-                         '<span class="event-setlist">' + show.setlist_name + '</span>' +
+                         '<span class="event-setlist">' + show.setlist_name + birthdayBadge + '</span>' +
                          (timeText ? '<span class="event-time">' + timeText + '</span>' : '') + '</div>' +
                          '<div class="event-status ' + show.status + '">' + 
                          (show.status === 'trainee' ? 'TRAINEE' : 'INTI') + '</div>' +
@@ -1191,21 +1201,42 @@ function renderCalendarDayDetail(dateStr) {
 }
 
 function calendarPrevMonth() {
-    // Disable navigation - tetap di Januari 2026
-    showToast('Kalender hanya menampilkan Januari 2026', false);
+    calendarDate.setMonth(calendarDate.getMonth() - 1);
+    loadCalendarShows().then(function() {
+        renderCalendar();
+        if (selectedCalendarDate) {
+            var selectedDate = new Date(selectedCalendarDate);
+            if (selectedDate.getMonth() !== calendarDate.getMonth() || 
+                selectedDate.getFullYear() !== calendarDate.getFullYear()) {
+                selectedCalendarDate = null;
+            }
+        }
+    });
 }
 
 function calendarNextMonth() {
-    // Disable navigation - tetap di Januari 2026
-    showToast('Kalender hanya menampilkan Januari 2026', false);
+    calendarDate.setMonth(calendarDate.getMonth() + 1);
+    loadCalendarShows().then(function() {
+        renderCalendar();
+        if (selectedCalendarDate) {
+            var selectedDate = new Date(selectedCalendarDate);
+            if (selectedDate.getMonth() !== calendarDate.getMonth() || 
+                selectedDate.getFullYear() !== calendarDate.getFullYear()) {
+                selectedCalendarDate = null;
+            }
+        }
+    });
 }
 
 function calendarGoToday() {
-    // Tetap ke 8 Januari 2026
-    selectedCalendarDate = '2026-01-08';
-    renderCalendar();
-    renderCalendarDayDetail(selectedCalendarDate);
-    showToast('Kembali ke 8 Januari 2026', false);
+    var today = new Date();
+    calendarDate = new Date(today.getFullYear(), today.getMonth(), 1);
+    selectedCalendarDate = getTodayDate();
+    loadCalendarShows().then(function() {
+        renderCalendar();
+        renderCalendarDayDetail(selectedCalendarDate);
+        showToast('Kembali ke hari ini', false);
+    });
 }
 
 document.addEventListener('DOMContentLoaded', function() {
