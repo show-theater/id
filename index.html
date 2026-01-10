@@ -236,7 +236,7 @@ const timeParts=show.show_time.split(':'),showHour=parseInt(timeParts[0])||0,sho
 console.log(`${show.setlist_name} ${show.show_time} - Diff: ${timeDiff}min`);
 if(timeDiff>=-TIME_CONFIG.LIVE_AFTER&&timeDiff<=TIME_CONFIG.LIVE_BEFORE){
 liveShows.push(show);
-console.log(`✅ LIVE: ${show.setlist_name} (${timeDiff}min)`);
+console.log(`LIVE: ${show.setlist_name} (${timeDiff}min)`);
 }
 });
 console.log('Live shows:',liveShows.length);
@@ -270,7 +270,7 @@ birthdayMember:showsBySetlist[setlistName][0]?.birthday_member||null
 };
 }
 });
-if(bestSetlist)console.log('✅ Selected:',bestSetlist);
+if(bestSetlist)console.log('Selected:',bestSetlist);
 return bestSetlist;
 }
 
@@ -283,17 +283,17 @@ return earliest;
 
 async function updateLiveShowBanner(){
 const banner=document.getElementById('liveShowBanner'),title=document.getElementById('liveShowTitle'),timeElement=document.getElementById('liveShowTime');
-console.log('🔄 Checking banner...');
+console.log('Checking banner...');
 try{
 const showData=await checkLiveShows();
 currentLiveShowData=showData;
 if(!showData){
 banner.style.display='none';
-console.log('❌ No live show');
+console.log('No live show');
 return;
 }
 banner.style.display='block';
-console.log('✅✅✅ BANNER MUNCUL! ✅✅✅');
+console.log('BANNER MUNCUL!');
 let displayTitle=showData.name;
 if(showData.isBirthdayShow&&showData.birthdayMember)displayTitle+=` (STS ${showData.birthdayMember})`;
 title.textContent=displayTitle;
@@ -304,7 +304,7 @@ timeElement.innerHTML=`<svg width="14" height="14" viewBox="0 0 24 24" fill="non
 timeElement.textContent=`Hari ini • ${showData.memberCount} members`;
 }
 }catch(err){
-console.error('❌ Error:',err);
+console.error('Error:',err);
 banner.style.display='none';
 }
 }
@@ -598,14 +598,14 @@ scrollSaveTimeout=setTimeout(()=>{if(isDataLoaded)sessionStorage.setItem('jkt48_
 window.addEventListener('beforeunload',()=>saveCurrentState());
 
 document.addEventListener('DOMContentLoaded',()=>{
-console.log('🚀 START');
-console.log('📍',Intl.DateTimeFormat().resolvedOptions().timeZone);
-console.log('⏰',new Date().toLocaleString('id-ID'));
+console.log('START');
+console.log(Intl.DateTimeFormat().resolvedOptions().timeZone);
+console.log(new Date().toLocaleString('id-ID'));
 initializeTheme();
 loadData();
 if(liveShowRefreshInterval)clearInterval(liveShowRefreshInterval);
 liveShowRefreshInterval=setInterval(()=>{
-console.log('⏲️ Refresh...');
+console.log('Refresh...');
 updateLiveShowBanner();
 },30000);
 });
