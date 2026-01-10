@@ -12,177 +12,27 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:Arial,sans-serif;background:#f5f5f5;color:#333;min-height:100vh;padding-bottom:60px;transition:background 0.3s,color 0.3s}
 body.dark{background:#0a0e1a;color:#e5e7eb}
-
-/* Header */
 header{background:#e60012;text-align:center;padding:20px 60px 20px 20px;font-size:24px;font-weight:bold;color:#fff;position:relative;display:flex;align-items:center;justify-content:center}
 .theme-toggle{position:absolute;right:20px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.2);border:none;color:#fff;width:40px;height:40px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:8px;transition:all 0.3s}
 .theme-toggle:hover{background:rgba(255,255,255,0.3);transform:translateY(-50%) scale(1.1)}
 .theme-toggle svg{width:20px;height:20px;transition:transform 0.3s}
 .theme-toggle:hover svg{transform:rotate(20deg)}
 body.dark .theme-toggle{background:rgba(0,0,0,0.2)}
-
-/* Live Show Banner - SIMPLIFIED */
-.live-show-banner {
-    color: white;
-    padding: 14px 20px;
-    margin: 0;
-    border-bottom: 3px solid #f59e0b;
-    cursor: pointer;
-    transition: all 0.3s;
-    display: none;
-    position: relative;
-    overflow: hidden;
-}
-
-.live-show-banner:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-.live-show-banner::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%);
-    animation: shimmer 3s infinite;
-    pointer-events: none;
-}
-
-@keyframes shimmer {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
-}
-
-/* LIVE NOW Styling */
-.live-show-banner.live-now {
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-    border-bottom-color: #f59e0b;
-}
-
-.live-show-banner.live-now:hover {
-    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
-}
-
-/* UPCOMING Styling */
-.live-show-banner.upcoming {
-    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-    border-bottom-color: #60a5fa;
-}
-
-.live-show-banner.upcoming:hover {
-    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-}
-
-.live-show-content {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 12px;
-    max-width: 1400px;
-    margin: 0 auto;
-    width: 100%;
-}
-
-.live-show-left {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex: 1;
-}
-
-.live-badge {
-    background: rgba(255,255,255,0.2);
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    white-space: nowrap;
-    flex-shrink: 0;
-}
-
-.live-dot {
-    width: 8px;
-    height: 8px;
-    background: #fff;
-    border-radius: 50%;
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
-}
-
-.live-show-info {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    flex: 1;
-}
-
-.live-show-title {
-    font-size: 16px;
-    font-weight: bold;
-    margin: 0;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.live-show-time {
-    font-size: 13px;
-    opacity: 0.9;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.live-show-right {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.see-detail-link {
-    color: #fbbf24;
-    font-size: 13px;
-    font-weight: bold;
-    text-decoration: none;
-    white-space: nowrap;
-    padding: 8px 16px;
-    border-radius: 20px;
-    transition: all 0.3s;
-    background: rgba(251,191,36,0.1);
-    border: 1px solid rgba(251,191,36,0.3);
-}
-
-.live-show-banner.upcoming .see-detail-link {
-    color: #93c5fd;
-    background: rgba(147, 197, 253, 0.1);
-    border: 1px solid rgba(147, 197, 253, 0.3);
-}
-
-.see-detail-link:hover {
-    background: rgba(251,191,36,0.2);
-    color: #f59e0b;
-    transform: translateX(4px);
-}
-
-.live-show-banner.upcoming .see-detail-link:hover {
-    background: rgba(147, 197, 253, 0.2);
-    color: #60a5fa;
-}
-
-/* Top section */
+.live-show-banner{color:white;padding:14px 20px;margin:0;border-bottom:3px solid #f59e0b;cursor:pointer;transition:all 0.3s;display:none;position:relative;overflow:hidden;background:linear-gradient(135deg,#ef4444 0%,#dc2626 100%)}
+.live-show-banner:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,0.2);background:linear-gradient(135deg,#dc2626 0%,#b91c1c 100%)}
+.live-show-banner::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,0.1) 50%,transparent 100%);animation:shimmer 3s infinite;pointer-events:none}
+@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.live-show-content{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;max-width:1400px;margin:0 auto;width:100%}
+.live-show-left{display:flex;align-items:center;gap:12px;flex:1}
+.live-badge{background:rgba(255,255,255,0.2);padding:6px 12px;border-radius:20px;font-size:12px;font-weight:bold;display:flex;align-items:center;gap:6px;white-space:nowrap;flex-shrink:0}
+.live-dot{width:8px;height:8px;background:#fff;border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+.live-show-info{display:flex;flex-direction:column;gap:4px;flex:1}
+.live-show-title{font-size:16px;font-weight:bold;margin:0;display:flex;align-items:center;gap:8px}
+.live-show-time{font-size:13px;opacity:0.9;display:flex;align-items:center;gap:6px}
+.live-show-right{display:flex;align-items:center;gap:10px}
+.see-detail-link{color:#fbbf24;font-size:13px;font-weight:bold;text-decoration:none;white-space:nowrap;padding:8px 16px;border-radius:20px;transition:all 0.3s;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3)}
+.see-detail-link:hover{background:rgba(251,191,36,0.2);color:#f59e0b;transform:translateX(4px)}
 .top{padding:15px 20px;background:#fff;border-bottom:1px solid #ddd;text-align:center;transition:background 0.3s,border-color 0.3s}
 body.dark .top{background:#1b1f3a;border-bottom:1px solid #2d3548}
 .search-box{display:inline-block;width:100%;max-width:400px;position:relative}
@@ -192,8 +42,6 @@ body.dark .search-box input{background:#0a0e1a;color:#e5e7eb;border-color:#66656
 .last-update{text-align:center;padding:8px;font-size:11px;color:#9ca3af;background:#fff;transition:background 0.3s;display:flex;align-items:center;justify-content:center;gap:6px}
 body.dark .last-update{background:#0a0e1a;color:#6b7280}
 .last-update .spinner{width:12px;height:12px;border-width:2px}
-
-/* Top member section */
 .top-member-section{padding:15px 20px;background:#fff;border-bottom:1px solid #ddd;transition:background 0.3s,border-color 0.3s}
 body.dark .top-member-section{background:#1b1f3a;border-bottom:1px solid #2d3548}
 .top-member-title{font-size:12px;font-weight:600;color:#6b7280;margin-bottom:8px;text-align:center}
@@ -211,8 +59,6 @@ body.dark .top-member-filter.setlist-pertaruhan{background:#900603;color:#fff}
 body.dark .top-member-filter.setlist-pajama{background:#00006d;color:#fff}
 body.dark .top-member-filter{background:#1f2937;color:#e5e7eb}
 body.dark .top-member-filter.active{border-color:#f87171}
-
-/* Filters */
 .filters{padding:15px 20px;background:#fff;border-bottom:1px solid #ddd;transition:background 0.3s,border-color 0.3s}
 body.dark .filters{background:#1b1f3a;border-bottom:1px solid #2d3548}
 .filter-section{margin-bottom:15px}
@@ -226,20 +72,15 @@ body.dark .filter-section-title{color:#9ca3af}
 body.dark .filter{background:#1f2937;color:#e5e7eb}
 body.dark .filter.active{background:#0a0e1a}
 body.dark .filter.gen-search{background:#4f46e5;color:#fff}
-
-/* Stats */
 .stats{text-align:center;padding:8px;font-size:12px;color:#9ca3af;background:#fff;transition:background 0.3s}
 body.dark .stats{background:#0a0e1a;color:#6b7280}
 .setlist-stats{text-align:center;padding:12px 20px;font-size:16px;font-weight:bold;color:#333;background:#fff;border-top:2px solid #f59e0b;display:none;margin:0;transition:background 0.3s,color 0.3s}
 body.dark .setlist-stats{background:#1b1f3a;color:#e5e7eb;border-top:2px solid #d97706}
-
-/* Container & Cards */
 .container{padding:20px;display:grid;gap:15px;max-width:1400px;margin:0 auto;width:100%}
 @media (max-width:767px){.container{grid-template-columns:repeat(4,1fr);gap:10px;padding:15px}}
 @media (min-width:768px) and (max-width:1023px){.container{grid-template-columns:repeat(8,1fr);gap:12px;padding:18px}}
 @media (min-width:1024px){.container{grid-template-columns:repeat(10,1fr);gap:15px;padding:20px}}
 @media (min-width:1200px){.container{grid-template-columns:repeat(12,1fr);gap:16px;padding:24px}}
-
 .card{background:#fff;border-radius:12px;overflow:hidden;text-align:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.1);transition:all 0.3s;display:flex;flex-direction:column;height:100%}
 .card:hover{transform:translateY(-4px);box-shadow:0 6px 16px rgba(0,0,0,0.15)}
 body.dark .card{background:#1b1f3a;box-shadow:0 2px 8px rgba(0,0,0,0.4)}
@@ -248,14 +89,12 @@ body.dark .card:hover{box-shadow:0 6px 16px rgba(0,0,0,0.6)}
 .card.setlist-card.rank-1{border-color:#f59e0b;box-shadow:0 0 15px rgba(245,158,11,0.3)}
 .card.setlist-card.rank-2{border-color:#9ca3af;box-shadow:0 0 10px rgba(156,163,175,0.2)}
 .card.setlist-card.rank-3{border-color:#d97706;box-shadow:0 0 8px rgba(217,119,6,0.2)}
-
 .avatar-container{width:100%;height:0;padding-bottom:133%;position:relative;overflow:hidden;background:#f0f0f0}
 body.dark .avatar-container{background:#0a0e1a}
 .avatar{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.3s}
 .card:hover .avatar{transform:scale(1.05)}
 .avatar-placeholder{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#f0f0f0,#e0e0e0);color:#9ca3af;font-size:14px;font-weight:bold}
 body.dark .avatar-placeholder{background:linear-gradient(135deg,#1f2937,#0a0e1a);color:#6b7280}
-
 .card-footer{padding:8px 6px;display:flex;flex-direction:column;flex-grow:1;min-height:80px;justify-content:space-between}
 .gen-badge{display:inline-block;background:rgba(0,0,0,0.3);color:#fff;font-size:9px;font-weight:bold;padding:2px 6px;border-radius:10px;margin-bottom:2px;letter-spacing:0.3px;align-self:center;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:90%}
 .name-container{margin:2px 0;min-height:28px;display:flex;align-items:center;justify-content:center}
@@ -266,15 +105,12 @@ body.dark .avatar-placeholder{background:linear-gradient(135deg,#1f2937,#0a0e1a)
 .bar span{display:block;height:100%;background:#fff;transition:width 0.5s ease}
 body.dark .bar{background:rgba(255,255,255,0.15)}
 body.dark .bar span{background:rgba(255,255,255,0.9)}
-
 .rank-badge{position:absolute;top:6px;left:6px;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:11px;z-index:2;box-shadow:0 2px 4px rgba(0,0,0,0.3)}
 .rank-badge.rank-1{background:#f59e0b;color:#000}
 .rank-badge.rank-2{background:#9ca3af;color:#fff}
 .rank-badge.rank-3{background:#d97706;color:#fff}
 .rank-badge.rank-4,.rank-badge.rank-5,.rank-badge.rank-6,.rank-badge.rank-7,.rank-badge.rank-8,.rank-badge.rank-9,.rank-badge.rank-10{background:#4b5563;color:#fff}
 .photo-setlist-badge{position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,0.85);color:#fff;font-size:8px;padding:2px 6px;border-radius:8px;z-index:2;font-weight:bold;letter-spacing:0.5px}
-
-/* Messages */
 .msg{grid-column:1/-1;text-align:center;padding:40px 20px;color:#9ca3af;font-size:14px}
 body.dark .msg{color:#6b7280}
 .loading{display:flex;align-items:center;justify-content:center;gap:8px;grid-column:1/-1;padding:60px 20px}
@@ -284,8 +120,6 @@ body.dark .spinner{border-color:rgba(255,255,255,0.1);border-top-color:#f59e0b}
 .simple-message{grid-column:1/-1;text-align:center;padding:40px 20px;color:#6b7280;font-size:14px}
 body.dark .simple-message{color:#9ca3af}
 .simple-message .icon{font-size:32px;margin-bottom:12px;opacity:0.5}
-
-/* Modal */
 .modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:1000;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
 .modal-overlay.active{display:flex}
 .modal{background:#fff;border-radius:16px;padding:24px;max-width:420px;width:90%;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.3);animation:modalSlide 0.3s ease-out}
@@ -316,204 +150,65 @@ body.dark .modal-close:hover{background:#374151;color:#e5e7eb}
 .gen-option.gen-12{background:#fde047;color:#000}
 .gen-option.gen-13{background:#facc15;color:#000}
 .gen-option.gen-14{background:#e879f9;color:#fff}
-
-/* Responsive */
 @media (max-width:767px){
-    .name{font-size:11px}
-    .show-info{font-size:9px;margin:2px 0 5px 0}
-    .gen-badge{font-size:8px;padding:1px 5px}
-    .bar{height:3px}
-    .rank-badge{width:20px;height:20px;font-size:10px}
-    .photo-setlist-badge{font-size:7px;padding:1px 4px}
-    .card-footer{padding:6px 4px;min-height:75px}
-    .name-container{min-height:26px}
-    header{position:sticky;top:0;z-index:100;padding:15px 50px 15px 15px;font-size:20px}
-    .theme-toggle{width:35px;height:35px;right:15px}
-    .top-member-filter{min-width:110px;padding:8px 12px;font-size:12px}
-    .filter{min-width:100px;padding:8px 12px;font-size:12px}
-    
-    .live-show-content {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 10px;
-    }
-    
-    .live-show-left {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-    }
-    
-    .live-show-info {
-        width: 100%;
-    }
-    
-    .live-show-title {
-        font-size: 14px;
-    }
-    
-    .live-show-time {
-        font-size: 12px;
-    }
-    
-    .live-show-right {
-        width: 100%;
-        justify-content: flex-end;
-    }
+.name{font-size:11px}
+.show-info{font-size:9px;margin:2px 0 5px 0}
+.gen-badge{font-size:8px;padding:1px 5px}
+.bar{height:3px}
+.rank-badge{width:20px;height:20px;font-size:10px}
+.photo-setlist-badge{font-size:7px;padding:1px 4px}
+.card-footer{padding:6px 4px;min-height:75px}
+.name-container{min-height:26px}
+header{position:sticky;top:0;z-index:100;padding:15px 50px 15px 15px;font-size:20px}
+.theme-toggle{width:35px;height:35px;right:15px}
+.top-member-filter{min-width:110px;padding:8px 12px;font-size:12px}
+.filter{min-width:100px;padding:8px 12px;font-size:12px}
+.live-show-content{flex-direction:column;align-items:stretch;gap:10px}
+.live-show-left{flex-direction:column;align-items:flex-start;gap:8px}
+.live-show-info{width:100%}
+.live-show-title{font-size:14px}
+.live-show-time{font-size:12px}
+.live-show-right{width:100%;justify-content:flex-end}
 }
 </style>
 </head>
 <body>
-<header>
-JKT48 SHOW THEATER
-<button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark Mode" aria-label="Ubah tema gelap/terang">
-<svg id="themeIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-<path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/>
-</svg>
-</button>
-</header>
-
-<div class="live-show-banner" id="liveShowBanner" onclick="openLiveShowDetail()">
-    <div class="live-show-content">
-        <div class="live-show-left">
-            <div class="live-badge" id="liveBadge">
-                <span class="live-dot"></span>
-                <span id="liveStatusText">LIVE NOW</span>
-            </div>
-            <div class="live-show-info">
-                <h3 class="live-show-title" id="liveShowTitle">Loading live shows...</h3>
-                <div class="live-show-time" id="liveShowTime">-</div>
-            </div>
-        </div>
-        
-        <div class="live-show-right">
-            <div class="see-detail-link">
-                Lihat Detail
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="top">
-<div class="search-box">
-<input type="text" id="searchInput" placeholder="Cari member..." oninput="searchMember()" aria-label="Cari member">
-</div>
-</div>
-
-<div class="last-update" id="lastUpdate">
-<div class="spinner"></div>
-<span>Loading...</span>
-</div>
-
-<div class="top-member-section">
-<div class="top-member-title">SETLIST PERFORMANCE</div>
-<div class="top-member-row">
-<button class="top-member-filter setlist-ramune" onclick="showSetlist('ramune')">Cara Meminum Ramune</button>
-<button class="top-member-filter setlist-tte" onclick="showSetlist('tte')">Te Wo Tsunaginagara</button>
-<button class="top-member-filter setlist-pertaruhan" onclick="showSetlist('pertaruhan')">Pertaruhan Cinta</button>
-<button class="top-member-filter setlist-pajama" onclick="showSetlist('pajama')">Pajama Drive</button>
-</div>
-</div>
-
-<div class="filters">
-<div class="filter-section">
-<div class="filter-section-title">CARI GENERASI</div>
-<div class="filter-row">
-<button class="filter gen-search" onclick="openGenModal()">Pilih Generasi</button>
-</div>
-</div>
-<div class="filter-section">
-<div class="filter-section-title">FILTER TEAM</div>
-<div class="filter-row">
-<button class="filter team-filter" onclick="filterTeam('Love')" style="background:#ec4899;color:#fff">Team Love</button>
-<button class="filter team-filter" onclick="filterTeam('Dream')" style="background:#06b6d4;color:#fff">Team Dream</button>
-<button class="filter team-filter" onclick="filterTeam('Passion')" style="background:#fbbf24;color:#fff">Team Passion</button>
-</div>
-</div>
-</div>
-
+<header>JKT48 SHOW THEATER<button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark Mode"><svg id="themeIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/></svg></button></header>
+<div class="live-show-banner" id="liveShowBanner" onclick="openLiveShowDetail()"><div class="live-show-content"><div class="live-show-left"><div class="live-badge"><span class="live-dot"></span><span>LIVE NOW</span></div><div class="live-show-info"><h3 class="live-show-title" id="liveShowTitle">Loading...</h3><div class="live-show-time" id="liveShowTime">-</div></div></div><div class="live-show-right"><div class="see-detail-link">Lihat Detail</div></div></div></div>
+<div class="top"><div class="search-box"><input type="text" id="searchInput" placeholder="Cari member..." oninput="searchMember()"></div></div>
+<div class="last-update" id="lastUpdate"><div class="spinner"></div><span>Loading...</span></div>
+<div class="top-member-section"><div class="top-member-title">SETLIST PERFORMANCE</div><div class="top-member-row"><button class="top-member-filter setlist-ramune" onclick="showSetlist('ramune')">Cara Meminum Ramune</button><button class="top-member-filter setlist-tte" onclick="showSetlist('tte')">Te Wo Tsunaginagara</button><button class="top-member-filter setlist-pertaruhan" onclick="showSetlist('pertaruhan')">Pertaruhan Cinta</button><button class="top-member-filter setlist-pajama" onclick="showSetlist('pajama')">Pajama Drive</button></div></div>
+<div class="filters"><div class="filter-section"><div class="filter-section-title">CARI GENERASI</div><div class="filter-row"><button class="filter gen-search" onclick="openGenModal()">Pilih Generasi</button></div></div><div class="filter-section"><div class="filter-section-title">FILTER TEAM</div><div class="filter-row"><button class="filter team-filter" onclick="filterTeam('Love')" style="background:#ec4899;color:#fff">Team Love</button><button class="filter team-filter" onclick="filterTeam('Dream')" style="background:#06b6d4;color:#fff">Team Dream</button><button class="filter team-filter" onclick="filterTeam('Passion')" style="background:#fbbf24;color:#fff">Team Passion</button></div></div></div>
 <div class="stats" id="stats"></div>
 <div class="setlist-stats" id="setlistStats"></div>
-
-<div class="container" id="list">
-<div class="loading">
-<div class="spinner"></div>
-<span>Loading data...</span>
-</div>
-</div>
-
-<div class="modal-overlay" id="genModal" onclick="closeModalOnOverlay(event)">
-<div class="modal">
-<div class="modal-header">
-<div class="modal-title">Pilih Generasi</div>
-<button class="modal-close" onclick="closeGenModal()" aria-label="Tutup">×</button>
-</div>
-<div class="gen-grid">
-<div class="gen-option all-gen" onclick="selectGen('all')">All Generasi</div>
-<div class="gen-option gen-3" onclick="selectGen(3)">Gen 3</div>
-<div class="gen-option gen-6" onclick="selectGen(6)">Gen 6</div>
-<div class="gen-option gen-7" onclick="selectGen(7)">Gen 7</div>
-<div class="gen-option gen-8" onclick="selectGen(8)">Gen 8</div>
-<div class="gen-option gen-9" onclick="selectGen(9)">Gen 9</div>
-<div class="gen-option gen-10" onclick="selectGen(10)">Gen 10</div>
-<div class="gen-option gen-11" onclick="selectGen(11)">Gen 11</div>
-<div class="gen-option gen-12" onclick="selectGen(12)">Gen 12</div>
-<div class="gen-option gen-13" onclick="selectGen(13)">Gen 13</div>
-<div class="gen-option gen-14" onclick="selectGen(14)">Gen 14</div>
-</div>
-</div>
-</div>
-
+<div class="container" id="list"><div class="loading"><div class="spinner"></div><span>Loading data...</span></div></div>
+<div class="modal-overlay" id="genModal" onclick="closeModalOnOverlay(event)"><div class="modal"><div class="modal-header"><div class="modal-title">Pilih Generasi</div><button class="modal-close" onclick="closeGenModal()">×</button></div><div class="gen-grid"><div class="gen-option all-gen" onclick="selectGen('all')">All Generasi</div><div class="gen-option gen-3" onclick="selectGen(3)">Gen 3</div><div class="gen-option gen-6" onclick="selectGen(6)">Gen 6</div><div class="gen-option gen-7" onclick="selectGen(7)">Gen 7</div><div class="gen-option gen-8" onclick="selectGen(8)">Gen 8</div><div class="gen-option gen-9" onclick="selectGen(9)">Gen 9</div><div class="gen-option gen-10" onclick="selectGen(10)">Gen 10</div><div class="gen-option gen-11" onclick="selectGen(11)">Gen 11</div><div class="gen-option gen-12" onclick="selectGen(12)">Gen 12</div><div class="gen-option gen-13" onclick="selectGen(13)">Gen 13</div><div class="gen-option gen-14" onclick="selectGen(14)">Gen 14</div></div></div></div>
 <script>
 const SUPABASE_URL="https://pprxfopqkvpeajeoxzig.supabase.co";
 const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBwcnhmb3Bxa3ZwZWFqZW94emlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYyNTI4MTIsImV4cCI6MjA4MTgyODgxMn0.iXRO_dAHhtVHRLqGTresG_63RD2zIaopNXtXYNfthdg";
 const GEN_COLORS={3:'#ec4899',6:'#22c55e',7:'#15803d',8:'#1e40af',9:'#06b6d4',10:'#38bdf8',11:'#f97316',12:'#fde047',13:'#facc15',14:'#e879f9'};
 const SETLIST_DATA={ramune:{id:'ramune',title:'Cara Meminum Ramune',members:{}},tte:{id:'tte',title:'Te Wo Tsunaginagara',members:{}},pertaruhan:{id:'pertaruhan',title:'Pertaruhan Cinta',members:{}},pajama:{id:'pajama',title:'Pajama Drive',members:{}}};
-
-// TIME CONFIGURATION
-const TIME_CONFIG = {
-    LIVE_BEFORE: 5,      // 5 menit sebelum = LIVE
-    LIVE_AFTER: 150,     // 150 menit sesudah = LIVE (2.5 jam show)
-    UPCOMING_BEFORE: 15  // 15 menit sebelum = UPCOMING
-};
-
+const TIME_CONFIG={LIVE_BEFORE:5,LIVE_AFTER:150};
 const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-let members=[];
-let allMembersData=[];
-let currentGen='all';
-let currentTeam='all';
-let searchQuery='';
-let isDataLoaded=false;
-let scrollSaveTimeout;
-let currentSetlistView=null;
-let currentLiveShowData=null;
-let liveShowRefreshInterval=null;
+let members=[],allMembersData=[],currentGen='all',currentTeam='all',searchQuery='',isDataLoaded=false,scrollSaveTimeout,currentSetlistView=null,currentLiveShowData=null,liveShowRefreshInterval=null;
 
 function initializeTheme(){
-const savedTheme=localStorage.getItem('jkt48_theme')||'light';
-const icon=document.getElementById('themeIcon');
+const savedTheme=localStorage.getItem('jkt48_theme')||'light',icon=document.getElementById('themeIcon');
 if(savedTheme==='dark'){
 document.documentElement.classList.add('dark');
 document.body.classList.add('dark');
-if(icon){
-icon.innerHTML='<path d="M12,17a5,5,0,1,1,5-5A5,5,0,0,1,12,17Zm0-8a3,3,0,1,0,3,3A3,3,0,0,0,12,9Zm0-4a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41L6.34,5A1,1,0,0,0,4.93,6.34ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm.64,5.66a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71a1,1,0,0,0-1.41-1.41ZM12,19a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19Zm6.36-2.34a1,1,0,0,0-1.41,1.41l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-3.64-3.95a1,1,0,0,0,.7.29,1,1,0,0,0,.71-1.7l-.71-.71a1,1,0,0,0-1.41,1.41Z"/>';
-}
+if(icon)icon.innerHTML='<path d="M12,17a5,5,0,1,1,5-5A5,5,0,0,1,12,17Zm0-8a3,3,0,1,0,3,3A3,3,0,0,0,12,9Zm0-4a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41L6.34,5A1,1,0,0,0,4.93,6.34ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm.64,5.66a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71a1,1,0,0,0-1.41-1.41ZM12,19a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19Zm6.36-2.34a1,1,0,0,0-1.41,1.41l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-3.64-3.95a1,1,0,0,0,.7.29,1,1,0,0,0,.71-1.7l-.71-.71a1,1,0,0,0-1.41,1.41Z"/>';
 }else{
 document.documentElement.classList.remove('dark');
 document.body.classList.remove('dark');
-if(icon){
-icon.innerHTML='<path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/>';
-}
+if(icon)icon.innerHTML='<path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/>';
 }
 }
 
 function toggleTheme(){
-const body=document.body;
-const icon=document.getElementById('themeIcon');
-const html=document.documentElement;
-const themeToggle=document.querySelector('.theme-toggle');
+const body=document.body,icon=document.getElementById('themeIcon'),html=document.documentElement,themeToggle=document.querySelector('.theme-toggle');
 themeToggle.style.transform='translateY(-50%) scale(0.9)';
-setTimeout(()=>{themeToggle.style.transform='translateY(-50%) scale(1)'},150);
+setTimeout(()=>themeToggle.style.transform='translateY(-50%) scale(1)',150);
 body.classList.toggle('dark');
 html.classList.toggle('dark');
 if(body.classList.contains('dark')){
@@ -525,224 +220,111 @@ localStorage.setItem('jkt48_theme','light');
 }
 }
 
-async function checkLiveShows() {
-    try {
-        const now = new Date();
-        const today = now.toISOString().split('T')[0];
-        const currentHour = now.getHours();
-        const currentMinute = now.getMinutes();
-        const currentTotalMinutes = currentHour * 60 + currentMinute;
-        
-        console.log('Checking shows for:', today, 'Current time:', currentHour + ':' + currentMinute);
-        
-        // Ambil semua show untuk hari ini
-        const { data: shows, error } = await db
-            .from('setlist_performance')
-            .select('*')
-            .eq('show_date', today)
-            .order('show_time', { ascending: true });
-        
-        if (error) {
-            console.error('Error fetching shows:', error);
-            return null;
-        }
-        
-        if (!shows || shows.length === 0) {
-            return null;
-        }
-        
-        // Kategorisasi show
-        const liveShows = [];
-        const upcomingShows = [];
-        
-        shows.forEach(show => {
-            if (!show.show_time) return;
-            
-            const [showHour, showMinute] = show.show_time.split(':').map(Number);
-            const showTotalMinutes = showHour * 60 + (showMinute || 0);
-            const timeDiff = showTotalMinutes - currentTotalMinutes;
-            
-            // LIVE: -5 to 150 menit
-            if (timeDiff >= -TIME_CONFIG.LIVE_BEFORE && timeDiff <= TIME_CONFIG.LIVE_AFTER) {
-                liveShows.push(show);
-            }
-            // UPCOMING: tepat 15 menit sebelum
-            else if (timeDiff > 0 && timeDiff <= TIME_CONFIG.UPCOMING_BEFORE) {
-                upcomingShows.push(show);
-            }
-        });
-        
-        console.log('Live shows found:', liveShows.length, 'Upcoming shows found:', upcomingShows.length);
-        
-        // Prioritaskan LIVE dulu, baru UPCOMING
-        if (liveShows.length > 0) {
-            return prepareShowData(liveShows, 'live');
-        } else if (upcomingShows.length > 0) {
-            return prepareShowData(upcomingShows, 'upcoming');
-        }
-        
-        return null;
-        
-    } catch (err) {
-        console.error('Error in checkLiveShows:', err);
-        return null;
-    }
+async function checkLiveShows(){
+try{
+const now=new Date(),today=now.toISOString().split('T')[0],currentHour=now.getHours(),currentMinute=now.getMinutes(),currentTotalMinutes=currentHour*60+currentMinute;
+console.log('=== DEBUG LIVE SHOW ===');
+console.log('Hari ini:',today,'Waktu:',`${currentHour}:${currentMinute} (${currentTotalMinutes} menit)`);
+const{data:shows,error}=await db.from('setlist_performance').select('*').eq('show_date',today).order('show_time',{ascending:true});
+if(error){console.error('Error:',error);return null;}
+console.log('Total shows:',shows?.length||0);
+if(!shows||shows.length===0){console.log('Tidak ada show hari ini');return null;}
+const liveShows=[];
+shows.forEach(show=>{
+if(!show.show_time)return;
+const timeParts=show.show_time.split(':'),showHour=parseInt(timeParts[0])||0,showMinute=parseInt(timeParts[1])||0,showTotalMinutes=showHour*60+showMinute,timeDiff=showTotalMinutes-currentTotalMinutes;
+console.log(`${show.setlist_name} ${show.show_time} - Diff: ${timeDiff}min`);
+if(timeDiff>=-TIME_CONFIG.LIVE_AFTER&&timeDiff<=TIME_CONFIG.LIVE_BEFORE){
+liveShows.push(show);
+console.log(`✅ LIVE: ${show.setlist_name} (${timeDiff}min)`);
+}
+});
+console.log('Live shows:',liveShows.length);
+if(liveShows.length>0)return prepareShowData(liveShows);
+return null;
+}catch(err){
+console.error('Error checkLiveShows:',err);
+return null;
+}
 }
 
-function prepareShowData(shows, status) {
-    // Kelompokkan berdasarkan setlist
-    const showsBySetlist = {};
-    shows.forEach(show => {
-        const setlistName = show.setlist_name || 'Unknown Setlist';
-        if (!showsBySetlist[setlistName]) {
-            showsBySetlist[setlistName] = [];
-        }
-        showsBySetlist[setlistName].push(show);
-    });
-    
-    // Cari setlist dengan member terbanyak
-    let bestSetlist = null;
-    let maxMembers = 0;
-    
-    Object.keys(showsBySetlist).forEach(setlistName => {
-        const memberCount = new Set(showsBySetlist[setlistName].map(s => s.name)).size;
-        
-        if (memberCount > maxMembers) {
-            maxMembers = memberCount;
-            bestSetlist = {
-                name: setlistName,
-                shows: showsBySetlist[setlistName],
-                memberCount: memberCount,
-                earliestTime: getEarliestTime(showsBySetlist[setlistName]),
-                status: status,  // 'live' atau 'upcoming'
-                isBirthdayShow: showsBySetlist[setlistName][0]?.is_birthday_show || false,
-                birthdayMember: showsBySetlist[setlistName][0]?.birthday_member || null
-            };
-        }
-    });
-    
-    return bestSetlist;
+function prepareShowData(shows){
+const showsBySetlist={};
+shows.forEach(show=>{
+const setlistName=show.setlist_name||'Unknown';
+if(!showsBySetlist[setlistName])showsBySetlist[setlistName]=[];
+showsBySetlist[setlistName].push(show);
+});
+let bestSetlist=null,maxMembers=0;
+Object.keys(showsBySetlist).forEach(setlistName=>{
+const memberCount=new Set(showsBySetlist[setlistName].map(s=>s.name)).size;
+if(memberCount>maxMembers){
+maxMembers=memberCount;
+bestSetlist={
+name:setlistName,
+shows:showsBySetlist[setlistName],
+memberCount:memberCount,
+earliestTime:getEarliestTime(showsBySetlist[setlistName]),
+isBirthdayShow:showsBySetlist[setlistName][0]?.is_birthday_show||false,
+birthdayMember:showsBySetlist[setlistName][0]?.birthday_member||null
+};
+}
+});
+if(bestSetlist)console.log('✅ Selected:',bestSetlist);
+return bestSetlist;
 }
 
-function getEarliestTime(shows) {
-    if (!shows || shows.length === 0) return null;
-    
-    let earliest = shows[0].show_time;
-    shows.forEach(show => {
-        if (show.show_time && show.show_time < earliest) {
-            earliest = show.show_time;
-        }
-    });
-    
-    return earliest;
+function getEarliestTime(shows){
+if(!shows||shows.length===0)return null;
+let earliest=shows[0].show_time;
+shows.forEach(show=>{if(show.show_time&&show.show_time<earliest)earliest=show.show_time;});
+return earliest;
 }
 
-function calculateTimeUntil(showTime) {
-    const now = new Date();
-    const currentTotalMinutes = now.getHours() * 60 + now.getMinutes();
-    
-    const [showHour, showMinute] = showTime.split(':').map(Number);
-    const showTotalMinutes = showHour * 60 + (showMinute || 0);
-    
-    const diffMinutes = showTotalMinutes - currentTotalMinutes;
-    
-    if (diffMinutes <= 5) {
-        return 'sebentar lagi';
-    } else if (diffMinutes < 60) {
-        return `dalam ${diffMinutes} menit`;
-    } else {
-        const hours = Math.floor(diffMinutes / 60);
-        const minutes = diffMinutes % 60;
-        return minutes > 0 ? `dalam ${hours} jam ${minutes} menit` : `dalam ${hours} jam`;
-    }
+async function updateLiveShowBanner(){
+const banner=document.getElementById('liveShowBanner'),title=document.getElementById('liveShowTitle'),timeElement=document.getElementById('liveShowTime');
+console.log('🔄 Checking banner...');
+try{
+const showData=await checkLiveShows();
+currentLiveShowData=showData;
+if(!showData){
+banner.style.display='none';
+console.log('❌ No live show');
+return;
+}
+banner.style.display='block';
+console.log('✅✅✅ BANNER MUNCUL! ✅✅✅');
+let displayTitle=showData.name;
+if(showData.isBirthdayShow&&showData.birthdayMember)displayTitle+=` (STS ${showData.birthdayMember})`;
+title.textContent=displayTitle;
+if(showData.earliestTime){
+const timeStr=showData.earliestTime.slice(0,5);
+timeElement.innerHTML=`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> ${timeStr} WIB • ${showData.memberCount} members`;
+}else{
+timeElement.textContent=`Hari ini • ${showData.memberCount} members`;
+}
+}catch(err){
+console.error('❌ Error:',err);
+banner.style.display='none';
+}
 }
 
-async function updateLiveShowBanner() {
-    const banner = document.getElementById('liveShowBanner');
-    const title = document.getElementById('liveShowTitle');
-    const timeElement = document.getElementById('liveShowTime');
-    const statusText = document.getElementById('liveStatusText');
-    
-    try {
-        const showData = await checkLiveShows();
-        currentLiveShowData = showData;
-        
-        if (!showData) {
-            banner.style.display = 'none';
-            return;
-        }
-        
-        banner.style.display = 'block';
-        
-        // Update class dan styling berdasarkan status
-        banner.className = 'live-show-banner ' + (showData.status === 'live' ? 'live-now' : 'upcoming');
-        
-        // Update status text
-        statusText.textContent = showData.status === 'live' ? 'LIVE NOW' : 'UPCOMING';
-        
-        // Tampilkan title dengan info birthday
-        let displayTitle = showData.name;
-        if (showData.isBirthdayShow && showData.birthdayMember) {
-            displayTitle += ` (STS ${showData.birthdayMember})`;
-        }
-        title.textContent = displayTitle;
-        
-        // Tampilkan waktu sesuai status
-        if (showData.earliestTime) {
-            const timeStr = showData.earliestTime.slice(0, 5);
-            
-            if (showData.status === 'live') {
-                timeElement.innerHTML = `
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <polyline points="12 6 12 12 16 14"></polyline>
-                    </svg> 
-                    ${timeStr} WIB • ${showData.memberCount} members
-                `;
-            } else if (showData.status === 'upcoming') {
-                const timeUntil = calculateTimeUntil(showData.earliestTime);
-                timeElement.innerHTML = `
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <polyline points="12 6 12 12 16 14"></polyline>
-                    </svg> 
-                    ${timeStr} WIB • Mulai ${timeUntil} • ${showData.memberCount} members
-                `;
-            }
-        } else {
-            timeElement.textContent = showData.status === 'live' 
-                ? `Hari ini • ${showData.memberCount} members`
-                : `Akan dimulai • ${showData.memberCount} members`;
-        }
-        
-    } catch (err) {
-        console.error('Error updating live show banner:', err);
-        banner.style.display = 'none';
-    }
-}
-
-function openLiveShowDetail() {
-    if (!currentLiveShowData) return;
-    
-    const setlistName = encodeURIComponent(currentLiveShowData.name);
-    const today = new Date().toISOString().split('T')[0];
-    window.location.href = `liveshow.html?setlist=${setlistName}&date=${today}`;
+function openLiveShowDetail(){
+if(!currentLiveShowData)return;
+const setlistName=encodeURIComponent(currentLiveShowData.name),today=new Date().toISOString().split('T')[0];
+window.location.href=`liveshow.html?setlist=${setlistName}&date=${today}`;
 }
 
 function openGenModal(){
 document.getElementById('genModal').classList.add('active');
 document.body.style.overflow='hidden';
 setTimeout(()=>{
-const genOptions=document.querySelectorAll('.gen-option');
-genOptions.forEach(option=>{
+document.querySelectorAll('.gen-option').forEach(option=>{
 option.classList.remove('active');
-if(option.classList.contains('all-gen')&&currentGen==='all'){
-option.classList.add('active');
-}else if(option.textContent.includes('Gen')){
+if(option.classList.contains('all-gen')&&currentGen==='all')option.classList.add('active');
+else if(option.textContent.includes('Gen')){
 const genNum=parseInt(option.textContent.replace('Gen ','').trim());
-if(genNum===currentGen){
-option.classList.add('active');
-}
+if(genNum===currentGen)option.classList.add('active');
 }
 });
 },10);
@@ -754,9 +336,7 @@ document.body.style.overflow='auto';
 }
 
 function closeModalOnOverlay(e){
-if(e.target===document.getElementById('genModal')){
-closeGenModal();
-}
+if(e.target===document.getElementById('genModal'))closeGenModal();
 }
 
 function selectGen(gen){
@@ -777,296 +357,150 @@ saveCurrentState();
 
 async function loadData(){
 try{
-console.log('Memuat data dari database...');
+console.log('Memuat data...');
 const{data:membersData,error:membersError}=await db.from('members').select('*').order('show',{ascending:false});
-if(membersError){
-console.error('Error loading members:',membersError);
-throw membersError;
-}
+if(membersError)throw membersError;
 members=membersData||[];
 allMembersData=[...members];
-console.log('Data members loaded:',members.length,'members');
+console.log('Members:',members.length);
 await loadSetlistData();
 await updateLiveShowBanner();
 restoreState();
 if(members.length===0){
-document.getElementById('list').innerHTML='<div class="msg">Tidak ada data member</div>';
+document.getElementById('list').innerHTML='<div class="msg">Tidak ada data</div>';
 document.getElementById('lastUpdate').innerHTML='Tidak ada data';
 }else{
 await updateLastUpdate();
 renderMembers();
 updateStats();
 isDataLoaded=true;
-setTimeout(()=>{
-restoreScrollPosition();
-},100);
+setTimeout(()=>restoreScrollPosition(),100);
 }
 }catch(err){
 console.error('Error:',err);
 document.getElementById('list').innerHTML='<div class="msg" style="color:#ef4444">Error: '+err.message+'</div>';
-document.getElementById('lastUpdate').innerHTML='Error loading data';
+document.getElementById('lastUpdate').innerHTML='Error';
 }
 }
 
 async function loadSetlistData(){
 try{
-console.log('Memuat data setlist dari tabel setlist_performance...');
-const{data:setlistData,error:setlistError}=await db.from('setlist_performance').select('*');
-if(setlistError){
-console.error('Error loading setlist data:',setlistError);
-}
-console.log('Data setlist ditemukan:',setlistData?.length||0,'records');
-Object.keys(SETLIST_DATA).forEach(key=>{SETLIST_DATA[key].members={}});
+const{data:setlistData}=await db.from('setlist_performance').select('*');
+console.log('Setlist data:',setlistData?.length||0);
+Object.keys(SETLIST_DATA).forEach(key=>SETLIST_DATA[key].members={});
 members.forEach(member=>{
-const memberName=member.name;
-Object.keys(SETLIST_DATA).forEach(setlistKey=>{
-SETLIST_DATA[setlistKey].members[memberName]=0;
-});
+Object.keys(SETLIST_DATA).forEach(key=>SETLIST_DATA[key].members[member.name]=0);
 });
 if(setlistData&&setlistData.length>0){
 const showCountMap={};
 setlistData.forEach(record=>{
-const memberName=record.name;
-const setlistName=record.setlist_name;
-const shows=parseInt(record.show_count)||1;
+const memberName=record.name,setlistName=record.setlist_name,shows=parseInt(record.show_count)||1;
 if(setlistName){
 const setName=setlistName.toLowerCase();
-let setlistKey=null;
-if(setName.includes('ramune')||setName.includes('mennhum')){
-setlistKey='ramune';
-}else if(setName.includes('tsunaginagara')||setName.includes('tsunaginagara')||setName.includes('tte')){
-setlistKey='tte';
-}else if(setName.includes('pertaruhan')||setName.includes('cinta')){
-setlistKey='pertaruhan';
-}else if(setName.includes('pajama')){
-setlistKey='pajama';
-}
-if(setlistKey){
-const mapKey=`${memberName}_${setlistKey}`;
-if(!showCountMap[mapKey]){
-showCountMap[mapKey]=shows;
-}else{
-showCountMap[mapKey]+=shows;
-}
+let key=null;
+if(setName.includes('ramune'))key='ramune';
+else if(setName.includes('tsunaginagara')||setName.includes('tte'))key='tte';
+else if(setName.includes('pertaruhan'))key='pertaruhan';
+else if(setName.includes('pajama'))key='pajama';
+if(key){
+const mapKey=`${memberName}_${key}`;
+showCountMap[mapKey]=(showCountMap[mapKey]||0)+shows;
 }
 }
 });
 Object.keys(showCountMap).forEach(mapKey=>{
-const[memberName,setlistKey]=mapKey.split('_');
-const totalShows=showCountMap[mapKey];
-if(SETLIST_DATA[setlistKey]){
-SETLIST_DATA[setlistKey].members[memberName]=totalShows;
-}
+const[memberName,key]=mapKey.split('_');
+if(SETLIST_DATA[key])SETLIST_DATA[key].members[memberName]=showCountMap[mapKey];
 });
-console.log('Setlist data processed with aggregation');
 }
-}catch(err){
-console.error('Error loading setlist data:',err);
-}
+}catch(err){console.error('Error setlist:',err);}
 }
 
 async function updateLastUpdate(){
 if(members.length===0)return;
 try{
-const{data:latestSetlist,error}=await db.from('setlist_performance').select('updated_at').order('updated_at',{ascending:false}).limit(1).single();
-if(!error&&latestSetlist&&latestSetlist.updated_at){
-const setlistUpdate=new Date(latestSetlist.updated_at);
-const options={day:'numeric',month:'short',year:'numeric'};
-const formatted=setlistUpdate.toLocaleDateString('id-ID',options);
+const{data,error}=await db.from('setlist_performance').select('updated_at').order('updated_at',{ascending:false}).limit(1).single();
+if(!error&&data&&data.updated_at){
+const date=new Date(data.updated_at),formatted=date.toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'});
 document.getElementById('lastUpdate').innerHTML='Update: '+formatted;
 return;
 }
-}catch(err){
-console.log('Tidak bisa mengambil data update:',err.message);
-}
+}catch(err){}
 document.getElementById('lastUpdate').innerHTML='Data tersedia';
 }
 
-function openMemberPage(memberName){
+function openMemberPage(name){
 saveCurrentState();
-let targetPage;
-if(currentSetlistView){
-targetPage='show.html';
-}else{
-targetPage='detail.html';
-}
-window.location.href=targetPage+'?member='+encodeURIComponent(memberName);
+window.location.href=(currentSetlistView?'show.html':'detail.html')+'?member='+encodeURIComponent(name);
 }
 
 function renderMembers(){
 const list=document.getElementById('list');
 searchQuery=document.getElementById('searchInput').value.trim();
-if(currentSetlistView){
-renderSetlistMembers();
-return;
-}
+if(currentSetlistView){renderSetlistMembers();return;}
 let filtered=members.filter(m=>{
-const matchGen=currentGen==='all'||m.gen===currentGen;
-const matchTeam=currentTeam==='all'||m.team===currentTeam;
-const matchSearch=!searchQuery||m.name.toLowerCase().includes(searchQuery.toLowerCase());
+const matchGen=currentGen==='all'||m.gen===currentGen,matchTeam=currentTeam==='all'||m.team===currentTeam,matchSearch=!searchQuery||m.name.toLowerCase().includes(searchQuery.toLowerCase());
 return matchGen&&matchTeam&&matchSearch;
 });
 if(filtered.length===0){
-let message='';
-if(searchQuery){
-message=`Tidak ada member dengan nama "${searchQuery}"`;
-}else if(currentTeam!=='all'){
-message=`Belum Tersedia Member ${currentTeam}, Mohon Tunggu`;
-}else if(currentGen!=='all'){
-message=`Belum ada data untuk Generasi ${currentGen}`;
-}else{
-message='Belum ada data member';
-}
-list.innerHTML=`<div class="simple-message">${message}</div>`;
+let msg='';
+if(searchQuery)msg=`Tidak ada "${searchQuery}"`;
+else if(currentTeam!=='all')msg=`Belum Tersedia ${currentTeam}`;
+else if(currentGen!=='all')msg=`Belum ada Gen ${currentGen}`;
+else msg='Belum ada data';
+list.innerHTML=`<div class="simple-message">${msg}</div>`;
 return;
 }
 list.innerHTML='';
-const sorted=filtered.sort((a,b)=>b.show-a.show);
-sorted.forEach((m,index)=>{
-const rank=index+1;
-const percent=Math.min(100,(m.show/1000)*100);
-const color=GEN_COLORS[m.gen]||'#6366f1';
-const card=document.createElement('div');
+filtered.sort((a,b)=>b.show-a.show).forEach(m=>{
+const percent=Math.min(100,(m.show/1000)*100),color=GEN_COLORS[m.gen]||'#6366f1',card=document.createElement('div');
 card.className='card';
-card.addEventListener('click',function(){
-openMemberPage(m.name);
-});
-const avatarHtml=`
-<div class="avatar-container">
-<img class="avatar" 
-src="img/${m.name.toLowerCase()}.jpg" 
-alt="${m.name}"
-loading="lazy"
-onerror="this.onerror=null; this.style.display='none'; this.parentNode.innerHTML='<div class=\\'avatar-placeholder\\'>${m.name.charAt(0)}</div>'">
-</div>
-`;
-card.innerHTML=avatarHtml+`
-<div class="card-footer" style="background-color: ${color}">
-<div class="gen-badge">Gen ${m.gen}</div>
-<div class="name-container">
-<div class="name">${m.name}</div>
-</div>
-<div class="show-info">${m.show} show</div>
-<div class="bar-container">
-<div class="bar"><span style="width:${percent}%"></span></div>
-</div>
-</div>
-`;
+card.addEventListener('click',()=>openMemberPage(m.name));
+card.innerHTML=`<div class="avatar-container"><img class="avatar" src="img/${m.name.toLowerCase()}.jpg" alt="${m.name}" loading="lazy" onerror="this.onerror=null;this.style.display='none';this.parentNode.innerHTML='<div class=\\'avatar-placeholder\\'>${m.name.charAt(0)}</div>'"></div><div class="card-footer" style="background-color:${color}"><div class="gen-badge">Gen ${m.gen}</div><div class="name-container"><div class="name">${m.name}</div></div><div class="show-info">${m.show} show</div><div class="bar-container"><div class="bar"><span style="width:${percent}%"></span></div></div></div>`;
 list.appendChild(card);
 });
 }
 
 function renderSetlistMembers(){
-const list=document.getElementById('list');
-const setlistData=SETLIST_DATA[currentSetlistView];
-if(!setlistData){
-list.innerHTML=`
-<div class="simple-message">
-<div>Data setlist tidak tersedia</div>
-</div>
-`;
-return;
-}
+const list=document.getElementById('list'),setlistData=SETLIST_DATA[currentSetlistView];
+if(!setlistData){list.innerHTML='<div class="simple-message">Data tidak tersedia</div>';return;}
 list.innerHTML='';
-const setlistMembersArray=members.map(member=>{
-const shows=setlistData.members[member.name]||0;
-return{name:member.name,shows:shows,memberData:member};
-}).sort((a,b)=>{
-if(b.shows!==a.shows){
-return b.shows-a.shows;
-}
-return a.name.localeCompare(b.name);
-});
-const activeMembers=setlistMembersArray.filter(m=>m.shows>0);
-const statsText=`${setlistData.title}`;
-document.getElementById('setlistStats').innerHTML=statsText;
+const arr=members.map(m=>({name:m.name,shows:setlistData.members[m.name]||0,memberData:m})).sort((a,b)=>b.shows!==a.shows?b.shows-a.shows:a.name.localeCompare(b.name));
+const active=arr.filter(m=>m.shows>0);
+document.getElementById('setlistStats').innerHTML=setlistData.title;
 document.getElementById('setlistStats').style.display='block';
-let setlistBadge='';
-if(currentSetlistView==='ramune')setlistBadge='CMR';
-else if(currentSetlistView==='tte')setlistBadge='TWT';
-else if(currentSetlistView==='pertaruhan')setlistBadge='PC';
-else if(currentSetlistView==='pajama')setlistBadge='PD';
-let maxShows=0;
-if(activeMembers.length>0){
-maxShows=Math.max(...activeMembers.map(m=>m.shows));
-}
-let scaleMax=15;
+const badges={ramune:'CMR',tte:'TWT',pertaruhan:'PC',pajama:'PD'};
+const badge=badges[currentSetlistView]||'';
+let maxShows=active.length>0?Math.max(...active.map(m=>m.shows)):0;
+let scale=15;
 if(maxShows>0){
-if(maxShows<=10){
-scaleMax=15;
-}else if(maxShows<=50){
-scaleMax=maxShows+10;
-}else if(maxShows<=100){
-scaleMax=maxShows+20;
-}else if(maxShows<=200){
-scaleMax=maxShows+30;
-}else{
-scaleMax=maxShows+40;
+if(maxShows<=10)scale=15;
+else if(maxShows<=50)scale=maxShows+10;
+else if(maxShows<=100)scale=maxShows+20;
+else if(maxShows<=200)scale=maxShows+30;
+else scale=maxShows+40;
 }
-}
-activeMembers.forEach((member,index)=>{
-const rank=index+1;
-const memberData=member.memberData;
-const percent=Math.min(100,(member.shows/scaleMax)*100);
-const color=GEN_COLORS[memberData.gen]||'#6366f1';
-const card=document.createElement('div');
+active.forEach((m,i)=>{
+const rank=i+1,percent=Math.min(100,(m.shows/scale)*100),color=GEN_COLORS[m.memberData.gen]||'#6366f1',card=document.createElement('div');
 card.className=`card setlist-card ${rank<=3?'rank-'+rank:''}`;
-card.addEventListener('click',function(){
-openMemberPage(member.name);
-});
+card.addEventListener('click',()=>openMemberPage(m.name));
 const rankBadge=rank<=10?`<div class="rank-badge rank-${rank}">${rank}</div>`:'';
-const photoSetlistBadge=`<div class="photo-setlist-badge">${setlistBadge}</div>`;
-const avatarHtml=`
-<div class="avatar-container">
-<img class="avatar" 
-src="img/${member.name.toLowerCase()}.jpg" 
-alt="${member.name}"
-loading="lazy"
-onerror="this.onerror=null; this.style.display='none'; this.parentNode.innerHTML='<div class=\\'avatar-placeholder\\'>${member.name.charAt(0)}</div>'">
-${rankBadge}
-${photoSetlistBadge}
-</div>
-`;
-card.innerHTML=avatarHtml+`
-<div class="card-footer" style="background-color: ${color}">
-<div class="gen-badge">Gen ${memberData.gen}</div>
-<div class="name-container">
-<div class="name">${member.name}</div>
-</div>
-<div class="show-info">${member.shows} show</div>
-<div class="bar-container">
-<div class="bar"><span style="width:${percent}%"></span></div>
-</div>
-</div>
-`;
+card.innerHTML=`<div class="avatar-container"><img class="avatar" src="img/${m.name.toLowerCase()}.jpg" alt="${m.name}" loading="lazy" onerror="this.onerror=null;this.style.display='none';this.parentNode.innerHTML='<div class=\\'avatar-placeholder\\'>${m.name.charAt(0)}</div>'">${rankBadge}<div class="photo-setlist-badge">${badge}</div></div><div class="card-footer" style="background-color:${color}"><div class="gen-badge">Gen ${m.memberData.gen}</div><div class="name-container"><div class="name">${m.name}</div></div><div class="show-info">${m.shows} show</div><div class="bar-container"><div class="bar"><span style="width:${percent}%"></span></div></div></div>`;
 list.appendChild(card);
 });
-if(activeMembers.length===0){
-list.innerHTML=`
-<div class="simple-message">
-<div>Belum ada member yang tampil di setlist "${setlistData.title}"</div>
-</div>
-`;
-}
+if(active.length===0)list.innerHTML='<div class="simple-message">Belum ada member</div>';
 }
 
 function updateStats(){
-const stats=document.getElementById('stats');
 const filtered=members.filter(m=>{
-const matchGen=currentGen==='all'||m.gen===currentGen;
-const matchTeam=currentTeam==='all'||m.team===currentTeam;
-const matchSearch=!searchQuery||m.name.toLowerCase().includes(searchQuery.toLowerCase());
+const matchGen=currentGen==='all'||m.gen===currentGen,matchTeam=currentTeam==='all'||m.team===currentTeam,matchSearch=!searchQuery||m.name.toLowerCase().includes(searchQuery.toLowerCase());
 return matchGen&&matchTeam&&matchSearch;
 });
 const total=filtered.reduce((sum,m)=>sum+m.show,0);
-let statsText=filtered.length+' members • '+total.toLocaleString()+' total shows';
-if(currentGen!=='all'){
-statsText+=' • Gen '+currentGen;
-}
-if(currentTeam!=='all'){
-statsText+=' • '+currentTeam;
-}
-stats.innerHTML=statsText;
+let txt=filtered.length+' members • '+total.toLocaleString()+' total shows';
+if(currentGen!=='all')txt+=' • Gen '+currentGen;
+if(currentTeam!=='all')txt+=' • '+currentTeam;
+document.getElementById('stats').innerHTML=txt;
 }
 
 function searchMember(){
@@ -1099,8 +533,8 @@ updateStats();
 saveCurrentState();
 }
 
-function showSetlist(setlistType){
-currentSetlistView=setlistType;
+function showSetlist(type){
+currentSetlistView=type;
 currentGen='all';
 currentTeam='all';
 searchQuery='';
@@ -1124,83 +558,56 @@ sessionStorage.setItem('jkt48_scroll_position',window.scrollY);
 }
 
 function restoreState(){
-const savedGen=sessionStorage.getItem('jkt48_current_gen');
-const savedTeam=sessionStorage.getItem('jkt48_current_team');
-const savedSearch=sessionStorage.getItem('jkt48_search_query');
-const savedSetlistView=sessionStorage.getItem('jkt48_setlist_view');
-if(savedGen&&savedGen!=='null'){
-currentGen=savedGen==='all'?'all':parseInt(savedGen);
-}
-if(savedTeam&&savedTeam!=='null'){
-currentTeam=savedTeam;
-}
+const savedGen=sessionStorage.getItem('jkt48_current_gen'),savedTeam=sessionStorage.getItem('jkt48_current_team'),savedSearch=sessionStorage.getItem('jkt48_search_query'),savedSetlist=sessionStorage.getItem('jkt48_setlist_view');
+if(savedGen&&savedGen!=='null')currentGen=savedGen==='all'?'all':parseInt(savedGen);
+if(savedTeam&&savedTeam!=='null')currentTeam=savedTeam;
 if(savedSearch&&savedSearch!=='null'){
 searchQuery=savedSearch;
 document.getElementById('searchInput').value=searchQuery;
 }
-if(savedSetlistView&&savedSetlistView!=='null'&&savedSetlistView!==''){
-currentSetlistView=savedSetlistView;
+if(savedSetlist&&savedSetlist!=='null'&&savedSetlist!==''){
+currentSetlistView=savedSetlist;
 if(currentSetlistView){
 document.getElementById('stats').style.display='none';
 document.getElementById('setlistStats').style.display='block';
 document.querySelectorAll('.top-member-filter').forEach(btn=>{
 btn.classList.remove('active');
-const btnText=btn.textContent.toLowerCase();
-if((currentSetlistView==='ramune'&&btnText.includes('ramune'))||
-(currentSetlistView==='tte'&&btnText.includes('tsunaginagara'))||
-(currentSetlistView==='pertaruhan'&&btnText.includes('pertaruhan'))||
-(currentSetlistView==='pajama'&&btnText.includes('pajama'))){
-btn.classList.add('active');
-}
+const txt=btn.textContent.toLowerCase();
+if((currentSetlistView==='ramune'&&txt.includes('ramune'))||(currentSetlistView==='tte'&&txt.includes('tsunaginagara'))||(currentSetlistView==='pertaruhan'&&txt.includes('pertaruhan'))||(currentSetlistView==='pajama'&&txt.includes('pajama')))btn.classList.add('active');
 });
 }
-}else{
-currentSetlistView=null;
-}
+}else currentSetlistView=null;
 if(currentTeam!=='all'){
 document.querySelectorAll('.team-filter').forEach(btn=>{
 btn.classList.remove('active');
-if(btn.textContent.includes(currentTeam)){
-btn.classList.add('active');
-}
+if(btn.textContent.includes(currentTeam))btn.classList.add('active');
 });
 }
 }
 
 function restoreScrollPosition(){
-const savedScrollPosition=sessionStorage.getItem('jkt48_scroll_position');
-if(savedScrollPosition&&savedScrollPosition!=='null'){
-setTimeout(()=>{
-window.scrollTo({
-top:parseInt(savedScrollPosition),
-behavior:'instant'
-});
-},50);
-}
+const saved=sessionStorage.getItem('jkt48_scroll_position');
+if(saved&&saved!=='null')setTimeout(()=>window.scrollTo({top:parseInt(saved),behavior:'instant'}),50);
 }
 
-window.addEventListener('scroll',function(){
+window.addEventListener('scroll',()=>{
 clearTimeout(scrollSaveTimeout);
-scrollSaveTimeout=setTimeout(()=>{
-if(isDataLoaded){
-sessionStorage.setItem('jkt48_scroll_position',window.scrollY);
-}
-},150);
+scrollSaveTimeout=setTimeout(()=>{if(isDataLoaded)sessionStorage.setItem('jkt48_scroll_position',window.scrollY);},150);
 });
 
-window.addEventListener('beforeunload',function(){
-saveCurrentState();
-});
+window.addEventListener('beforeunload',()=>saveCurrentState());
 
-document.addEventListener('DOMContentLoaded',function(){
+document.addEventListener('DOMContentLoaded',()=>{
+console.log('🚀 START');
+console.log('📍',Intl.DateTimeFormat().resolvedOptions().timeZone);
+console.log('⏰',new Date().toLocaleString('id-ID'));
 initializeTheme();
 loadData();
-    
-if (liveShowRefreshInterval) {
-clearInterval(liveShowRefreshInterval);
-}
-// Update banner setiap 30 detik
-liveShowRefreshInterval = setInterval(updateLiveShowBanner, 30000);
+if(liveShowRefreshInterval)clearInterval(liveShowRefreshInterval);
+liveShowRefreshInterval=setInterval(()=>{
+console.log('⏲️ Refresh...');
+updateLiveShowBanner();
+},30000);
 });
 </script>
 </body>
