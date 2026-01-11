@@ -12,12 +12,63 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:Arial,sans-serif;background:#f5f5f5;color:#333;min-height:100vh;padding-bottom:60px;transition:background 0.3s,color 0.3s}
 body.dark{background:#0a0e1a;color:#e5e7eb}
-header{background:#e60012;text-align:center;padding:20px;font-size:24px;font-weight:bold;color:#fff;position:relative;display:flex;align-items:center;justify-content:center}
-.header-buttons{position:absolute;right:20px;top:50%;transform:translateY(-50%);display:flex;gap:8px;align-items:center}
-.schedule-button,.theme-toggle{background:rgba(255,255,255,0.2);border:none;color:#fff;width:40px;height:40px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:8px;transition:background-color 0.3s}
+
+/* ========== HEADER FIX ========== */
+header{
+    background:#e60012;
+    padding:15px 20px;
+    font-size:20px;
+    font-weight:bold;
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    position:sticky;
+    top:0;
+    z-index:100;
+    min-height:60px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1)
+}
+
+/* Wrapper untuk judul */
+.header-title{
+    flex:1;
+    text-align:center;
+    margin:0;
+    padding:0 10px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    font-size:20px
+}
+
+.header-buttons{
+    display:flex;
+    gap:10px;
+    align-items:center;
+    flex-shrink:0
+}
+
+.schedule-button,.theme-toggle{
+    background:rgba(255,255,255,0.2);
+    border:none;
+    color:#fff;
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:8px;
+    transition:background-color 0.3s;
+    flex-shrink:0
+}
 .schedule-button:hover,.theme-toggle:hover{background:rgba(255,255,255,0.3)}
 .schedule-button svg,.theme-toggle svg{width:20px;height:20px}
 body.dark .schedule-button,body.dark .theme-toggle{background:rgba(0,0,0,0.2)}
+/* ========== END HEADER FIX ========== */
+
 .live-show-banner{color:white;padding:14px 20px;margin:0;border-bottom:3px solid #f59e0b;cursor:pointer;transition:all 0.3s;display:none;position:relative;overflow:hidden;background:linear-gradient(135deg,#ef4444 0%,#dc2626 100%)}
 .live-show-banner:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,0.2);background:linear-gradient(135deg,#dc2626 0%,#b91c1c 100%)}
 .live-show-banner::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,0.1) 50%,transparent 100%);animation:shimmer 3s infinite;pointer-events:none}
@@ -150,27 +201,65 @@ body.dark .modal-close:hover{background:#374151;color:#e5e7eb}
 .gen-option.gen-12{background:#fde047;color:#000}
 .gen-option.gen-13{background:#facc15;color:#000}
 .gen-option.gen-14{background:#e879f9;color:#fff}
+
+/* ========== MEDIA QUERY FIX ========== */
 @media (max-width:767px){
-.name{font-size:11px}
-.show-info{font-size:9px;margin:2px 0 5px 0}
-.gen-badge{font-size:8px;padding:1px 5px}
-.bar{height:3px}
-.rank-badge{width:20px;height:20px;font-size:10px}
-.photo-setlist-badge{font-size:7px;padding:1px 4px}
-.card-footer{padding:6px 4px;min-height:75px}
-.name-container{min-height:26px}
-header{position:sticky;top:0;z-index:100;padding:15px 50px 15px 15px;font-size:20px}
-.header-buttons{right:15px;gap:6px}
-.schedule-button,.theme-toggle{width:35px;height:35px}
-.schedule-button svg,.theme-toggle svg{width:18px;height:18px}
-.top-member-filter{min-width:110px;padding:8px 12px;font-size:12px}
-.filter{min-width:100px;padding:8px 12px;font-size:12px}
-.live-show-content{flex-direction:column;align-items:stretch;gap:10px}
-.live-show-left{flex-direction:column;align-items:flex-start;gap:8px}
-.live-show-info{width:100%}
-.live-show-title{font-size:14px}
-.live-show-time{font-size:12px}
-.live-show-right{width:100%;justify-content:flex-end}
+    /* Header mobile */
+    header{
+        padding:12px 15px;
+        min-height:55px
+    }
+    .header-title{
+        font-size:18px;
+        padding:0 5px
+    }
+    .header-buttons{
+        gap:6px
+    }
+    .schedule-button,.theme-toggle{
+        width:35px;
+        height:35px
+    }
+    .schedule-button svg,.theme-toggle svg{
+        width:18px;
+        height:18px
+    }
+    
+    /* Other mobile styles */
+    .name{font-size:11px}
+    .show-info{font-size:9px;margin:2px 0 5px 0}
+    .gen-badge{font-size:8px;padding:1px 5px}
+    .bar{height:3px}
+    .rank-badge{width:20px;height:20px;font-size:10px}
+    .photo-setlist-badge{font-size:7px;padding:1px 4px}
+    .card-footer{padding:6px 4px;min-height:75px}
+    .name-container{min-height:26px}
+    .top-member-filter{min-width:110px;padding:8px 12px;font-size:12px}
+    .filter{min-width:100px;padding:8px 12px;font-size:12px}
+    .live-show-content{flex-direction:column;align-items:stretch;gap:10px}
+    .live-show-left{flex-direction:column;align-items:flex-start;gap:8px}
+    .live-show-info{width:100%}
+    .live-show-title{font-size:14px}
+    .live-show-time{font-size:12px}
+    .live-show-right{width:100%;justify-content:flex-end}
+}
+
+/* Untuk layar sangat kecil */
+@media (max-width:480px){
+    .header-title{
+        font-size:16px
+    }
+    .schedule-button,.theme-toggle{
+        width:32px;
+        height:32px
+    }
+    .schedule-button svg,.theme-toggle svg{
+        width:16px;
+        height:16px
+    }
+    .header-buttons{
+        gap:4px
+    }
 }
 </style>
 </head>
