@@ -34,13 +34,16 @@ body.dark .detail-title{color:#e5e7eb}
 .container{max-width:800px;width:100%;margin:140px auto 30px;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.1);transition:background 0.3s,box-shadow 0.3s}
 body.dark .container{background:#111827;box-shadow:0 2px 8px rgba(0,0,0,0.4)}
 
-/* Live Show Header */
+/* Show Status Header */
 .live-show-header{background:linear-gradient(135deg, #ef4444 0%, #dc2626 100%);padding:25px;text-align:center;position:relative;overflow:hidden}
-.live-show-header::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%);animation:shimmer 3s infinite;pointer-events:none}
-@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
-.live-badge-main{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.2);padding:8px 16px;border-radius:20px;font-size:14px;font-weight:bold;margin-bottom:15px;color:#fff}
+.live-show-header.upcoming{background:linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)}
+.live-show-header.finished{background:linear-gradient(135deg, #6b7280 0%, #4b5563 100%)}
+
+/* Status Badges */
+.status-badge-main{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.2);padding:8px 16px;border-radius:20px;font-size:14px;font-weight:bold;margin-bottom:15px;color:#fff}
 .live-dot-main{width:10px;height:10px;background:#fff;border-radius:50%;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+.upcoming-dot-main{width:10px;height:10px;background:#fff;border-radius:50%}
 
 /* Birthday Badge in Header */
 .birthday-badge-header {
@@ -92,7 +95,7 @@ body.dark .member-name{color:#e5e7eb}
 .member-gen{font-size:10px;color:#6b7280;font-weight:600;line-height:1.2}
 body.dark .member-gen{color:#9ca3af}
 
-/* Birthday Member Card - DENGAN SVG KUE Bootstrap */
+/* Birthday Member Card */
 .birthday-member-card {
     border: 2px solid #f59e0b;
     position: relative;
@@ -180,8 +183,8 @@ body.dark .detail-footer{color:#9ca3af;border-top-color:#374151}
     body.dark .container{box-shadow:none}
     .live-show-header{padding:15px}
     .live-show-header h1{font-size:18px;margin-bottom:10px}
-    .live-badge-main{padding:6px 12px;font-size:13px;margin-bottom:12px}
-    .live-dot-main{width:8px;height:8px}
+    .status-badge-main{padding:6px 12px;font-size:13px;margin-bottom:12px}
+    .live-dot-main,.upcoming-dot-main{width:8px;height:8px}
     .live-show-date-time{flex-direction:column;gap:8px;font-size:12px}
     .live-show-date-time div{gap:5px}
     .live-show-date-time svg{width:14px;height:14px}
@@ -218,7 +221,7 @@ body.dark .detail-footer{color:#9ca3af;border-top-color:#374151}
 @media (max-width:360px){
     .members-grid{grid-template-columns:repeat(auto-fill, minmax(90px, 1fr));gap:10px}
     .live-show-header h1{font-size:16px}
-    .live-badge-main{font-size:12px}
+    .status-badge-main{font-size:12px}
     .live-show-date-time{font-size:11px}
     .section-title{font-size:15px}
     .member-name{font-size:10px}
@@ -231,7 +234,7 @@ body.dark .detail-footer{color:#9ca3af;border-top-color:#374151}
     .container{margin:20px auto}
     .live-show-header{padding:15px}
     .live-show-header h1{font-size:18px;margin-bottom:10px}
-    .live-badge-main{margin-bottom:10px}
+    .status-badge-main{margin-bottom:10px}
     .members-grid{grid-template-columns:repeat(auto-fill, minmax(110px, 1fr))}
 }
 </style>
@@ -364,7 +367,7 @@ async function loadData() {
     // Get unique member names
     const memberNames = [...new Set(showData.map(show => show.name))];
     
-// Load member details
+    // Load member details
     const { data: members, error: membersError } = await db
       .from('members')
       .select('*')
@@ -394,6 +397,44 @@ function renderPage() {
                      'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
   const formattedDate = `${dayNames[date.getDay()]}, ${date.getDate()} ${monthNames[date.getMonth()]} ${date.getFullYear()}`;
   
+  // Determine show status
+  const now = new Date();
+  const showDateTime = new Date(SHOW_DATE + 'T' + earliestTime + ':00');
+  const endTime = new Date(showDateTime.getTime() + (150 * 60 * 1000)); // 150 minutes (2.5 hours)
+  
+  let showStatus = '';
+  let statusBadge = '';
+  let headerClass = '';
+  
+  if (now < showDateTime) {
+    // Show hasn't started yet
+    showStatus = 'UPCOMING';
+    headerClass = 'upcoming';
+    statusBadge = `
+      <div class="status-badge-main">
+        <span class="upcoming-dot-main"></span>
+        UPCOMING
+      </div>
+    `;
+  } else if (now >= showDateTime && now <= endTime) {
+    // Show is live
+    showStatus = 'LIVE NOW';
+    headerClass = '';
+    statusBadge = `
+      <div class="status-badge-main">
+        <span class="live-dot-main"></span>
+        LIVE NOW
+      </div>
+    `;
+  } else {
+    // Show has ended
+    showStatus = 'FINISHED';
+    headerClass = 'finished';
+    statusBadge = '<div class="status-badge-main">SHOW ENDED</div>';
+  }
+  
+  // Rest of the function remains the same...
+  
   // Title dengan info birthday
   let displayTitle = SETLIST_NAME;
   if (isBirthdayShow && birthdayMember) {
@@ -401,16 +442,13 @@ function renderPage() {
   }
   
   document.getElementById('container').innerHTML = `
-    <div class="live-show-header">
-      <div class="live-badge-main">
-        <span class="live-dot-main"></span>
-        LIVE NOW
-      </div>
+    <div class="live-show-header ${headerClass}">
+      ${statusBadge}
       <h1>${displayTitle}</h1>
       ${isBirthdayShow && birthdayMember ? `
         <div class="birthday-badge-header">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-            <path d="m7.994.013-.595.79a.747.747 0 0 0 .101 1.01V4H5a2 2 0 0 0-2 2v3H2a2 2 0 0 0-2 2v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4a2 2 0 0 0-2-2h-1V6a2 2 0 0 0-2-2H8.5V1.806A.747.747 0 0 0 8.592.802zM4 6a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v.414a.9.9 0 0 1-.646-.268 1.914 1.914 0 0 0-2.708 0 .914.914 0 0 1-1.292 0 1.914 1.914 0 0 0-2.708 0A.9.9 0 0 1 4 6.414zm0 1.414c.49 0 .98-.187 1.354-.56a.914.914 0 0 1 1.292 0c.748.747 1.96.747 2.708 0a.914.914 0 0 1 1.292 0c.374.373.864.56 1.354.56V9H4zM1 11a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v.793l-.354.354a.914.914 0 0 1-1.293 0 1.914 1.914 0 0 0-2.707 0 .914.914 0 0 1-1.292 0 1.914 1.914 0 0 0-2.708 0 .914.914 0 0 1-1.292 0 1.914 1.914 0 0 0-2.708 0 .914.914 0 0 1-1.292 0L1 11.793zm11.646 1.854a1.915 1.915 0 0 0 2.354.279V15H1v-1.867c.737.452 1.715.36 2.354-.28a.914.914 0 0 1 1.292 0c.748.748 1.96.748 2.708 0a.914.914 0 0 1 1.292 0c.748.748 1.96.748 2.707 0a.914.914 0 0 1 1.293 0Z"/>
+            <path d="m7.994.013-.595.79a.747.747 0 0 0 .101 1.01V4H5a2 2 0 0 0-2 2v3H2a2 2 0 0 0-2 2v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4a2 2 0 0 0-2-2h-1V6a2 2 0 0 0-2-2H8.5V1.806A.747.747 0 0 0 8.592.802zM4 6a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v.414a.9.9 0 0 1-.646-.268 1.914 1.914 0 0 0-2.708 0 .914.914 0 0 1-1.292 0 1.914 1.914 0 0 0-2.708 0A.9.9 0 0 1 4 6.414zm0 1.414c.49 0 .98-.187 1.354-.56a.914.914 0 0 1 1.292 0c.748.747 1.96.747 2.708 0a.914.914 0 0 1 1.292 0c.374.373.864.56 1.354.56V9H4zM1 11a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v.793l-.354.354a.914.914 0 0 1-1.293 0 1.914 1.914 0 0 0-2.707 0 .914.914 0 0 1-1.292 0 1.914 1.914 0 0 0-2.708 0 .914.914 0 0 1-1.292 0L1 11.793zm11.646 1.854a1.915 1.915 0 0 0 2.354.279V15H1v-1.867c.737.452 1.715.36 2.354-.28a.914.914 0 0 1 1.292 0c.748.748 1.96.748 2.708 0a.914.914 0 0 1 1.292 0c.748.748 1.96.748 2.707 0a.914.914 0 0 1 1.293 0Z"/>
           </svg>
           Birthday Show ${birthdayMember}
         </div>
@@ -431,6 +469,7 @@ function renderPage() {
             <polyline points="12 6 12 12 16 14"></polyline>
           </svg>
           ${earliestTime} - Sampai selesai WIB
+          ${showStatus === 'FINISHED' ? '<div style="margin-top: 4px; font-size: 11px;">Show telah berakhir</div>' : ''}
         </div>
       </div>
     </div>
