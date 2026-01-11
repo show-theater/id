@@ -419,13 +419,30 @@ if(SETLIST_DATA[key])SETLIST_DATA[key].members[memberName]=showCountMap[mapKey];
 async function updateLastUpdate(){
 if(members.length===0)return;
 try{
-const{data,error}=await db.from('setlist_performance').select('updated_at').order('updated_at',{ascending:false}).limit(1).single();
-if(!error&&data&&data.updated_at){
-const date=new Date(data.updated_at),formatted=date.toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'});
-document.getElementById('lastUpdate').innerHTML='Update: '+formatted;
+const{data,error}=await db.from('setlist_performance').select('show_date,show_time').order('show_date',{ascending:false}).order('show_time',{ascending:false}).limit(1);
+if(!error&&data&&data.length>0){
+const record=data[0];
+if(record.show_date){
+const dateStr=record.show_date;
+const timeStr=record.show_time||'00:00';
+const dateTimeParts=dateStr.split('-');
+const timeParts=timeStr.split(':');
+const date=new Date(
+parseInt(dateTimeParts[0]),
+parseInt(dateTimeParts[1])-1,
+parseInt(dateTimeParts[2]),
+parseInt(timeParts[0]),
+parseInt(timeParts[1])
+);
+const formatted=date.toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'});
+document.getElementById('lastUpdate').innerHTML=`Update: ${formatted}`;
+console.log('Last update:',formatted,'from',dateStr,timeStr);
 return;
 }
-}catch(err){}
+}
+}catch(err){
+console.error('Error update time:',err);
+}
 document.getElementById('lastUpdate').innerHTML='Data tersedia';
 }
 
