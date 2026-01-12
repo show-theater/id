@@ -228,11 +228,11 @@ count: shows.length
 // Urutkan berdasarkan prioritas warna
 uniqueSetlists.sort((a, b) => {
 const priorityOrder = {
-'#FF69B4': 1, // Te Wo Tsunaginagara (Tte) - Pink
-'#00CED1': 2, // Ramune - Cyan
-'#D30000': 3, // Pertaruhan - Dark Red
-'#00006d': 4, // Pajama Drive - Dark Blue
-'#e60012': 5  // Default - JKT48 Red
+'#FF69B4': 1,
+'#00CED1': 2,
+'#D30000': 3,
+'#00006d': 4,
+'#e60012': 5
 };
 return (priorityOrder[a.color] || 6) - (priorityOrder[b.color] || 6);
 });
