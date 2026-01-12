@@ -438,17 +438,6 @@ body.dark .spinner{border-color:rgba(255,255,255,0.1);border-top-color:#9ca3af}
   .skeleton-info.small{height:28px}
 }
 </style>
-
-<!-- Load theme from localStorage before page renders -->
-<script>
-(function() {
-  const savedTheme = localStorage.getItem('jkt48_theme') || 'light';
-  if (savedTheme === 'dark') {
-    document.documentElement.classList.add('dark');
-  }
-})();
-</script>
-
 </head>
 <body>
 
@@ -509,13 +498,11 @@ const GEN_COLORS = {
 // State management
 let isLoading = true;
 
-// ============= PERBAIKAN DARK MODE =============
-// Initialize theme on load - SEDERHANA & KONSISTEN dengan index.html
+// ============= FUNGSI THEME YANG SAMA DENGAN index.html =============
 function initializeTheme() {
   const savedTheme = localStorage.getItem('jkt48_theme') || 'light';
   const icon = document.getElementById('themeIconDetail');
   
-  // Terapkan tema
   if (savedTheme === 'dark') {
     document.documentElement.classList.add('dark');
     document.body.classList.add('dark');
@@ -531,24 +518,14 @@ function initializeTheme() {
   }
 }
 
-// Fungsi toggle tema - SAMA dengan index.html
 function toggleTheme() {
   const body = document.body;
   const icon = document.getElementById('themeIconDetail');
   const html = document.documentElement;
   
-  // Animasi klik
-  const themeToggle = document.querySelector('.theme-toggle-detail');
-  themeToggle.style.transform = 'scale(0.9)';
-  setTimeout(() => {
-    themeToggle.style.transform = 'scale(1)';
-  }, 150);
-  
-  // Toggle class dark
   body.classList.toggle('dark');
   html.classList.toggle('dark');
   
-  // Simpan preferensi ke localStorage (SAMA dengan index.html)
   if (body.classList.contains('dark')) {
     icon.innerHTML = '<path d="M12,17a5,5,0,1,1,5-5A5,5,0,0,1,12,17Zm0-8a3,3,0,1,0,3,3A3,3,0,0,0,12,9Zm0-4a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41L6.34,5A1,1,0,0,0,4.93,6.34ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm.64,5.66a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71a1,1,0,0,0-1.41-1.41ZM12,19a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19Zm6.36-2.34a1,1,0,0,0-1.41,1.41l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-3.64-3.95a1,1,0,0,0,.7.29,1,1,0,0,0,.71-1.7l-.71-.71a1,1,0,0,0-1.41,1.41Z"/>';
     localStorage.setItem('jkt48_theme', 'dark');
@@ -557,7 +534,7 @@ function toggleTheme() {
     localStorage.setItem('jkt48_theme', 'light');
   }
 }
-// ============= END PERBAIKAN =============
+// ============= END FUNGSI THEME =============
 
 async function loadMember() {
   if (!MEMBER_NAME) {

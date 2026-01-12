@@ -100,14 +100,6 @@ body.dark .skeleton-card{background:#374151}
   .show-setlist{font-size:13px}
 }
 </style>
-<script>
-(function() {
-  const savedTheme = localStorage.getItem('jkt48_theme') || 'light';
-  if (savedTheme === 'dark') {
-    document.documentElement.classList.add('dark');
-  }
-})();
-</script>
 </head>
 <body>
 <header class="main-header">
@@ -162,6 +154,7 @@ let memberData = null;
 let showsData = [];
 let currentFilter = 'all';
 
+// ============= FUNGSI THEME YANG SAMA DENGAN index.html =============
 function initializeTheme() {
   const savedTheme = localStorage.getItem('jkt48_theme') || 'light';
   const icon = document.getElementById('themeIconDetail');
@@ -197,6 +190,7 @@ function toggleTheme() {
     localStorage.setItem('jkt48_theme', 'light');
   }
 }
+// ============= END FUNGSI THEME =============
 
 async function loadData() {
   if (!MEMBER_NAME) {
