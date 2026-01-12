@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Jadwal Show - JKT48 Theater</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:Arial,sans-serif;background:#f5f5f5;color:#333;min-height:100vh;transition:background 0.3s,color 0.3s}
@@ -17,21 +18,34 @@ header{background:#e60012;text-align:center;padding:20px 60px 20px 20px;font-siz
 .theme-toggle svg{width:20px;height:20px}
 body.dark .back-btn,body.dark .theme-toggle{background:rgba(0,0,0,0.2)}
 .container{max-width:1200px;margin:0 auto;padding:20px}
-.date-filter{background:#fff;border-radius:12px;padding:20px;margin-bottom:20px;border:1px solid #e5e7eb}
-body.dark .date-filter{background:#1b1f3a;border-color:#2d3548}
-.date-filter h3{font-size:16px;margin-bottom:16px;color:#e60012}
-body.dark .date-filter h3{color:#f87171}
-.date-buttons{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.date-btn{padding:16px 12px;background:#f0f0f0;border:none;border-radius:12px;cursor:pointer;font-size:14px;text-align:center;transition:all 0.2s;color:#666;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.date-btn:hover{background:#e0e0e0}
-.date-btn.active{background:#e60012;color:#fff}
-.date-btn .day{font-weight:bold;font-size:16px;margin-bottom:4px}
-.date-btn .date{font-size:12px;color:#888}
-.date-btn.active .date{color:#fff}
-body.dark .date-btn{background:#2d3548;color:#9ca3af}
-body.dark .date-btn .date{color:#ccc}
-body.dark .date-btn:hover{background:#3d4558}
-body.dark .date-btn.active{background:#f87171;color:#fff}
+
+/* Calendar Styles */
+.calendar-container{background:#fff;border-radius:12px;padding:20px;margin-bottom:20px;border:1px solid #e5e7eb}
+body.dark .calendar-container{background:#1b1f3a;border-color:#2d3548}
+.calendar-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding:0 10px}
+.calendar-title{font-size:18px;font-weight:bold;color:#e60012;text-align:center;flex:1}
+body.dark .calendar-title{color:#f87171}
+.calendar-nav{display:flex;gap:8px}
+.calendar-nav button{background:#f0f0f0;border:none;width:36px;height:36px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
+.calendar-nav button:hover{background:#e0e0e0}
+body.dark .calendar-nav button{background:#2d3548;color:#9ca3af}
+body.dark .calendar-nav button:hover{background:#3d4558}
+.calendar-nav button svg{width:18px;height:18px}
+.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-top:10px}
+.calendar-day-header{padding:12px 0;text-align:center;font-size:12px;font-weight:bold;color:#666;text-transform:uppercase}
+body.dark .calendar-day-header{color:#9ca3af}
+.calendar-day{padding:12px 0;text-align:center;border-radius:8px;cursor:pointer;transition:all 0.2s;position:relative;min-height:50px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.calendar-day:hover{background:#f0f0f0}
+.calendar-day.active{background:#e60012;color:#fff}
+.calendar-day.today{border:2px solid #e60012}
+.calendar-day.other-month{color:#999}
+body.dark .calendar-day:hover{background:#2d3548}
+body.dark .calendar-day.active{background:#f87171}
+body.dark .calendar-day.today{border-color:#f87171}
+body.dark .calendar-day.other-month{color:#666}
+.calendar-indicators{margin-top:4px;display:flex;gap:3px;justify-content:center;flex-wrap:wrap}
+.calendar-indicator{width:6px;height:6px;border-radius:50%}
+
 .show-card{background:#fff;border-radius:12px;padding:20px;margin-bottom:16px;cursor:pointer;border:1px solid #e5e7eb}
 .show-card:hover{background:#f9fafb;border-color:#d1d5db}
 body.dark .show-card{background:#1b1f3a;border-color:#2d3548}
@@ -50,6 +64,7 @@ body.dark .show-members{color:#9ca3af}
 @keyframes spin{to{transform:rotate(360deg)}}
 body.dark .spinner{border-color:rgba(255,255,255,0.1);border-top-color:#f87171}
 .no-shows{text-align:center;padding:60px 20px;color:#9ca3af;font-size:14px}
+
 @media (max-width:767px){
 header{padding:15px 50px 15px 50px;font-size:20px}
 .back-btn,.theme-toggle{width:35px;height:35px;left:10px}
@@ -57,10 +72,12 @@ header{padding:15px 50px 15px 50px;font-size:20px}
 .container{padding:15px}
 .show-header{flex-direction:column;align-items:flex-start}
 .show-time{width:100%}
-.date-buttons{gap:8px}
-.date-btn{padding:14px 10px}
-.date-btn .day{font-size:14px}
-.date-btn .date{font-size:11px}
+.calendar-header{padding:0 5px}
+.calendar-day-header{font-size:10px;padding:8px 0}
+.calendar-day{padding:10px 0;font-size:14px;min-height:45px}
+.calendar-nav button{width:32px;height:32px}
+.calendar-nav button svg{width:16px;height:16px}
+.calendar-indicator{width:5px;height:5px}
 }
 </style>
 </head>
@@ -76,10 +93,27 @@ JADWAL SHOW
 </header>
 
 <div class="container">
-<div class="date-filter">
-<h3>Pilih Tanggal</h3>
-<div class="date-buttons" id="dateButtons"></div>
+<div class="calendar-container">
+<div class="calendar-header">
+<div class="calendar-nav">
+<button onclick="changeMonth(-1)" title="Bulan sebelumnya">
+<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+<path fill-rule="evenodd" d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5z"/>
+</svg>
+</button>
 </div>
+<h3 class="calendar-title" id="currentMonth">Januari 2024</h3>
+<div class="calendar-nav">
+<button onclick="changeMonth(1)" title="Bulan berikutnya">
+<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+<path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8"/>
+</svg>
+</button>
+</div>
+</div>
+<div class="calendar-grid" id="calendar"></div>
+</div>
+
 <div id="showList">
 <div class="loading">
 <div class="spinner"></div>
@@ -95,6 +129,7 @@ const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
 let currentDate=new Date().toISOString().split('T')[0];
 let allShows=[];
+let currentMonth=moment();
 
 function initializeTheme(){
 const savedTheme=localStorage.getItem('jkt48_theme')||'light';
@@ -114,6 +149,7 @@ localStorage.setItem('jkt48_theme','dark');
 icon.innerHTML='<path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/>';
 localStorage.setItem('jkt48_theme','light');
 }
+renderCalendar();
 }
 
 function goBack(){
@@ -123,16 +159,15 @@ window.location.href='index.html';
 async function loadSchedule(){
 try{
 const today=new Date();
-const dates=[];
-for(let i=0;i<7;i++){
-const date=new Date(today);
-date.setDate(today.getDate()+i);
-dates.push(date.toISOString().split('T')[0]);
-}
-const{data,error}=await db.from('setlist_performance').select('*').in('show_date',dates).order('show_date',{ascending:true}).order('show_time',{ascending:true});
+const startDate=new Date(today.getFullYear(), today.getMonth() - 1, 1);
+const endDate=new Date(today.getFullYear(), today.getMonth() + 2, 0);
+const startStr=startDate.toISOString().split('T')[0];
+const endStr=endDate.toISOString().split('T')[0];
+
+const{data,error}=await db.from('setlist_performance').select('*').gte('show_date',startStr).lte('show_date',endStr).order('show_date',{ascending:true}).order('show_time',{ascending:true});
 if(error)throw error;
 allShows=data||[];
-renderDateButtons(dates);
+renderCalendar();
 renderShows(currentDate);
 }catch(err){
 console.error('Error:',err);
@@ -140,33 +175,146 @@ document.getElementById('showList').innerHTML='<div class="no-shows">Gagal memua
 }
 }
 
-function renderDateButtons(dates){
-const container=document.getElementById('dateButtons');
-container.innerHTML='';
-const dayNames=['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
-const monthNames=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
-dates.forEach(date=>{
-const btn=document.createElement('button');
-btn.className='date-btn';
-if(date===currentDate)btn.classList.add('active');
-const d=new Date(date);
-const dayIndex=d.getDay();
-const dayName=dayNames[dayIndex];
-const dayNumber=d.getDate();
-const monthIndex=d.getMonth();
-const monthName=monthNames[monthIndex];
-btn.innerHTML=`
-<span class="day">${dayName}</span>
-<span class="date">${dayNumber} ${monthName}</span>
-`;
-btn.onclick=()=>{
-currentDate=date;
-document.querySelectorAll('.date-btn').forEach(b=>b.classList.remove('active'));
-btn.classList.add('active');
-renderShows(date);
-};
-container.appendChild(btn);
+// Fungsi untuk menentukan warna berdasarkan setlist untuk badge
+function getSetlistColor(setlistName, memberCount) {
+if (!setlistName) return '#e60012';
+const setlistLower = setlistName.toLowerCase().trim();
+  
+// Cek dengan lebih spesifik - untuk "Te Wo Tsunaginagara"
+if(setlistLower.includes('te wo tsunaginagara') || 
+   setlistLower.includes('tewo') ||
+   setlistLower.includes('tsunaginagara') ||
+   setlistName.includes('Te Wo Tsunaginagara')) {
+return '#FF69B4'; // Pink untuk Te Wo Tsunaginagara (Tte)
+} else if(setlistLower.includes('ramune')) {
+return '#00CED1'; // Cyan untuk Ramune
+} else if(setlistLower.includes('pertaruhan')) {
+return '#D30000'; // Merah gelap untuk Pertaruhan
+} else if(setlistLower.includes('pajama')) {
+return '#00006d'; // Navy blue untuk Pajama Drive
+} else {
+// Semua setlist lain default ke merah JKT48
+return '#e60012';
+}
+}
+
+// Fungsi untuk mendapatkan daftar setlist unik dengan warnanya di suatu tanggal
+function getSetlistsForDate(dateStr) {
+const showsOnDate = allShows.filter(s => s.show_date === dateStr);
+if(showsOnDate.length === 0) return [];
+  
+// Kelompokkan show berdasarkan setlist untuk menghitung member count
+const setlistGroups = {};
+showsOnDate.forEach(show => {
+const setlistKey = show.setlist_name || 'Unknown';
+if (!setlistGroups[setlistKey]) {
+setlistGroups[setlistKey] = [];
+}
+setlistGroups[setlistKey].push(show);
 });
+
+// Buat array setlist unik dengan warnanya
+const uniqueSetlists = [];
+for (const [setlistName, shows] of Object.entries(setlistGroups)) {
+const memberCount = shows.length;
+const color = getSetlistColor(setlistName, memberCount);
+uniqueSetlists.push({
+name: setlistName,
+color: color,
+count: shows.length
+});
+}
+
+// Urutkan berdasarkan prioritas warna
+uniqueSetlists.sort((a, b) => {
+const priorityOrder = {
+'#FF69B4': 1, // Te Wo Tsunaginagara (Tte) - Pink
+'#00CED1': 2, // Ramune - Cyan
+'#D30000': 3, // Pertaruhan - Dark Red
+'#00006d': 4, // Pajama Drive - Dark Blue
+'#e60012': 5  // Default - JKT48 Red
+};
+return (priorityOrder[a.color] || 6) - (priorityOrder[b.color] || 6);
+});
+
+// Hanya ambil maksimal 3 setlist untuk ditampilkan
+return uniqueSetlists.slice(0, 3);
+}
+
+// Fungsi untuk membuat indikator HTML untuk tanggal
+function createIndicatorsHTML(dateStr) {
+const setlists = getSetlistsForDate(dateStr);
+if(setlists.length === 0) return '';
+
+let indicatorsHTML = '<div class="calendar-indicators">';
+setlists.forEach(setlist => {
+indicatorsHTML += `<span class="calendar-indicator" style="background:${setlist.color}" title="${setlist.name}"></span>`;
+});
+indicatorsHTML += '</div>';
+
+return indicatorsHTML;
+}
+
+function renderCalendar(){
+const calendarEl=document.getElementById('calendar');
+const monthYearEl=document.getElementById('currentMonth');
+const monthNames=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+const dayNames=['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
+
+monthYearEl.textContent=`${monthNames[currentMonth.month()]} ${currentMonth.year()}`;
+
+const startOfMonth=currentMonth.clone().startOf('month');
+const endOfMonth=currentMonth.clone().endOf('month');
+const startDate=startOfMonth.clone().startOf('week');
+const endDate=endOfMonth.clone().endOf('week');
+
+let html='';
+
+// Day headers
+for(let i=0;i<7;i++){
+html+=`<div class="calendar-day-header">${dayNames[i]}</div>`;
+}
+
+const currentDay=moment();
+let date=startDate.clone();
+
+while(date.isBefore(endDate)||date.isSame(endDate,'day')){
+const dateStr=date.format('YYYY-MM-DD');
+const isToday=date.isSame(currentDay,'day');
+const isCurrentMonth=date.month()===currentMonth.month();
+const isActive=dateStr===currentDate;
+const hasShow=allShows.some(show=>show.show_date===dateStr);
+
+let dayClass='calendar-day';
+if(!isCurrentMonth)dayClass+=' other-month';
+if(isToday)dayClass+=' today';
+if(isActive)dayClass+=' active';
+
+const indicatorsHTML = hasShow ? createIndicatorsHTML(dateStr) : '';
+
+html+=`<div class="${dayClass}" data-date="${dateStr}" onclick="selectDate('${dateStr}')">
+<div>${date.date()}</div>
+${indicatorsHTML}
+</div>`;
+date.add(1,'day');
+}
+
+calendarEl.innerHTML=html;
+}
+
+function changeMonth(direction){
+currentMonth.add(direction,'month');
+renderCalendar();
+}
+
+function selectDate(date){
+currentDate=date;
+const today=moment();
+if(today.month()!==moment(date).month()){
+currentMonth=moment(date);
+}
+renderCalendar();
+renderShows(date);
 }
 
 function renderShows(date){
@@ -197,21 +345,7 @@ const card=document.createElement('div');
 card.className='show-card';
 card.onclick=()=>openShowDetail(show.setlist,show.date);
 const memberCount=show.members.length;
-let badgeColor='#e60012';
-const setlistLower=show.setlist.toLowerCase();
-if(memberCount===16){
-badgeColor='#e60012';
-}else{
-if(setlistLower.includes('ramune')){
-badgeColor='#00CED1';
-}else if(setlistLower.includes('tsunaginagara')||setlistLower.includes('tte')){
-badgeColor='#FF69B4';
-}else if(setlistLower.includes('pertaruhan')){
-badgeColor='#D30000';
-}else if(setlistLower.includes('pajama')){
-badgeColor='#00006d';
-}
-}
+const badgeColor=getSetlistColor(show.setlist, memberCount);
 let title=show.setlist;
 if(show.isBirthday&&show.birthdayMember)title+=` (STS ${show.birthdayMember})`;
 const dayNames=['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
