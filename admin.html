@@ -91,9 +91,192 @@ body.dark .msg{background:#111827;color:#6b7280}
 @keyframes spin{to{transform:rotate(360deg)}}
 .spinner{display:inline-block;width:32px;height:32px;border:3px solid rgba(0,0,0,0.1);border-top-color:#f59e0b;border-radius:50%;animation:spin 0.8s linear infinite}
 body.dark .spinner{border-color:rgba(255,255,255,0.1);border-top-color:#f59e0b}
-.toast{position:fixed;top:20px;right:20px;background:#22c55e;color:#fff;padding:12px 20px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.3);z-index:9999;font-weight:bold;display:none;font-size:13px;max-width:90%}
-.toast.show{display:block}
-.toast.error{background:#ef4444}
+
+/* Notification System */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    max-width: 400px;
+    width: 90%;
+}
+
+.notification-item {
+    margin-bottom: 12px;
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    animation: slideIn 0.3s ease-out;
+    transform-origin: top right;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.notification-item.hiding {
+    animation: slideOut 0.3s ease-in forwards;
+}
+
+.notification-icon {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.notification-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.notification-title {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    color: inherit;
+    opacity: 0.6;
+    cursor: pointer;
+    padding: 2px;
+    font-size: 16px;
+    line-height: 1;
+}
+
+.notification-close:hover {
+    opacity: 1;
+}
+
+.notification-message {
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.notification-success {
+    background: rgba(34, 197, 94, 0.1);
+    border-color: rgba(34, 197, 94, 0.2);
+    color: #166534;
+}
+
+body.dark .notification-success {
+    background: rgba(34, 197, 94, 0.15);
+    border-color: rgba(34, 197, 94, 0.3);
+    color: #86efac;
+}
+
+.notification-success .notification-icon {
+    background: rgba(34, 197, 94, 0.2);
+    color: #166534;
+}
+
+body.dark .notification-success .notification-icon {
+    background: rgba(34, 197, 94, 0.3);
+    color: #86efac;
+}
+
+.notification-warning {
+    background: rgba(245, 158, 11, 0.1);
+    border-color: rgba(245, 158, 11, 0.2);
+    color: #92400e;
+}
+
+body.dark .notification-warning {
+    background: rgba(245, 158, 11, 0.15);
+    border-color: rgba(245, 158, 11, 0.3);
+    color: #fcd34d;
+}
+
+.notification-warning .notification-icon {
+    background: rgba(245, 158, 11, 0.2);
+    color: #92400e;
+}
+
+body.dark .notification-warning .notification-icon {
+    background: rgba(245, 158, 11, 0.3);
+    color: #fcd34d;
+}
+
+.notification-error {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.2);
+    color: #991b1b;
+}
+
+body.dark .notification-error {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.3);
+    color: #fca5a5;
+}
+
+.notification-error .notification-icon {
+    background: rgba(239, 68, 68, 0.2);
+    color: #991b1b;
+}
+
+body.dark .notification-error .notification-icon {
+    background: rgba(239, 68, 68, 0.3);
+    color: #fca5a5;
+}
+
+.notification-info {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: rgba(59, 130, 246, 0.2);
+    color: #1e40af;
+}
+
+body.dark .notification-info {
+    background: rgba(59, 130, 246, 0.15);
+    border-color: rgba(59, 130, 246, 0.3);
+    color: #93c5fd;
+}
+
+.notification-info .notification-icon {
+    background: rgba(59, 130, 246, 0.2);
+    color: #1e40af;
+}
+
+body.dark .notification-info .notification-icon {
+    background: rgba(59, 130, 246, 0.3);
+    color: #93c5fd;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(100%) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+}
+
+@keyframes slideOut {
+    from {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(100%) scale(0.9);
+    }
+}
+
+/* Toast replacement */
+.toast{display:none}
+
 .setlist-info{background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:10px;margin-bottom:10px;font-size:12px;color:#666}
 body.dark .setlist-info{background:#1f2937;border-color:#374151;color:#9ca3af}
 .setlist-badge{display:inline-block;background:#f59e0b;color:#fff;padding:3px 8px;border-radius:6px;font-size:10px;font-weight:bold;margin-right:6px}
@@ -224,11 +407,37 @@ body.dark .birthday-dropdown {
 </div>
 <div class="stats" id="stats"></div>
 <div class="container" id="list"><div class="loading"><div class="spinner"></div><span>Loading data...</span></div></div>
-<div class="toast" id="toast"></div>
+
+<!-- Notification Container -->
+<div class="notification" id="notificationContainer"></div>
 
 <div class="modal" id="loginModal"><div class="modal-box"><button class="modal-theme-toggle" onclick="toggleTheme()"><svg id="modalThemeIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/></svg></button><h3>Admin Login</h3><p>Masukkan kredensial admin</p><label class="input-label">Email</label><input id="email" type="email" placeholder="Masukan email"><label class="input-label">Password</label><input id="password" type="password" placeholder="Masukkan password" onkeypress="if(event.key==='Enter')login()"><div class="error" id="errorMsg"></div><button onclick="login()" style="background:#22c55e;width:100%;margin-top:8px;color:#fff;padding:12px;border-radius:12px">Login</button></div></div>
 
-<div class="modal" id="logoutModal"><div class="modal-box"><h3>Konfirmasi Logout</h3><p>Apakah Anda yakin ingin keluar?</p><div class="modal-buttons"><button class="btn-cancel" onclick="closeLogoutModal()">Batal</button><button class="btn-confirm" onclick="confirmLogout()">Logout</button></div></div></div>
+<!-- Logout Modal yang sudah diperbaiki -->
+<div class="modal" id="logoutModal">
+  <div class="modal-box">
+    <button class="modal-theme-toggle" onclick="toggleTheme()">
+      <svg id="logoutModalThemeIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/>
+      </svg>
+    </button>
+    
+    <h3 style="text-align: center; margin-bottom: 12px; color: #e60012;">Konfirmasi Logout</h3>
+    
+    <div style="text-align: center; margin-bottom: 24px;">
+      <svg xmlns="http://www.w3.org/2000/svg" style="width: 48px; height: 48px; margin: 0 auto 12px; color: #ef4444;" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+      </svg>
+      <p style="font-size: 15px; line-height: 1.4; color: #666;">Apakah Anda yakin ingin keluar dari admin panel?</p>
+      <p style="font-size: 13px; color: #999; margin-top: 8px;">Anda perlu login kembali untuk mengakses fitur admin</p>
+    </div>
+    
+    <div class="modal-buttons">
+      <button class="btn-cancel" onclick="closeLogoutModal()" style="flex: 1; padding: 12px; font-size: 15px;">Batal</button>
+      <button class="btn-confirm" onclick="confirmLogout()" style="flex: 1; padding: 12px; font-size: 15px; background: #ef4444; color: #fff;">Logout</button>
+    </div>
+  </div>
+</div>
 
 <div class="modal" id="setlistModal">
   <div class="modal-box">
@@ -356,6 +565,68 @@ var calendarDate = new Date();
 var calendarShows = {};
 var selectedCalendarDate = null;
 
+// Notification System
+function showNotification(type, title, message, duration = 5000) {
+    const container = document.getElementById('notificationContainer');
+    const id = 'notif_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    
+    const icons = {
+        success: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M9.688 15.898l-3.98-3.98a1 1 0 00-1.414 1.414L8.98 18.02a1 1 0 001.414 0L20.707 7.707a1 1 0 00-1.414-1.414l-9.605 9.605z"/></svg>`,
+        warning: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>`,
+        error: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M18.364 5.636a1 1 0 00-1.414 0L12 10.586 7.05 5.636a1 1 0 00-1.414 1.414L10.586 12l-4.95 4.95a1 1 0 101.414 1.414L12 13.414l4.95 4.95a1 1 0 001.414-1.414L13.414 12l4.95-4.95a1 1 0 000-1.414z"/></svg>`,
+        info: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M13 16h-1v-4h1a1 1 0 000-2h-2a1 1 0 00-1 1v6a1 1 0 001 1h3a1 1 0 000-2zm-1-8h1a1 1 0 100-2h-1a1 1 0 100 2z"/></svg>`
+    };
+    
+    const notification = document.createElement('div');
+    notification.className = `notification-item notification-${type}`;
+    notification.id = id;
+    
+    notification.innerHTML = `
+        <div class="notification-icon">
+            ${icons[type] || icons.info}
+        </div>
+        <div class="notification-content">
+            <div class="notification-title">
+                <span>${title}</span>
+                <button class="notification-close" onclick="removeNotification('${id}')">×</button>
+            </div>
+            <div class="notification-message">${message}</div>
+        </div>
+    `;
+    
+    container.appendChild(notification);
+    
+    // Auto remove after duration
+    if (duration > 0) {
+        setTimeout(() => {
+            removeNotification(id);
+        }, duration);
+    }
+    
+    return id;
+}
+
+function removeNotification(id) {
+    const notification = document.getElementById(id);
+    if (notification) {
+        notification.classList.add('hiding');
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 300);
+    }
+}
+
+// Replace old showToast function with new notification system
+function showToast(message, isError) {
+    if (isError) {
+        showNotification('error', 'Error', message);
+    } else {
+        showNotification('success', 'Success', message);
+    }
+}
+
 function getTodayDate() {
     const now = new Date();
     const year = now.getFullYear();
@@ -375,16 +646,19 @@ function toggleTheme(){
     var b=document.body;
     var i=document.getElementById('themeIcon');
     var m=document.getElementById('modalThemeIcon');
+    var l=document.getElementById('logoutModalThemeIcon');
     b.classList.toggle('dark');
     if(b.classList.contains('dark')){
         var s='<path d="M12,17a5,5,0,1,1,5-5A5,5,0,0,1,12,17Zm0-8a3,3,0,1,0,3,3A3,3,0,0,0,12,9Zm0-4a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41L6.34,5A1,1,0,0,0,4.93,6.34ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm.64,5.66a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71a1,1,0,0,0-1.41-1.41ZM12,19a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19Zm6.36-2.34a1,1,0,0,0-1.41,1.41l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-3.64-3.95a1,1,0,0,0,.7.29,1,1,0,0,0,.71-1.7l-.71-.71a1,1,0,0,0-1.41,1.41Z"/>';
         if(i)i.innerHTML=s;
         if(m)m.innerHTML=s;
+        if(l)l.innerHTML=s;
         localStorage.setItem('jkt48_theme','dark');
     }else{
         var n='<path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/>';
         if(i)i.innerHTML=n;
         if(m)m.innerHTML=n;
+        if(l)l.innerHTML=n;
         localStorage.setItem('jkt48_theme','light');
     }
 }
@@ -405,7 +679,7 @@ if(!adminEmail||!loginTime){
     if(sessionAge>86400000){
         localStorage.removeItem('jkt48_admin_email');
         localStorage.removeItem('jkt48_admin_login_time');
-        alert('Sesi login berakhir. Silakan login kembali.');
+        showNotification('warning', 'Session Expired', 'Sesi login berakhir. Silakan login kembali.');
         document.getElementById('loginModal').style.display='flex';
     }else{
         loadData();
@@ -416,6 +690,8 @@ if(!adminEmail||!loginTime){
 async function loadData(){
     try{
         console.log('Memuat data dari Supabase...');
+        showNotification('info', 'Loading', 'Sedang memuat data member...', 3000);
+        
         var result=await db.from('members').select('*').order('show',{ascending:false});
         
         if(result.error){
@@ -428,10 +704,11 @@ async function loadData(){
         
         renderMembers();
         updateStats();
+        
     }catch(err){
         console.error('Error:',err);
         document.getElementById('list').innerHTML='<div class="msg" style="color:#ef4444">Error: '+err.message+'</div>';
-        showToast('Gagal memuat data: ' + err.message, true);
+        showNotification('error', 'Load Error', 'Gagal memuat data: ' + err.message);
     }
 }
 
@@ -489,7 +766,7 @@ function clearActivityLog(){
         activityLog=[];
         saveActivityLog();
         renderActivityLog();
-        showToast('Activity log berhasil dihapus',false);
+        showNotification('success', 'Activity Log', 'Activity log berhasil dihapus');
     }
 }
 
@@ -665,7 +942,7 @@ function validateBirthdayShow(isBirthday, birthdayMember, performingMembers) {
     if (!isBirthday) return true;
     
     if (!birthdayMember) {
-        showToast('Pilih member yang berulang tahun!', true);
+        showNotification('warning', 'Birthday Show', 'Pilih member yang berulang tahun!');
         return false;
     }
     
@@ -674,7 +951,7 @@ function validateBirthdayShow(isBirthday, birthdayMember, performingMembers) {
     });
     
     if (!memberNames.includes(birthdayMember.toLowerCase())) {
-        showToast('Member yang berulang tahun (' + birthdayMember + ') harus ada di daftar performing members!', true);
+        showNotification('warning', 'Birthday Show', 'Member yang berulang tahun (' + birthdayMember + ') harus ada di daftar performing members!');
         return false;
     }
     
@@ -689,7 +966,7 @@ async function addShowWithSetlist(){
     var birthdayMember=document.getElementById('birthdayMember').value;
     
     if(!setlist){
-        showToast('Pilih setlist terlebih dahulu!',true);
+        showNotification('warning', 'Peringatan', 'Pilih setlist terlebih dahulu!');
         return;
     }
     
@@ -716,6 +993,8 @@ async function addShowWithSetlist(){
     
     console.log('Menambah show untuk:', member.name, 'setlist:', setlist, 'birthday:', isBirthdayShow, 'birthday member:', birthdayMember);
     
+    showNotification('info', 'Processing', 'Sedang menambah show untuk ' + member.name + '...', 2000);
+    
     try{
         var newShow=member.show+1;
         var updateResult=await db.from('members')
@@ -725,7 +1004,7 @@ async function addShowWithSetlist(){
         
         if(updateResult.error){
             console.error('Update members error:',updateResult.error);
-            showToast('Gagal update members: '+updateResult.error.message,true);
+            showNotification('error', 'Update Error', 'Gagal update members: '+updateResult.error.message);
             return;
         }
         
@@ -747,7 +1026,7 @@ async function addShowWithSetlist(){
         
         if(insertResult.error){
             console.error('Insert error:',insertResult.error);
-            showToast('Gagal insert setlist: '+insertResult.error.message,true);
+            showNotification('error', 'Insert Error', 'Gagal insert setlist: '+insertResult.error.message);
             return;
         }
         
@@ -758,12 +1037,12 @@ async function addShowWithSetlist(){
         updateStats();
         closeSetlistModal();
         
-        var toastMessage = member.name+': '+newShow+' show ('+activityText+' - '+formatDate(showDate)+' '+formatTime(showTime)+')';
-        showToast(toastMessage,false);
+        var successMessage = member.name+': '+newShow+' show ('+activityText+' - '+formatDate(showDate)+' '+formatTime(showTime)+')';
+        showNotification('success', 'Show Added', successMessage);
         
     }catch(err){
         console.error('Exception:',err);
-        showToast('Error: '+err.message,true);
+        showNotification('error', 'Error', 'Error: '+err.message);
     }
 }
 
@@ -776,7 +1055,7 @@ async function bulkAddShows(){
     var birthdayMember=document.getElementById('bulkBirthdayMember').value;
     
     if(!setlist){
-        showToast('Pilih setlist terlebih dahulu!',true);
+        showNotification('warning', 'Peringatan', 'Pilih setlist terlebih dahulu!');
         return;
     }
     
@@ -793,14 +1072,14 @@ async function bulkAddShows(){
     }
     
     if(!namesInput.trim()){
-        showToast('Masukkan nama member!',true);
+        showNotification('warning', 'Peringatan', 'Masukkan nama member!');
         return;
     }
     
     var names=namesInput.split(',').map(function(n){return n.trim()}).filter(function(n){return n.length>0});
     
     if(names.length===0){
-        showToast('Tidak ada nama yang valid!',true);
+        showNotification('warning', 'Peringatan', 'Tidak ada nama yang valid!');
         return;
     }
     
@@ -811,7 +1090,7 @@ async function bulkAddShows(){
     var successCount=0;
     var failedNames=[];
     
-    showToast('Memproses '+names.length+' member...',false);
+    showNotification('info', 'Processing', 'Memproses '+names.length+' member...', 3000);
     
     for(var i=0;i<names.length;i++){
         var name=names[i];
@@ -874,10 +1153,12 @@ async function bulkAddShows(){
     var toastBirthdayInfo = isBirthdayShow ? ' (STS ' + birthdayMember + ')' : '';
     
     if(failedNames.length>0){
-        showToast('✅ '+successCount+' berhasil, ❌ '+failedNames.length+' gagal'+toastBirthdayInfo+' ('+toastDateInfo+')',false);
+        var message = '✅ '+successCount+' berhasil, ❌ '+failedNames.length+' gagal'+toastBirthdayInfo+' ('+toastDateInfo+')';
+        showNotification('warning', 'Bulk Add Result', message);
         console.log('Gagal:',failedNames);
     }else{
-        showToast('✅ Semua '+successCount+' member berhasil ditambahkan!'+toastBirthdayInfo+' ('+toastDateInfo+')',false);
+        var message = '✅ Semua '+successCount+' member berhasil ditambahkan!'+toastBirthdayInfo+' ('+toastDateInfo+')';
+        showNotification('success', 'Success', message);
     }
 }
 
@@ -920,10 +1201,10 @@ async function updateShow(id, change){
         
         if (lastSetlist) {
             addActivity(member.name, change, newShow, lastSetlist.setlist_name, member.status);
-            showToast(member.name+': '+newShow+' show ('+lastSetlist.setlist_name+')', false);
+            showNotification('success', 'Show Updated', member.name+': '+newShow+' show ('+lastSetlist.setlist_name+')');
         } else {
             addActivity(member.name, change, newShow, null, member.status);
-            showToast(member.name+': '+newShow+' show', false);
+            showNotification('info', 'Show Updated', member.name+': '+newShow+' show');
         }
         
         renderMembers();
@@ -931,7 +1212,7 @@ async function updateShow(id, change){
         
     } catch (err) {
         console.error('Update error:', err);
-        showToast('Gagal update: ' + err.message, true);
+        showNotification('error', 'Update Error', 'Gagal update: ' + err.message);
     }
 }
 
@@ -1004,10 +1285,11 @@ function login(){
         document.getElementById('loginModal').style.display='none';
         loadData();
         loadActivityLog();
-        showToast('Login berhasil!',false);
+        showNotification('success', 'Login Success', 'Login berhasil! Selamat datang di admin panel.');
     }else{
         error.textContent='Email atau password salah';
         error.style.display='block';
+        showNotification('error', 'Login Error', 'Email atau password salah');
     }
 }
 
@@ -1024,17 +1306,7 @@ function confirmLogout(){
     localStorage.removeItem('jkt48_admin_login_time');
     closeLogoutModal();
     document.getElementById('loginModal').style.display='flex';
-    showToast('Logout berhasil',false);
-}
-
-function showToast(message,isError){
-    var toast=document.getElementById('toast');
-    toast.textContent=message;
-    toast.className='toast'+(isError?' error':'');
-    toast.classList.add('show');
-    setTimeout(function(){
-        toast.classList.remove('show');
-    },3000);
+    showNotification('info', 'Logged Out', 'Logout berhasil. Silakan login kembali untuk mengakses admin panel.');
 }
 
 function formatDate(dateString) {
@@ -1094,7 +1366,7 @@ async function loadCalendarShows() {
         console.log('📅 Loaded calendar data for ' + monthName + ':', Object.keys(calendarShows).length + ' days with shows');
     } catch (err) {
         console.error('Error loading calendar data:', err);
-        showToast('Gagal memuat data kalender', true);
+        showNotification('error', 'Calendar Error', 'Gagal memuat data kalender');
     }
 }
 
@@ -1235,7 +1507,7 @@ function calendarGoToday() {
     loadCalendarShows().then(function() {
         renderCalendar();
         renderCalendarDayDetail(selectedCalendarDate);
-        showToast('Kembali ke hari ini', false);
+        showNotification('info', 'Calendar', 'Kembali ke hari ini');
     });
 }
 
