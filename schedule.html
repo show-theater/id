@@ -127,9 +127,20 @@ const SUPABASE_URL="https://pprxfopqkvpeajeoxzig.supabase.co";
 const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBwcnhmb3Bxa3ZwZWFqZW94emlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYyNTI4MTIsImV4cCI6MjA4MTgyODgxMn0.iXRO_dAHhtVHRLqGTresG_63RD2zIaopNXtXYNfthdg";
 const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-let currentDate=new Date().toISOString().split('T')[0];
+// Fungsi untuk menyimpan tanggal yang dipilih ke localStorage
+function saveSelectedDate(dateStr) {
+    localStorage.setItem('jkt48_selected_date', dateStr);
+}
+
+// Fungsi untuk memuat tanggal yang dipilih dari localStorage
+function loadSelectedDate() {
+    const savedDate = localStorage.getItem('jkt48_selected_date');
+    return savedDate || new Date().toISOString().split('T')[0];
+}
+
+let currentDate = loadSelectedDate(); // Gunakan tanggal dari localStorage atau tanggal hari ini
 let allShows=[];
-let currentMonth=moment();
+let currentMonth=moment(currentDate); // Inisialisasi bulan berdasarkan tanggal yang dipilih
 
 function initializeTheme(){
 const savedTheme=localStorage.getItem('jkt48_theme')||'light';
@@ -261,6 +272,9 @@ const monthYearEl=document.getElementById('currentMonth');
 const monthNames=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
 const dayNames=['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
 
+// Update currentMonth berdasarkan currentDate
+currentMonth = moment(currentDate);
+
 monthYearEl.textContent=`${monthNames[currentMonth.month()]} ${currentMonth.year()}`;
 
 const startOfMonth=currentMonth.clone().startOf('month');
@@ -308,10 +322,12 @@ renderCalendar();
 }
 
 function selectDate(date){
-currentDate=date;
-const today=moment();
+currentDate = date;
+saveSelectedDate(date); // Simpan tanggal yang dipilih ke localStorage
+    
+const today = moment();
 if(today.month()!==moment(date).month()){
-currentMonth=moment(date);
+currentMonth = moment(date);
 }
 renderCalendar();
 renderShows(date);
