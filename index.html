@@ -2,18 +2,18 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
+<!-- ERUDA CONSOLE - HAPUS SETELAH DEBUGGING -->
+<script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+<script>eruda.init();</script>
+<!-- END ERUDA -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JKT48 Show Theater</title>
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:Arial,sans-serif;background:#f5f5f5;color:#333;min-height:100vh;padding-bottom:60px;transition:background 0.3s,color 0.3s}
 body.dark{background:#0a0e1a;color:#e5e7eb}
 
-/* ========== HEADER FIX ========== */
+/* ========== HEADER ========== */
 header{
     background:#e60012;
     padding:15px 20px;
@@ -533,8 +533,10 @@ const date=new Date(record.updated_at);
 const day=date.getDate();
 const month=date.getMonth();
 const year=date.getFullYear();
+const hours=date.getHours().toString().padStart(2,'0');
+const minutes=date.getMinutes().toString().padStart(2,'0');
 const monthNames=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Oct','Nov','Des'];
-const formatted=`${day} ${monthNames[month]} ${year}`;
+const formatted=`${day} ${monthNames[month]} ${year}, ${hours}:${minutes}`;
 document.getElementById('lastUpdate').innerHTML=`Update: ${formatted}`;
 console.log('Last update:',formatted);
 return;
