@@ -8,18 +8,67 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="theme.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:Arial,sans-serif;background:#f5f5f5;color:#333;min-height:100vh;padding-bottom:60px;transition:background 0.3s,color 0.3s}
 body.dark{background:#0a0e1a;color:#e5e7eb}
-header{background:#e60012;padding:15px 20px;font-size:20px;font-weight:bold;color:#fff;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;min-height:60px;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
-.header-title{flex:1;text-align:center;margin:0;padding:0 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:20px}
-.header-buttons{display:flex;gap:10px;align-items:center;flex-shrink:0}
-.schedule-button,.theme-toggle{background:rgba(255,255,255,0.2);border:none;color:#fff;width:40px;height:40px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:8px;transition:background-color 0.3s;flex-shrink:0}
+
+/* ========== HEADER FIX ========== */
+header{
+    background:#e60012;
+    padding:15px 20px;
+    font-size:20px;
+    font-weight:bold;
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    position:sticky;
+    top:0;
+    z-index:100;
+    min-height:60px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1)
+}
+
+/* Wrapper untuk judul */
+.header-title{
+    flex:1;
+    text-align:center;
+    margin:0;
+    padding:0 10px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    font-size:20px
+}
+
+.header-buttons{
+    display:flex;
+    gap:10px;
+    align-items:center;
+    flex-shrink:0
+}
+
+.schedule-button,.theme-toggle{
+    background:rgba(255,255,255,0.2);
+    border:none;
+    color:#fff;
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:8px;
+    transition:background-color 0.3s;
+    flex-shrink:0
+}
 .schedule-button:hover,.theme-toggle:hover{background:rgba(255,255,255,0.3)}
 .schedule-button svg,.theme-toggle svg{width:20px;height:20px}
 body.dark .schedule-button,body.dark .theme-toggle{background:rgba(0,0,0,0.2)}
+/* ========== END HEADER FIX ========== */
+
 .live-show-banner{color:white;padding:14px 20px;margin:0;border-bottom:3px solid #f59e0b;cursor:pointer;transition:all 0.3s;display:none;position:relative;overflow:hidden;background:linear-gradient(135deg,#ef4444 0%,#dc2626 100%)}
 .live-show-banner:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,0.2);background:linear-gradient(135deg,#dc2626 0%,#b91c1c 100%)}
 .live-show-banner::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,0.1) 50%,transparent 100%);animation:shimmer 3s infinite;pointer-events:none}
@@ -121,6 +170,7 @@ body.dark .msg{color:#6b7280}
 body.dark .spinner{border-color:rgba(255,255,255,0.1);border-top-color:#f59e0b}
 .simple-message{grid-column:1/-1;text-align:center;padding:40px 20px;color:#6b7280;font-size:14px}
 body.dark .simple-message{color:#9ca3af}
+.simple-message .icon{font-size:32px;margin-bottom:12px;opacity:0.5}
 .modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:1000;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
 .modal-overlay.active{display:flex}
 .modal{background:#fff;border-radius:16px;padding:24px;max-width:420px;width:90%;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.3);animation:modalSlide 0.3s ease-out}
@@ -151,8 +201,66 @@ body.dark .modal-close:hover{background:#374151;color:#e5e7eb}
 .gen-option.gen-12{background:#fde047;color:#000}
 .gen-option.gen-13{background:#facc15;color:#000}
 .gen-option.gen-14{background:#e879f9;color:#fff}
-@media (max-width:767px){header{padding:12px 15px;min-height:55px}.header-title{font-size:18px;padding:0 5px}.header-buttons{gap:6px}.schedule-button,.theme-toggle{width:35px;height:35px}.schedule-button svg,.theme-toggle svg{width:18px;height:18px}.name{font-size:11px}.show-info{font-size:9px;margin:2px 0 5px 0}.gen-badge{font-size:8px;padding:1px 5px}.bar{height:3px}.rank-badge{width:20px;height:20px;font-size:10px}.photo-setlist-badge{font-size:7px;padding:1px 4px}.card-footer{padding:6px 4px;min-height:75px}.name-container{min-height:26px}.top-member-filter{min-width:110px;padding:8px 12px;font-size:12px}.filter{min-width:100px;padding:8px 12px;font-size:12px}.live-show-content{flex-direction:column;align-items:stretch;gap:10px}.live-show-left{flex-direction:column;align-items:flex-start;gap:8px}.live-show-info{width:100%}.live-show-title{font-size:14px}.live-show-time{font-size:12px}.live-show-right{width:100%;justify-content:flex-end}}
-@media (max-width:480px){.header-title{font-size:16px}.schedule-button,.theme-toggle{width:32px;height:32px}.schedule-button svg,.theme-toggle svg{width:16px;height:16px}.header-buttons{gap:4px}}
+
+/* ========== MEDIA QUERY FIX ========== */
+@media (max-width:767px){
+    /* Header mobile */
+    header{
+        padding:12px 15px;
+        min-height:55px
+    }
+    .header-title{
+        font-size:18px;
+        padding:0 5px
+    }
+    .header-buttons{
+        gap:6px
+    }
+    .schedule-button,.theme-toggle{
+        width:35px;
+        height:35px
+    }
+    .schedule-button svg,.theme-toggle svg{
+        width:18px;
+        height:18px
+    }
+    
+    /* Other mobile styles */
+    .name{font-size:11px}
+    .show-info{font-size:9px;margin:2px 0 5px 0}
+    .gen-badge{font-size:8px;padding:1px 5px}
+    .bar{height:3px}
+    .rank-badge{width:20px;height:20px;font-size:10px}
+    .photo-setlist-badge{font-size:7px;padding:1px 4px}
+    .card-footer{padding:6px 4px;min-height:75px}
+    .name-container{min-height:26px}
+    .top-member-filter{min-width:110px;padding:8px 12px;font-size:12px}
+    .filter{min-width:100px;padding:8px 12px;font-size:12px}
+    .live-show-content{flex-direction:column;align-items:stretch;gap:10px}
+    .live-show-left{flex-direction:column;align-items:flex-start;gap:8px}
+    .live-show-info{width:100%}
+    .live-show-title{font-size:14px}
+    .live-show-time{font-size:12px}
+    .live-show-right{width:100%;justify-content:flex-end}
+}
+
+/* Untuk layar sangat kecil */
+@media (max-width:480px){
+    .header-title{
+        font-size:16px
+    }
+    .schedule-button,.theme-toggle{
+        width:32px;
+        height:32px
+    }
+    .schedule-button svg,.theme-toggle svg{
+        width:16px;
+        height:16px
+    }
+    .header-buttons{
+        gap:4px
+    }
+}
 </style>
 </head>
 <body>
@@ -165,7 +273,7 @@ body.dark .modal-close:hover{background:#374151;color:#e5e7eb}
         </button>
         <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark Mode">
             <svg id="themeIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                <!-- Icon akan diupdate otomatis -->
+                <path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/>
             </svg>
         </button>
     </div>
@@ -188,6 +296,32 @@ const TIME_CONFIG={LIVE_BEFORE:5,LIVE_AFTER:150};
 const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 let members=[],allMembersData=[],currentGen='all',currentTeam='all',searchQuery='',isDataLoaded=false,scrollSaveTimeout,currentSetlistView=null,currentLiveShowData=null,liveShowRefreshInterval=null;
 
+function initializeTheme(){
+const savedTheme=localStorage.getItem('jkt48_theme')||'light',icon=document.getElementById('themeIcon');
+if(savedTheme==='dark'){
+document.documentElement.classList.add('dark');
+document.body.classList.add('dark');
+if(icon)icon.innerHTML='<path d="M12,17a5,5,0,1,1,5-5A5,5,0,0,1,12,17Zm0-8a3,3,0,1,0,3,3A3,3,0,0,0,12,9Zm0-4a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41L6.34,5A1,1,0,0,0,4.93,6.34ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm.64,5.66a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71a1,1,0,0,0-1.41-1.41ZM12,19a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19Zm6.36-2.34a1,1,0,0,0-1.41,1.41l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-3.64-3.95a1,1,0,0,0,.7.29,1,1,0,0,0,.71-1.7l-.71-.71a1,1,0,0,0-1.41,1.41Z"/>';
+}else{
+document.documentElement.classList.remove('dark');
+document.body.classList.remove('dark');
+if(icon)icon.innerHTML='<path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/>';
+}
+}
+
+function toggleTheme(){
+const body=document.body,icon=document.getElementById('themeIcon'),html=document.documentElement,themeToggle=document.querySelector('.theme-toggle');
+body.classList.toggle('dark');
+html.classList.toggle('dark');
+if(body.classList.contains('dark')){
+icon.innerHTML='<path d="M12,17a5,5,0,1,1,5-5A5,5,0,0,1,12,17Zm0-8a3,3,0,1,0,3,3A3,3,0,0,0,12,9Zm0-4a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41L6.34,5A1,1,0,0,0,4.93,6.34ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm.64,5.66a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71a1,1,0,0,0-1.41-1.41ZM12,19a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19Zm6.36-2.34a1,1,0,0,0-1.41,1.41l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-3.64-3.95a1,1,0,0,0,.7.29,1,1,0,0,0,.71-1.7l-.71-.71a1,1,0,0,0-1.41,1.41Z"/>';
+localStorage.setItem('jkt48_theme','dark');
+}else{
+icon.innerHTML='<path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/>';
+localStorage.setItem('jkt48_theme','light');
+}
+}
+
 function openSchedule() {
     window.location.href = 'schedule.html';
 }
@@ -195,17 +329,23 @@ function openSchedule() {
 async function checkLiveShows(){
 try{
 const now=new Date(),today=now.toISOString().split('T')[0],currentHour=now.getHours(),currentMinute=now.getMinutes(),currentTotalMinutes=currentHour*60+currentMinute;
+console.log('=== DEBUG LIVE SHOW ===');
+console.log('Hari ini:',today,'Waktu:',`${currentHour}:${currentMinute} (${currentTotalMinutes} menit)`);
 const{data:shows,error}=await db.from('setlist_performance').select('*').eq('show_date',today).order('show_time',{ascending:true});
 if(error){console.error('Error:',error);return null;}
-if(!shows||shows.length===0){return null;}
+console.log('Total shows:',shows?.length||0);
+if(!shows||shows.length===0){console.log('Tidak ada show hari ini');return null;}
 const liveShows=[];
 shows.forEach(show=>{
 if(!show.show_time)return;
 const timeParts=show.show_time.split(':'),showHour=parseInt(timeParts[0])||0,showMinute=parseInt(timeParts[1])||0,showTotalMinutes=showHour*60+showMinute,timeDiff=showTotalMinutes-currentTotalMinutes;
+console.log(`${show.setlist_name} ${show.show_time} - Diff: ${timeDiff}min`);
 if(timeDiff>=-TIME_CONFIG.LIVE_AFTER&&timeDiff<=TIME_CONFIG.LIVE_BEFORE){
 liveShows.push(show);
+console.log(`LIVE: ${show.setlist_name} (${timeDiff}min)`);
 }
 });
+console.log('Live shows:',liveShows.length);
 if(liveShows.length>0)return prepareShowData(liveShows);
 return null;
 }catch(err){
@@ -236,6 +376,7 @@ birthdayMember:showsBySetlist[setlistName][0]?.birthday_member||null
 };
 }
 });
+if(bestSetlist)console.log('Selected:',bestSetlist);
 return bestSetlist;
 }
 
@@ -248,14 +389,17 @@ return earliest;
 
 async function updateLiveShowBanner(){
 const banner=document.getElementById('liveShowBanner'),title=document.getElementById('liveShowTitle'),timeElement=document.getElementById('liveShowTime');
+console.log('Checking banner...');
 try{
 const showData=await checkLiveShows();
 currentLiveShowData=showData;
 if(!showData){
 banner.style.display='none';
+console.log('No live show');
 return;
 }
 banner.style.display='block';
+console.log('BANNER MUNCUL!');
 let displayTitle=showData.name;
 if(showData.isBirthdayShow&&showData.birthdayMember)displayTitle+=` (STS ${showData.birthdayMember})`;
 title.textContent=displayTitle;
@@ -319,10 +463,12 @@ saveCurrentState();
 
 async function loadData(){
 try{
+console.log('Memuat data...');
 const{data:membersData,error:membersError}=await db.from('members').select('*').order('show',{ascending:false});
 if(membersError)throw membersError;
 members=membersData||[];
 allMembersData=[...members];
+console.log('Members:',members.length);
 await loadSetlistData();
 await updateLiveShowBanner();
 restoreState();
@@ -346,6 +492,7 @@ document.getElementById('lastUpdate').innerHTML='Error';
 async function loadSetlistData(){
 try{
 const{data:setlistData}=await db.from('setlist_performance').select('*');
+console.log('Setlist data:',setlistData?.length||0);
 Object.keys(SETLIST_DATA).forEach(key=>SETLIST_DATA[key].members={});
 members.forEach(member=>{
 Object.keys(SETLIST_DATA).forEach(key=>SETLIST_DATA[key].members[member.name]=0);
@@ -391,6 +538,7 @@ const minutes=date.getMinutes().toString().padStart(2,'0');
 const monthNames=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Oct','Nov','Des'];
 const formatted=`${day} ${monthNames[month]} ${year}, ${hours}:${minutes}`;
 document.getElementById('lastUpdate').innerHTML=`Update: ${formatted}`;
+console.log('Last update:',formatted);
 return;
 }
 }
@@ -569,9 +717,14 @@ scrollSaveTimeout=setTimeout(()=>{if(isDataLoaded)sessionStorage.setItem('jkt48_
 window.addEventListener('beforeunload',()=>saveCurrentState());
 
 document.addEventListener('DOMContentLoaded',()=>{
+console.log('START');
+console.log(Intl.DateTimeFormat().resolvedOptions().timeZone);
+console.log(new Date().toLocaleString('id-ID'));
+initializeTheme();
 loadData();
 if(liveShowRefreshInterval)clearInterval(liveShowRefreshInterval);
 liveShowRefreshInterval=setInterval(()=>{
+console.log('Refresh...');
 updateLiveShowBanner();
 },30000);
 });

@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Jadwal Show - JKT48 Theater</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="theme.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -128,18 +127,51 @@ const SUPABASE_URL="https://pprxfopqkvpeajeoxzig.supabase.co";
 const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBwcnhmb3Bxa3ZwZWFqZW94emlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYyNTI4MTIsImV4cCI6MjA4MTgyODgxMn0.iXRO_dAHhtVHRLqGTresG_63RD2zIaopNXtXYNfthdg";
 const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
+// Fungsi untuk menyimpan tanggal yang dipilih ke localStorage
 function saveSelectedDate(dateStr) {
     localStorage.setItem('jkt48_selected_date', dateStr);
 }
 
+// Fungsi untuk memuat tanggal yang dipilih dari localStorage
 function loadSelectedDate() {
     const savedDate = localStorage.getItem('jkt48_selected_date');
     return savedDate || new Date().toISOString().split('T')[0];
 }
 
-let currentDate = loadSelectedDate();
+let currentDate = loadSelectedDate(); // Gunakan tanggal dari localStorage atau tanggal hari ini
 let allShows=[];
-let currentMonth=moment(currentDate);
+let currentMonth=moment(currentDate); // Inisialisasi bulan berdasarkan tanggal yang dipilih
+
+// ============= FUNGSI THEME YANG SAMA DENGAN index.html =============
+function initializeTheme(){
+const savedTheme=localStorage.getItem('jkt48_theme')||'light';
+const icon=document.getElementById('themeIcon');
+if(savedTheme==='dark'){
+document.body.classList.add('dark');
+if(icon){
+icon.innerHTML='<path d="M12,17a5,5,0,1,1,5-5A5,5,0,0,1,12,17Zm0-8a3,3,0,1,0,3,3A3,3,0,0,0,12,9Zm0-4a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41L6.34,5A1,1,0,0,0,4.93,6.34ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm.64,5.66a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71a1,1,0,0,0-1.41-1.41ZM12,19a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19Zm6.36-2.34a1,1,0,0,0-1.41,1.41l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-3.64-3.95a1,1,0,0,0,.7.29,1,1,0,0,0,.71-1.7l-.71-.71a1,1,0,0,0-1.41,1.41Z"/>';
+}
+}else{
+document.body.classList.remove('dark');
+if(icon){
+icon.innerHTML='<path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/>';
+}
+}
+}
+
+function toggleTheme(){
+const body=document.body;
+const icon=document.getElementById('themeIcon');
+body.classList.toggle('dark');
+if(body.classList.contains('dark')){
+icon.innerHTML='<path d="M12,17a5,5,0,1,1,5-5A5,5,0,0,1,12,17Zm0-8a3,3,0,1,0,3,3A3,3,0,0,0,12,9Zm0-4a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41L6.34,5A1,1,0,0,0,4.93,6.34ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm.64,5.66a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71a1,1,0,0,0-1.41-1.41ZM12,19a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19Zm6.36-2.34a1,1,0,0,0-1.41,1.41l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-3.64-3.95a1,1,0,0,0,.7.29,1,1,0,0,0,.71-1.7l-.71-.71a1,1,0,0,0-1.41,1.41Z"/>';
+localStorage.setItem('jkt48_theme','dark');
+}else{
+icon.innerHTML='<path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/>';
+localStorage.setItem('jkt48_theme','light');
+}
+}
+// ============= END FUNGSI THEME =============
 
 function goBack(){
 window.location.href='index.html';
@@ -164,30 +196,35 @@ document.getElementById('showList').innerHTML='<div class="no-shows">Gagal memua
 }
 }
 
+// Fungsi untuk menentukan warna berdasarkan setlist untuk badge
 function getSetlistColor(setlistName, memberCount) {
 if (!setlistName) return '#e60012';
 const setlistLower = setlistName.toLowerCase().trim();
   
+// Cek dengan lebih spesifik - untuk "Te Wo Tsunaginagara"
 if(setlistLower.includes('te wo tsunaginagara') || 
    setlistLower.includes('tewo') ||
    setlistLower.includes('tsunaginagara') ||
    setlistName.includes('Te Wo Tsunaginagara')) {
-return '#FF69B4';
+return '#FF69B4'; // Pink untuk Te Wo Tsunaginagara (Tte)
 } else if(setlistLower.includes('ramune')) {
-return '#00CED1';
+return '#00CED1'; // Cyan untuk Ramune
 } else if(setlistLower.includes('pertaruhan')) {
-return '#D30000';
+return '#D30000'; // Merah gelap untuk Pertaruhan
 } else if(setlistLower.includes('pajama')) {
-return '#00006d';
+return '#00006d'; // Navy blue untuk Pajama Drive
 } else {
+// Semua setlist lain default ke merah JKT48
 return '#e60012';
 }
 }
 
+// Fungsi untuk mendapatkan daftar setlist unik dengan warnanya di suatu tanggal
 function getSetlistsForDate(dateStr) {
 const showsOnDate = allShows.filter(s => s.show_date === dateStr);
 if(showsOnDate.length === 0) return [];
   
+// Kelompokkan show berdasarkan setlist untuk menghitung member count
 const setlistGroups = {};
 showsOnDate.forEach(show => {
 const setlistKey = show.setlist_name || 'Unknown';
@@ -197,6 +234,7 @@ setlistGroups[setlistKey] = [];
 setlistGroups[setlistKey].push(show);
 });
 
+// Buat array setlist unik dengan warnanya
 const uniqueSetlists = [];
 for (const [setlistName, shows] of Object.entries(setlistGroups)) {
 const memberCount = shows.length;
@@ -208,6 +246,7 @@ count: shows.length
 });
 }
 
+// Urutkan berdasarkan prioritas warna
 uniqueSetlists.sort((a, b) => {
 const priorityOrder = {
 '#FF69B4': 1,
@@ -219,9 +258,11 @@ const priorityOrder = {
 return (priorityOrder[a.color] || 6) - (priorityOrder[b.color] || 6);
 });
 
+// Hanya ambil maksimal 3 setlist untuk ditampilkan
 return uniqueSetlists.slice(0, 3);
 }
 
+// Fungsi untuk membuat indikator HTML untuk tanggal
 function createIndicatorsHTML(dateStr) {
 const setlists = getSetlistsForDate(dateStr);
 if(setlists.length === 0) return '';
@@ -241,6 +282,7 @@ const monthYearEl=document.getElementById('currentMonth');
 const monthNames=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
 const dayNames=['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
 
+// Update currentMonth berdasarkan currentDate
 currentMonth = moment(currentDate);
 
 monthYearEl.textContent=`${monthNames[currentMonth.month()]} ${currentMonth.year()}`;
@@ -252,6 +294,7 @@ const endDate=endOfMonth.clone().endOf('week');
 
 let html='';
 
+// Day headers
 for(let i=0;i<7;i++){
 html+=`<div class="calendar-day-header">${dayNames[i]}</div>`;
 }
@@ -290,7 +333,7 @@ renderCalendar();
 
 function selectDate(date){
 currentDate = date;
-saveSelectedDate(date);
+saveSelectedDate(date); // Simpan tanggal yang dipilih ke localStorage
     
 const today = moment();
 if(today.month()!==moment(date).month()){
@@ -355,6 +398,7 @@ window.location.href=`liveshow.html?setlist=${encodeURIComponent(setlist)}&date=
 }
 
 document.addEventListener('DOMContentLoaded',()=>{
+initializeTheme();
 loadSchedule();
 });
 </script>
