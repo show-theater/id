@@ -1,0 +1,1521 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin - JKT48 Show Theater</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Arial,sans-serif;background:#f5f5f5;color:#333;min-height:100vh;padding-bottom:60px}
+body.dark{background:#0a0e1a;color:#e5e7eb}
+header{background:#e60012;text-align:center;padding:20px 70px 20px 20px;font-size:20px;font-weight:bold;color:#fff;display:flex;align-items:center;justify-content:center;gap:10px;position:relative}
+.admin-badge{background:#fff;color:#e60012;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:bold}
+.header-theme-toggle{position:absolute;right:20px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.2);border:none;color:#fff;width:40px;height:40px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:8px}
+.header-theme-toggle svg{width:100%;height:100%}
+.top{padding:15px 20px;background:#fff;border-bottom:1px solid #ddd;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+body.dark .top{background:#111827;border-bottom:1px solid #1f2937}
+.search-box{flex:1;max-width:400px;min-width:200px}
+.search-box input{width:100%;padding:12px 20px;border-radius:25px;border:2px solid #f59e0b;background:#fff;font-size:14px;outline:none;color:#333}
+body.dark .search-box input{background:#0a0e1a;color:#e5e7eb}
+textarea{font-family:Arial,sans-serif;max-height:150px;min-height:100px;resize:vertical}
+body.dark textarea{background:#0a0e1a;color:#e5e7eb;border-color:#374151}
+button{border:none;border-radius:20px;padding:10px 20px;font-weight:bold;cursor:pointer;font-size:14px}
+.bulk-btn{background:#f59e0b;color:#fff}
+.logout-btn{background:#22c55e;color:#fff}
+.activity-section{padding:15px 20px;background:#fff;border-bottom:1px solid #ddd}
+body.dark .activity-section{background:#111827;border-bottom:1px solid #1f2937}
+.activity-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.activity-title{font-size:16px;font-weight:bold}
+.clear-log-btn{background:#ef4444;color:#fff;padding:8px 16px;font-size:12px;border-radius:12px}
+.activity-log{background:#f9fafb;border-radius:12px;padding:15px;border:1px solid #e5e7eb;max-height:250px;overflow-y:auto}
+body.dark .activity-log{background:#1f2937;border-color:#374151}
+.activity-item{display:flex;align-items:center;gap:10px;padding:10px;margin-bottom:6px;background:#fff;border-radius:8px;border-left:3px solid var(--color)}
+body.dark .activity-item{background:#111827}
+.activity-icon{font-size:18px}
+.activity-content{flex:1}
+.activity-text{font-size:12px;font-weight:600}
+.activity-time{font-size:10px;color:#666;margin-top:2px}
+body.dark .activity-time{color:#9ca3af}
+.activity-empty{text-align:center;padding:30px;color:#999;font-size:13px}
+.filters{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:15px 20px;background:#fff;border-bottom:1px solid #ddd}
+body.dark .filters{background:#111827;border-bottom:1px solid #1f2937}
+.filter{padding:8px 16px;font-size:13px;border-radius:20px;border:2px solid transparent;cursor:pointer;font-weight:bold;background:#f0f0f0;color:#333}
+.filter.active{border:2px solid #e60012 !important;box-shadow:0 0 0 1px rgba(230,0,18,0.1)}
+.filter.all{background:#e60012;color:#fff}
+.filter.inti{background:#22c55e;color:#fff}
+.filter.trainee{background:#f59e0b;color:#fff}
+body.dark .filter{background:#1f2937;color:#e5e7eb}
+.stats{text-align:center;padding:10px;font-size:12px;color:#666;background:#fff;border-bottom:1px solid #ddd}
+body.dark .stats{background:#0a0e1a;color:#9ca3af}
+.container{padding:20px;display:grid;grid-template-columns:repeat(4,1fr);gap:15px;max-width:900px;margin:0 auto}
+@media (max-width:600px){.container{grid-template-columns:repeat(4,1fr);gap:10px;padding:15px}}
+.card{background:#fff;border-radius:12px;padding:0;text-align:center;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.1);position:relative}
+.card.trainee{border:2px solid #f59e0b}
+body.dark .card{background:#111827}
+.avatar{width:100%;aspect-ratio:3/4;object-fit:cover;background:#f0f0f0;display:block}
+body.dark .avatar{background:#0a0e1a}
+.card-footer{padding:8px 6px;background:var(--gen-color)}
+.status-badge{position:absolute;top:6px;right:6px;background:rgba(34,197,94,0.95);color:#fff;font-size:7px;font-weight:bold;padding:3px 8px;border-radius:10px;text-transform:uppercase;z-index:10}
+.status-badge.trainee{background:rgba(245,158,11,0.95)}
+.gen-badge{display:inline-block;background:rgba(0,0,0,0.2);color:#fff;font-size:8px;font-weight:bold;padding:2px 6px;border-radius:8px;margin-bottom:4px}
+.name{font-weight:bold;font-size:12px;color:#fff;margin-bottom:3px}
+.show{font-size:10px;color:rgba(255,255,255,0.9);margin-bottom:4px}
+.bar{height:4px;background:rgba(0,0,0,0.2);border-radius:2px;overflow:hidden;margin-bottom:6px}
+.bar span{display:block;height:100%;background:#fff}
+.admin-controls{display:flex;gap:4px;justify-content:center}
+.admin-controls button{min-width:28px;min-height:28px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,0.3);color:#fff;padding:0;font-size:18px;display:flex;align-items:center;justify-content:center}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:999;padding:20px;backdrop-filter:blur(8px)}
+.modal-box{background:#fff;padding:28px;border-radius:20px;width:90%;max-width:380px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.5);position:relative}
+body.dark .modal-box{background:#111827}
+.modal-theme-toggle{position:absolute;top:20px;right:20px;background:#e60012;border:none;color:#fff;width:36px;height:36px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:7px}
+.modal-theme-toggle svg{width:100%;height:100%}
+.modal-box h3{margin:0 0 8px;font-size:20px}
+.modal-box p{margin:0 0 15px;font-size:14px;color:#666}
+body.dark .modal-box p{color:#9ca3af}
+.modal-box input,.modal-box select,.modal-box textarea{width:100%;padding:12px;border-radius:12px;border:2px solid #ddd;background:#fff;color:#333;font-size:14px;outline:none;margin-bottom:10px}
+body.dark .modal-box input,body.dark .modal-box select,body.dark .modal-box textarea{background:#0a0e1a;color:#e5e7eb;border-color:#374151}
+input[type="date"]{color-scheme:light}
+body.dark input[type="date"]{color-scheme:dark}
+.input-label{display:block;font-size:12px;font-weight:600;color:#666;margin-bottom:6px;margin-top:10px}
+body.dark .input-label{color:#9ca3af}
+.modal-buttons{display:flex;gap:10px;margin-top:20px;position:sticky;bottom:0;background:inherit;padding-top:10px;z-index:10}
+.btn-cancel{background:#e5e7eb;color:#333}
+body.dark .btn-cancel{background:#374151;color:#e5e7eb}
+.btn-confirm{background:#ef4444;color:#fff}
+.btn-add{background:#22c55e;color:#fff}
+.error{color:#ef4444;font-size:12px;display:none;margin:8px 0 12px;font-weight:600}
+.msg{grid-column:1/-1;text-align:center;padding:40px 20px;color:#999;background:#fff;border-radius:12px;margin:20px}
+body.dark .msg{background:#111827;color:#6b7280}
+.loading{display:flex;align-items:center;justify-content:center;gap:8px;grid-column:1/-1;padding:60px 20px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner{display:inline-block;width:32px;height:32px;border:3px solid rgba(0,0,0,0.1);border-top-color:#f59e0b;border-radius:50%;animation:spin 0.8s linear infinite}
+body.dark .spinner{border-color:rgba(255,255,255,0.1);border-top-color:#f59e0b}
+
+/* Notification System */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    max-width: 400px;
+    width: 90%;
+}
+
+.notification-item {
+    margin-bottom: 12px;
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    animation: slideIn 0.3s ease-out;
+    transform-origin: top right;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.notification-item.hiding {
+    animation: slideOut 0.3s ease-in forwards;
+}
+
+.notification-icon {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.notification-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.notification-title {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    color: inherit;
+    opacity: 0.6;
+    cursor: pointer;
+    padding: 2px;
+    font-size: 16px;
+    line-height: 1;
+}
+
+.notification-close:hover {
+    opacity: 1;
+}
+
+.notification-message {
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.notification-success {
+    background: rgba(34, 197, 94, 0.1);
+    border-color: rgba(34, 197, 94, 0.2);
+    color: #166534;
+}
+
+body.dark .notification-success {
+    background: rgba(34, 197, 94, 0.15);
+    border-color: rgba(34, 197, 94, 0.3);
+    color: #86efac;
+}
+
+.notification-success .notification-icon {
+    background: rgba(34, 197, 94, 0.2);
+    color: #166534;
+}
+
+body.dark .notification-success .notification-icon {
+    background: rgba(34, 197, 94, 0.3);
+    color: #86efac;
+}
+
+.notification-warning {
+    background: rgba(245, 158, 11, 0.1);
+    border-color: rgba(245, 158, 11, 0.2);
+    color: #92400e;
+}
+
+body.dark .notification-warning {
+    background: rgba(245, 158, 11, 0.15);
+    border-color: rgba(245, 158, 11, 0.3);
+    color: #fcd34d;
+}
+
+.notification-warning .notification-icon {
+    background: rgba(245, 158, 11, 0.2);
+    color: #92400e;
+}
+
+body.dark .notification-warning .notification-icon {
+    background: rgba(245, 158, 11, 0.3);
+    color: #fcd34d;
+}
+
+.notification-error {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.2);
+    color: #991b1b;
+}
+
+body.dark .notification-error {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.3);
+    color: #fca5a5;
+}
+
+.notification-error .notification-icon {
+    background: rgba(239, 68, 68, 0.2);
+    color: #991b1b;
+}
+
+body.dark .notification-error .notification-icon {
+    background: rgba(239, 68, 68, 0.3);
+    color: #fca5a5;
+}
+
+.notification-info {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: rgba(59, 130, 246, 0.2);
+    color: #1e40af;
+}
+
+body.dark .notification-info {
+    background: rgba(59, 130, 246, 0.15);
+    border-color: rgba(59, 130, 246, 0.3);
+    color: #93c5fd;
+}
+
+.notification-info .notification-icon {
+    background: rgba(59, 130, 246, 0.2);
+    color: #1e40af;
+}
+
+body.dark .notification-info .notification-icon {
+    background: rgba(59, 130, 246, 0.3);
+    color: #93c5fd;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(100%) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+}
+
+@keyframes slideOut {
+    from {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(100%) scale(0.9);
+    }
+}
+
+/* Toast replacement */
+.toast{display:none}
+
+.setlist-info{background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:10px;margin-bottom:10px;font-size:12px;color:#666}
+body.dark .setlist-info{background:#1f2937;border-color:#374151;color:#9ca3af}
+.setlist-badge{display:inline-block;background:#f59e0b;color:#fff;padding:3px 8px;border-radius:6px;font-size:10px;font-weight:bold;margin-right:6px}
+.tip-text{font-size:11px;color:#666;margin-bottom:10px;padding:8px;background:#f9fafb;border-radius:8px}
+body.dark .tip-text{background:#1f2937;color:#9ca3af}
+
+/* Calendar CSS */
+.calendar-container{width:100%;max-width:500px;margin:0 auto}
+.calendar-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
+.calendar-nav{background:#e60012;color:white;border:none;width:36px;height:36px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.calendar-nav:hover{background:#d5000f}
+.calendar-title{font-size:16px;font-weight:bold}
+.calendar-weekdays{display:grid;grid-template-columns:repeat(7,1fr);text-align:center;font-size:12px;font-weight:bold;color:#666;margin-bottom:8px}
+body.dark .calendar-weekdays{color:#9ca3af}
+.calendar-days{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.calendar-day{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;position:relative;padding:2px;background:#f9fafb;border:1px solid transparent}
+body.dark .calendar-day{background:#1f2937}
+.calendar-day.empty{background:transparent;cursor:default}
+.calendar-day.today{background:#e60012;color:white}
+.calendar-day.has-shows{border-color:#22c55e;background:rgba(34,197,94,0.1)}
+body.dark .calendar-day.has-shows{background:rgba(34,197,94,0.2)}
+.calendar-day.selected{border:2px solid #3b82f6;background:rgba(59,130,246,0.1)}
+.calendar-day.has-shows::after {
+    content: '';
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    background-color: #22c55e;
+    border-radius: 50%;
+}
+.calendar-day-detail{margin-top:15px;padding:15px;background:#f9fafb;border-radius:12px;max-height:200px;overflow-y:auto}
+body.dark .calendar-day-detail{background:#1f2937}
+.calendar-day-detail h4{margin:0 0 10px 0;font-size:14px;color:#333}
+body.dark .calendar-day-detail h4{color:#e5e7eb}
+.calendar-event{display:flex;justify-content:space-between;align-items:center;padding:8px;margin-bottom:6px;background:white;border-radius:8px;border-left:3px solid var(--event-color);font-size:12px}
+body.dark .calendar-event{background:#111827}
+.event-member{font-weight:bold;margin-right:8px}
+.event-setlist{color:#666;font-size:11px}
+body.dark .event-setlist{color:#9ca3af}
+.event-status{font-size:10px;padding:2px 6px;border-radius:10px;background:#f59e0b;color:white;margin-left:8px}
+.event-status.inti{background:#22c55e}
+.event-time{font-size:10px;color:#666;margin-left:8px}
+body.dark .event-time{color:#9ca3af}
+.no-events{text-align:center;color:#999;font-size:12px;padding:20px}
+body.dark .no-events{color:#6b7280}
+.calendar-actions{display:flex;gap:10px;margin-top:15px}
+.calendar-actions button{flex:1;padding:10px;border-radius:12px;font-weight:bold;font-size:13px}
+.btn-today{background:#e60012;color:white}
+.btn-close-calendar{background:#6b7280;color:white}
+
+/* Birthday Show CSS */
+.birthday-section {
+  margin: 15px 0;
+  padding: 15px;
+  background: #fff5f5;
+  border-radius: 12px;
+  border: 2px solid #fecaca;
+}
+body.dark .birthday-section {
+  background: #1f1818;
+  border-color: #7f1d1d;
+}
+.birthday-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 14px;
+  margin-bottom: 0;
+}
+.birthday-checkbox-label input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  margin: 0;
+}
+.birthday-dropdown {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #fecaca;
+  display: none;
+}
+body.dark .birthday-dropdown {
+  border-top-color: #7f1d1d;
+}
+.birthday-dropdown.show {
+  display: block;
+}
+.birthday-dropdown .input-label {
+  margin-bottom: 6px;
+  display: block;
+}
+
+/* Bulk Add Modal khusus */
+#bulkAddModal .modal-box {
+  max-width: 500px;
+  max-height: 85vh;
+}
+</style>
+</head>
+<body>
+<header>JKT48 SHOW THEATER<span class="admin-badge">ADMIN</span><button class="header-theme-toggle" onclick="toggleTheme()"><svg id="themeIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/></svg></button></header>
+<div class="top">
+    <div class="search-box"><input type="text" id="searchInput" placeholder="Cari member..." oninput="searchMember()"></div>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+    <button onclick="showCalendar()" style="background:#8b5cf6;color:#fff">Kalender</button>
+    <button class="bulk-btn" onclick="openBulkAddModal()">Bulk Add</button>
+</div>
+<div class="activity-section"><div class="activity-header"><div class="activity-title">Activity Log</div><button class="clear-log-btn" onclick="clearActivityLog()">Clear</button></div><div class="activity-log" id="activityLog"><div class="activity-empty">Belum ada aktivitas hari ini</div></div></div>
+<div class="filters">
+    <button class="filter all active" onclick="filterType('all')">ALL</button>
+    <button class="filter inti" onclick="filterType('inti')">INTI</button>
+    <button class="filter trainee" onclick="filterType('trainee')">TRAINEE</button>
+    <button class="filter" onclick="filterGen(3)" style="background:#ec4899;color:#fff">Gen 3</button>
+    <button class="filter" onclick="filterGen(6)" style="background:#22c55e;color:#fff">Gen 6</button>
+    <button class="filter" onclick="filterGen(7)" style="background:#15803d;color:#fff">Gen 7</button>
+    <button class="filter" onclick="filterGen(8)" style="background:#1e40af;color:#fff">Gen 8</button>
+    <button class="filter" onclick="filterGen(9)" style="background:#06b6d4;color:#fff">Gen 9</button>
+    <button class="filter" onclick="filterGen(10)" style="background:#38bdf8;color:#fff">Gen 10</button>
+    <button class="filter" onclick="filterGen(11)" style="background:#f97316;color:#fff">Gen 11</button>
+    <button class="filter" onclick="filterGen(12)" style="background:#fde68a;color:#000">Gen 12</button>
+    <button class="filter" onclick="filterGen(13)" style="background:#facc15;color:#000">Gen 13</button>
+    <button class="filter" onclick="filterGen(14)" style="background:#e879f9;color:#fff">Gen 14</button>
+</div>
+<div class="stats" id="stats"></div>
+<div class="container" id="list"><div class="loading"><div class="spinner"></div><span>Loading data...</span></div></div>
+
+<!-- Notification Container -->
+<div class="notification" id="notificationContainer"></div>
+
+<div class="modal" id="loginModal"><div class="modal-box"><button class="modal-theme-toggle" onclick="toggleTheme()"><svg id="modalThemeIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/></svg></button><h3>Admin Login</h3><p>Masukkan kredensial admin</p><label class="input-label">Email</label><input id="email" type="email" placeholder="Masukan email"><label class="input-label">Password</label><input id="password" type="password" placeholder="Masukkan password" onkeypress="if(event.key==='Enter')login()"><div class="error" id="errorMsg"></div><button onclick="login()" style="background:#22c55e;width:100%;margin-top:8px;color:#fff;padding:12px;border-radius:12px">Login</button></div></div>
+
+<!-- Logout Modal yang sudah diperbaiki -->
+<div class="modal" id="logoutModal">
+  <div class="modal-box">
+    <button class="modal-theme-toggle" onclick="toggleTheme()">
+      <svg id="logoutModalThemeIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/>
+      </svg>
+    </button>
+    
+    <h3 style="text-align: center; margin-bottom: 12px; color: #e60012;">Konfirmasi Logout</h3>
+    
+    <div style="text-align: center; margin-bottom: 24px;">
+      <svg xmlns="http://www.w3.org/2000/svg" style="width: 48px; height: 48px; margin: 0 auto 12px; color: #ef4444;" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+      </svg>
+      <p style="font-size: 15px; line-height: 1.4; color: #666;">Apakah Anda yakin ingin keluar dari admin panel?</p>
+      <p style="font-size: 13px; color: #999; margin-top: 8px;">Anda perlu login kembali untuk mengakses fitur admin</p>
+    </div>
+    
+    <div class="modal-buttons">
+      <button class="btn-cancel" onclick="closeLogoutModal()" style="flex: 1; padding: 12px; font-size: 15px;">Batal</button>
+      <button class="btn-confirm" onclick="confirmLogout()" style="flex: 1; padding: 12px; font-size: 15px; background: #ef4444; color: #fff;">Logout</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="setlistModal">
+  <div class="modal-box">
+    <h3>Tambah Show dengan Setlist</h3>
+    <p id="setlistMemberName">Member: -</p>
+    
+    <label class="input-label">Tanggal Show</label>
+    <input type="date" id="showDate">
+    
+    <label class="input-label">Jam Show (HH:MM)</label>
+    <input type="time" id="showTime" placeholder="19:00">
+    
+    <label class="input-label">Pilih Setlist</label>
+    <select id="setlistSelect">
+      <option value="">Pilih Setlist...</option>
+    </select>
+    
+    <div class="setlist-info" id="setlistInfo" style="display:none">
+      <span class="setlist-badge">INFO</span>
+      <span id="setlistDescription"></span>
+    </div>
+    
+    <div class="birthday-section">
+      <label class="birthday-checkbox-label">
+        <input type="checkbox" id="isBirthdayShow" onchange="toggleBirthdayField()">
+        <span>Birthday Show (STS)</span>
+      </label>
+      
+      <div class="birthday-dropdown" id="birthdayMemberField">
+        <label class="input-label">Member yang Ulang Tahun</label>
+        <select id="birthdayMember">
+          <option value="">-- Pilih Member --</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="modal-buttons">
+      <button class="btn-cancel" onclick="closeSetlistModal()">Batal</button>
+      <button class="btn-add" onclick="addShowWithSetlist()">Tambah Show</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="bulkAddModal">
+  <div class="modal-box">
+    <h3>Bulk Add Show</h3>
+    <p>Tambahkan beberapa member sekaligus dalam 1 setlist</p>
+    
+    <label class="input-label">Tanggal Show</label>
+    <input type="date" id="bulkShowDate">
+    
+    <label class="input-label">Jam Show (HH:MM)</label>
+    <input type="time" id="bulkShowTime" placeholder="19:00">
+    
+    <label class="input-label">Pilih Setlist</label>
+    <select id="bulkSetlistSelect">
+      <option value="">Pilih Setlist...</option>
+    </select>
+    
+    <div class="birthday-section">
+      <label class="birthday-checkbox-label">
+        <input type="checkbox" id="bulkIsBirthdayShow" onchange="toggleBulkBirthdayField()">
+        <span>Birthday Show (STS)</span>
+      </label>
+      
+      <div class="birthday-dropdown" id="bulkBirthdayMemberField">
+        <label class="input-label">Member yang Ulang Tahun</label>
+        <select id="bulkBirthdayMember">
+          <option value="">-- Pilih Member --</option>
+        </select>
+      </div>
+    </div>
+    
+    <label class="input-label">Masukkan Nama Member (pisahkan dengan koma)</label>
+    <textarea id="bulkMemberNames" placeholder="Contoh: Cynthia, Danella, Eli, Elin, Ella, Fritzy, Indah, Kimmy"></textarea>
+    
+    <div class="tip-text">💡 Tip: Nama harus persis sama dengan database (tidak case sensitive)</div>
+    
+    <div class="modal-buttons">
+      <button class="btn-cancel" onclick="closeBulkAddModal()">Batal</button>
+      <button class="btn-add" onclick="bulkAddShows()">Tambah Semua</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="calendarModal"><div class="modal-box" style="max-width:550px"><h3>Kalender Show</h3>
+    <div class="calendar-container">
+        <div class="calendar-header">
+            <button class="calendar-nav" onclick="calendarPrevMonth()">‹</button>
+            <div class="calendar-title" id="calendarTitle"></div>
+            <button class="calendar-nav" onclick="calendarNextMonth()">›</button>
+        </div>
+        <div class="calendar-weekdays">
+            <div>M</div><div>S</div><div>S</div><div>R</div><div>K</div><div>J</div><div>S</div>
+        </div>
+        <div class="calendar-days" id="calendarDays"></div>
+        <div class="calendar-day-detail" id="calendarDayDetail">
+            <h4 id="detailDate">Pilih tanggal</h4>
+            <div id="detailEvents" class="no-events">Pilih tanggal untuk melihat detail show</div>
+        </div>
+        <div class="calendar-actions">
+            <button class="btn-today" onclick="calendarGoToday()">Hari Ini</button>
+            <button class="btn-close-calendar" onclick="closeCalendarModal()">Tutup</button>
+        </div>
+    </div>
+</div></div>
+
+<script>
+var SUPABASE_URL='https://pprxfopqkvpeajeoxzig.supabase.co';
+var SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBwcnhmb3Bxa3ZwZWFqZW94emlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYyNTI4MTIsImV4cCI6MjA4MTgyODgxMn0.iXRO_dAHhtVHRLqGTresG_63RD2zIaopNXtXYNfthdg';
+var ADMIN_ACCOUNTS={'admin@jkt48.com':'jkt48admin','superadmin@jkt48.com':'jkt48super'};
+var GEN_COLORS={3:'#ec4899',6:'#22c55e',7:'#15803d',8:'#1e40af',9:'#06b6d4',10:'#38bdf8',11:'#f97316',12:'#fde68a',13:'#facc15',14:'#e879f9'};
+var SETLIST_INTI={'Cara Meminum Ramune':'Setlist segar seperti minuman ramune','Te Wo Tsunaginagara':'Setlist sambil bergandengan tangan','Pertaruhan Cinta':'Setlist tentang taruhan cinta untuk member inti'};
+var SETLIST_TRAINEE={'Pajama Drive':'Setlist klasik untuk member trainee'};
+var SETLIST_INFO=Object.assign({},SETLIST_INTI,SETLIST_TRAINEE);
+var db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+var members=[];
+var currentGen='all';
+var currentStatus='all';
+var searchQuery='';
+var activityLog=[];
+var currentMemberId=null;
+
+var calendarDate = new Date();
+var calendarShows = {};
+var selectedCalendarDate = null;
+
+// Notification System
+function showNotification(type, title, message, duration = 5000) {
+    const container = document.getElementById('notificationContainer');
+    const id = 'notif_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    
+    const icons = {
+        success: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M9.688 15.898l-3.98-3.98a1 1 0 00-1.414 1.414L8.98 18.02a1 1 0 001.414 0L20.707 7.707a1 1 0 00-1.414-1.414l-9.605 9.605z"/></svg>`,
+        warning: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>`,
+        error: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M18.364 5.636a1 1 0 00-1.414 0L12 10.586 7.05 5.636a1 1 0 00-1.414 1.414L10.586 12l-4.95 4.95a1 1 0 101.414 1.414L12 13.414l4.95 4.95a1 1 0 001.414-1.414L13.414 12l4.95-4.95a1 1 0 000-1.414z"/></svg>`,
+        info: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M13 16h-1v-4h1a1 1 0 000-2h-2a1 1 0 00-1 1v6a1 1 0 001 1h3a1 1 0 000-2zm-1-8h1a1 1 0 100-2h-1a1 1 0 100 2z"/></svg>`
+    };
+    
+    const notification = document.createElement('div');
+    notification.className = `notification-item notification-${type}`;
+    notification.id = id;
+    
+    notification.innerHTML = `
+        <div class="notification-icon">
+            ${icons[type] || icons.info}
+        </div>
+        <div class="notification-content">
+            <div class="notification-title">
+                <span>${title}</span>
+                <button class="notification-close" onclick="removeNotification('${id}')">×</button>
+            </div>
+            <div class="notification-message">${message}</div>
+        </div>
+    `;
+    
+    container.appendChild(notification);
+    
+    // Auto remove after duration
+    if (duration > 0) {
+        setTimeout(() => {
+            removeNotification(id);
+        }, duration);
+    }
+    
+    return id;
+}
+
+function removeNotification(id) {
+    const notification = document.getElementById(id);
+    if (notification) {
+        notification.classList.add('hiding');
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 300);
+    }
+}
+
+// Replace old showToast function with new notification system
+function showToast(message, isError) {
+    if (isError) {
+        showNotification('error', 'Error', message);
+    } else {
+        showNotification('success', 'Success', message);
+    }
+}
+
+function getTodayDate() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+function getCurrentTime() {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    return `${hours}:${minutes}`;
+}
+
+function toggleTheme(){
+    var b=document.body;
+    var i=document.getElementById('themeIcon');
+    var m=document.getElementById('modalThemeIcon');
+    var l=document.getElementById('logoutModalThemeIcon');
+    b.classList.toggle('dark');
+    if(b.classList.contains('dark')){
+        var s='<path d="M12,17a5,5,0,1,1,5-5A5,5,0,0,1,12,17Zm0-8a3,3,0,1,0,3,3A3,3,0,0,0,12,9Zm0-4a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41L6.34,5A1,1,0,0,0,4.93,6.34ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm.64,5.66a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71a1,1,0,0,0-1.41-1.41ZM12,19a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19Zm6.36-2.34a1,1,0,0,0-1.41,1.41l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-3.64-3.95a1,1,0,0,0,.7.29,1,1,0,0,0,.71-1.7l-.71-.71a1,1,0,0,0-1.41,1.41Z"/>';
+        if(i)i.innerHTML=s;
+        if(m)m.innerHTML=s;
+        if(l)l.innerHTML=s;
+        localStorage.setItem('jkt48_theme','dark');
+    }else{
+        var n='<path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/>';
+        if(i)i.innerHTML=n;
+        if(m)m.innerHTML=n;
+        if(l)l.innerHTML=n;
+        localStorage.setItem('jkt48_theme','light');
+    }
+}
+
+var savedTheme=localStorage.getItem('jkt48_theme');
+if(savedTheme==='dark'){
+    document.body.classList.add('dark');
+}
+
+var adminEmail=localStorage.getItem('jkt48_admin_email');
+var loginTime=localStorage.getItem('jkt48_admin_login_time');
+if(!adminEmail||!loginTime){
+    document.getElementById('loginModal').style.display='flex';
+    setTimeout(function(){document.getElementById('email').focus()},100);
+}else{
+    var currentTime=new Date().getTime();
+    var sessionAge=currentTime-parseInt(loginTime);
+    if(sessionAge>86400000){
+        localStorage.removeItem('jkt48_admin_email');
+        localStorage.removeItem('jkt48_admin_login_time');
+        showNotification('warning', 'Session Expired', 'Sesi login berakhir. Silakan login kembali.');
+        document.getElementById('loginModal').style.display='flex';
+    }else{
+        loadData();
+        loadActivityLog();
+    }
+}
+
+async function loadData(){
+    try{
+        console.log('Memuat data dari Supabase...');
+        showNotification('info', 'Loading', 'Sedang memuat data member...', 3000);
+        
+        var result=await db.from('members').select('*').order('show',{ascending:false});
+        
+        if(result.error){
+            console.error('Error dari Supabase:', result.error);
+            throw result.error;
+        }
+        
+        members=result.data||[];
+        console.log('Berhasil memuat '+members.length+' member');
+        
+        renderMembers();
+        updateStats();
+        
+    }catch(err){
+        console.error('Error:',err);
+        document.getElementById('list').innerHTML='<div class="msg" style="color:#ef4444">Error: '+err.message+'</div>';
+        showNotification('error', 'Load Error', 'Gagal memuat data: ' + err.message);
+    }
+}
+
+function loadActivityLog(){
+    var saved=localStorage.getItem('jkt48_activity_log');
+    if(saved){
+        activityLog=JSON.parse(saved);
+        var today=new Date().toDateString();
+        activityLog=activityLog.filter(function(log){
+            return new Date(log.time).toDateString()===today;
+        });
+    }
+    renderActivityLog();
+}
+
+function saveActivityLog(){
+    localStorage.setItem('jkt48_activity_log',JSON.stringify(activityLog));
+}
+
+function addActivity(memberName,change,newValue,setlist,status){
+    var activity={
+        member:memberName,
+        change:change,
+        newValue:newValue,
+        setlist:setlist||null,
+        status:status||'inti',
+        time:new Date().toISOString()
+    };
+    activityLog.unshift(activity);
+    if(activityLog.length>50) activityLog=activityLog.slice(0,50);
+    saveActivityLog();
+    renderActivityLog();
+}
+
+function renderActivityLog(){
+    var logEl=document.getElementById('activityLog');
+    if(activityLog.length===0){
+        logEl.innerHTML='<div class="activity-empty">Belum ada aktivitas hari ini</div>';
+        return;
+    }
+    logEl.innerHTML=activityLog.map(function(log){
+        var time=new Date(log.time);
+        var timeStr=time.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+        var icon=log.change>0?'+':'−';
+        var color=log.change>0?'#22c55e':'#ef4444';
+        var action=log.change>0?'+':'';
+        var setlistText=log.setlist?' ('+log.setlist+')':'';
+        var statusBadge=log.status==='trainee'?' [TRAINEE]':'';
+        return'<div class="activity-item" style="--color:'+color+'"><div class="activity-icon">'+icon+'</div><div class="activity-content"><div class="activity-text">'+log.member+statusBadge+' '+action+log.change+' → '+log.newValue+' show'+setlistText+'</div><div class="activity-time">'+timeStr+'</div></div></div>';
+    }).join('');
+}
+
+function clearActivityLog(){
+    if(confirm('Hapus semua activity log?')){
+        activityLog=[];
+        saveActivityLog();
+        renderActivityLog();
+        showNotification('success', 'Activity Log', 'Activity log berhasil dihapus');
+    }
+}
+
+function renderMembers(){
+    var list=document.getElementById('list');
+    var filtered=members.filter(function(m){
+        var matchGen=currentGen==='all'||m.gen==currentGen;
+        var matchStatus=currentStatus==='all'||m.status===currentStatus;
+        var matchSearch=!searchQuery||m.name.toLowerCase().includes(searchQuery.toLowerCase());
+        return matchGen&&matchStatus&&matchSearch;
+    });
+    
+    if(filtered.length===0){
+        var message = 'Tidak ada data member';
+        if(searchQuery){
+            message = 'Tidak ada member dengan nama "'+searchQuery+'"';
+        }else if(currentStatus!=='all' && currentGen!=='all'){
+            message = 'Tidak ada '+currentStatus+' Generasi '+currentGen;
+        }else if(currentStatus!=='all'){
+            message = 'Tidak ada member '+currentStatus;
+        }else if(currentGen!=='all'){
+            message = 'Tidak ada member Generasi '+currentGen;
+        }
+        list.innerHTML='<div class="msg">'+message+'</div>';
+        return;
+    }
+    
+    list.innerHTML='';
+    var sorted=filtered.sort(function(a,b){return b.show-a.show});
+    sorted.forEach(function(m){
+        var percent=Math.min(100,(m.show/1000)*100);
+        var color=GEN_COLORS[m.gen]||'#6366f1';
+        var card=document.createElement('div');
+        card.className='card'+(m.status==='trainee'?' trainee':'');
+        card.style.setProperty('--gen-color',color);
+        
+        var statusBadgeHtml=m.status==='trainee'?'<div class="status-badge trainee">TRAINEE</div>':'<div class="status-badge">INTI</div>';
+        
+        card.innerHTML=statusBadgeHtml+
+            '<img class="avatar" src="img/'+m.name.toLowerCase()+'.jpg" onerror="this.style.display=\'none\'" alt="'+m.name+'">'+
+            '<div class="card-footer">'+
+                '<div class="gen-badge">Gen '+m.gen+'</div>'+
+                '<div class="name">'+m.name+'</div>'+
+                '<div class="show">'+m.show+' show</div>'+
+                '<div class="bar"><span style="width:'+percent+'%"></span></div>'+
+                '<div class="admin-controls">'+
+                    '<button onclick="updateShow('+m.id+',-1)">−</button>'+
+                    '<button onclick="openSetlistModal('+m.id+')">+</button>'+
+                '</div>'+
+            '</div>';
+        list.appendChild(card);
+    });
+}
+
+function openSetlistModal(memberId){
+    currentMemberId=memberId;
+    var member=members.find(function(m){return m.id===memberId});
+    if(!member) return;
+    
+    document.getElementById('setlistMemberName').textContent='Member: '+member.name+' ('+(member.status==='trainee'?'TRAINEE':'INTI')+')';
+    
+    document.getElementById('showDate').value = getTodayDate();
+    document.getElementById('showTime').value = '19:00';
+    
+    var selectEl=document.getElementById('setlistSelect');
+    selectEl.innerHTML='<option value="">Pilih Setlist...</option>';
+    var setlists=member.status==='trainee'?SETLIST_TRAINEE:SETLIST_INTI;
+    for(var key in setlists){
+        selectEl.innerHTML+='<option value="'+key+'">'+key+'</option>';
+    }
+    selectEl.value='';
+    document.getElementById('setlistInfo').style.display='none';
+    
+    document.getElementById('isBirthdayShow').checked = false;
+    document.getElementById('birthdayMember').value = '';
+    document.getElementById('birthdayMemberField').classList.remove('show');
+    
+    document.getElementById('setlistModal').style.display='flex';
+}
+
+function closeSetlistModal(){
+    document.getElementById('setlistModal').style.display='none';
+    currentMemberId=null;
+}
+
+function openBulkAddModal(){
+    document.getElementById('bulkShowDate').value = getTodayDate();
+    document.getElementById('bulkShowTime').value = '19:00';
+    
+    var selectEl=document.getElementById('bulkSetlistSelect');
+    selectEl.innerHTML='<option value="">Pilih Setlist...</option>';
+    for(var key in SETLIST_INFO){
+        selectEl.innerHTML+='<option value="'+key+'">'+key+'</option>';
+    }
+    document.getElementById('bulkMemberNames').value='';
+    
+    document.getElementById('bulkIsBirthdayShow').checked = false;
+    document.getElementById('bulkBirthdayMember').value = '';
+    document.getElementById('bulkBirthdayMemberField').classList.remove('show');
+    
+    document.getElementById('bulkAddModal').style.display='flex';
+}
+
+function closeBulkAddModal(){
+    document.getElementById('bulkAddModal').style.display='none';
+}
+
+document.getElementById('setlistSelect').addEventListener('change',function(){
+    var setlist=this.value;
+    var infoEl=document.getElementById('setlistInfo');
+    var descEl=document.getElementById('setlistDescription');
+    if(setlist&&SETLIST_INFO[setlist]){
+        descEl.textContent=SETLIST_INFO[setlist];
+        infoEl.style.display='block';
+    }else{
+        infoEl.style.display='none';
+    }
+});
+
+function toggleBirthdayField() {
+    var checkbox = document.getElementById('isBirthdayShow');
+    var field = document.getElementById('birthdayMemberField');
+    
+    if (checkbox.checked) {
+        field.classList.add('show');
+        loadMembersForBirthday();
+    } else {
+        field.classList.remove('show');
+        document.getElementById('birthdayMember').value = '';
+    }
+}
+
+function toggleBulkBirthdayField() {
+    var checkbox = document.getElementById('bulkIsBirthdayShow');
+    var field = document.getElementById('bulkBirthdayMemberField');
+    
+    if (checkbox.checked) {
+        field.classList.add('show');
+        loadMembersForBulkBirthday();
+    } else {
+        field.classList.remove('show');
+        document.getElementById('bulkBirthdayMember').value = '';
+    }
+}
+
+async function loadMembersForBirthday() {
+    var dropdown = document.getElementById('birthdayMember');
+    dropdown.innerHTML = '<option value="">-- Pilih Member --</option>';
+    
+    var sortedMembers = members.slice().sort(function(a, b) {
+        return a.name.localeCompare(b.name);
+    });
+    
+    sortedMembers.forEach(function(member) {
+        dropdown.innerHTML += '<option value="' + member.name + '">' + member.name + '</option>';
+    });
+}
+
+async function loadMembersForBulkBirthday() {
+    var dropdown = document.getElementById('bulkBirthdayMember');
+    dropdown.innerHTML = '<option value="">-- Pilih Member --</option>';
+    
+    var sortedMembers = members.slice().sort(function(a, b) {
+        return a.name.localeCompare(b.name);
+    });
+    
+    sortedMembers.forEach(function(member) {
+        dropdown.innerHTML += '<option value="' + member.name + '">' + member.name + '</option>';
+    });
+}
+
+function validateBirthdayShow(isBirthday, birthdayMember, performingMembers) {
+    if (!isBirthday) return true;
+    
+    if (!birthdayMember) {
+        showNotification('warning', 'Birthday Show', 'Pilih member yang berulang tahun!');
+        return false;
+    }
+    
+    var memberNames = performingMembers.map(function(m) {
+        return m.toLowerCase();
+    });
+    
+    if (!memberNames.includes(birthdayMember.toLowerCase())) {
+        showNotification('warning', 'Birthday Show', 'Member yang berulang tahun (' + birthdayMember + ') harus ada di daftar performing members!');
+        return false;
+    }
+    
+    return true;
+}
+
+async function addShowWithSetlist(){
+    var setlist=document.getElementById('setlistSelect').value;
+    var showDate=document.getElementById('showDate').value;
+    var showTime=document.getElementById('showTime').value;
+    var isBirthdayShow=document.getElementById('isBirthdayShow').checked;
+    var birthdayMember=document.getElementById('birthdayMember').value;
+    
+    if(!setlist){
+        showNotification('warning', 'Peringatan', 'Pilih setlist terlebih dahulu!');
+        return;
+    }
+    
+    if(!showDate){
+        showDate = getTodayDate();
+    }
+    
+    if(!showTime){
+        showTime = '19:00:00';
+    } else {
+        if (showTime.length === 5) {
+            showTime = showTime + ':00';
+        }
+    }
+    
+    if(!currentMemberId) return;
+    
+    var member=members.find(function(m){return m.id===currentMemberId});
+    if(!member) return;
+    
+    if (!validateBirthdayShow(isBirthdayShow, birthdayMember, [member.name])) {
+        return;
+    }
+    
+    console.log('Menambah show untuk:', member.name, 'setlist:', setlist, 'birthday:', isBirthdayShow, 'birthday member:', birthdayMember);
+    
+    showNotification('info', 'Processing', 'Sedang menambah show untuk ' + member.name + '...', 2000);
+    
+    try{
+        var newShow=member.show+1;
+        var updateResult=await db.from('members')
+            .update({show:newShow})
+            .eq('id',currentMemberId)
+            .select();
+        
+        if(updateResult.error){
+            console.error('Update members error:',updateResult.error);
+            showNotification('error', 'Update Error', 'Gagal update members: '+updateResult.error.message);
+            return;
+        }
+        
+        var setlistData={
+            name:member.name,
+            setlist_name:setlist,
+            show_count:1,
+            status:member.status,
+            show_date:showDate,
+            show_time:showTime,
+            is_birthday_show: isBirthdayShow,
+            birthday_member: isBirthdayShow ? birthdayMember : null,
+            created_at:new Date().toISOString()
+        };
+        
+        var insertResult=await db.from('setlist_performance')
+            .insert([setlistData])
+            .select();
+        
+        if(insertResult.error){
+            console.error('Insert error:',insertResult.error);
+            showNotification('error', 'Insert Error', 'Gagal insert setlist: '+insertResult.error.message);
+            return;
+        }
+        
+        member.show=newShow;
+        var activityText = setlist + (isBirthdayShow ? ' (STS ' + birthdayMember + ')' : '');
+        addActivity(member.name,1,newShow,activityText,member.status);
+        renderMembers();
+        updateStats();
+        closeSetlistModal();
+        
+        var successMessage = member.name+': '+newShow+' show ('+activityText+' - '+formatDate(showDate)+' '+formatTime(showTime)+')';
+        showNotification('success', 'Show Added', successMessage);
+        
+    }catch(err){
+        console.error('Exception:',err);
+        showNotification('error', 'Error', 'Error: '+err.message);
+    }
+}
+
+async function bulkAddShows(){
+    var setlist=document.getElementById('bulkSetlistSelect').value;
+    var namesInput=document.getElementById('bulkMemberNames').value;
+    var showDate=document.getElementById('bulkShowDate').value;
+    var showTime=document.getElementById('bulkShowTime').value;
+    var isBirthdayShow=document.getElementById('bulkIsBirthdayShow').checked;
+    var birthdayMember=document.getElementById('bulkBirthdayMember').value;
+    
+    if(!setlist){
+        showNotification('warning', 'Peringatan', 'Pilih setlist terlebih dahulu!');
+        return;
+    }
+    
+    if(!showDate){
+        showDate = getTodayDate();
+    }
+    
+    if(!showTime){
+        showTime = '19:00:00';
+    } else {
+        if (showTime.length === 5) {
+            showTime = showTime + ':00';
+        }
+    }
+    
+    if(!namesInput.trim()){
+        showNotification('warning', 'Peringatan', 'Masukkan nama member!');
+        return;
+    }
+    
+    var names=namesInput.split(',').map(function(n){return n.trim()}).filter(function(n){return n.length>0});
+    
+    if(names.length===0){
+        showNotification('warning', 'Peringatan', 'Tidak ada nama yang valid!');
+        return;
+    }
+    
+    if (!validateBirthdayShow(isBirthdayShow, birthdayMember, names)) {
+        return;
+    }
+    
+    var successCount=0;
+    var failedNames=[];
+    
+    showNotification('info', 'Processing', 'Memproses '+names.length+' member...', 3000);
+    
+    for(var i=0;i<names.length;i++){
+        var name=names[i];
+        var member=members.find(function(m){return m.name.toLowerCase()===name.toLowerCase()});
+        
+        if(!member){
+            failedNames.push(name+' (tidak ditemukan)');
+            continue;
+        }
+        
+        try{
+            var newShow=member.show+1;
+            var updateResult=await db.from('members')
+                .update({show:newShow})
+                .eq('id',member.id)
+                .select();
+            
+            if(updateResult.error){
+                failedNames.push(name+' (error update)');
+                continue;
+            }
+            
+            var setlistData={
+                name:member.name,
+                setlist_name:setlist,
+                show_count:1,
+                status:member.status,
+                show_date:showDate,
+                show_time:showTime,
+                is_birthday_show: isBirthdayShow,
+                birthday_member: isBirthdayShow ? birthdayMember : null,
+                created_at:new Date().toISOString()
+            };
+            
+            var insertResult=await db.from('setlist_performance')
+                .insert([setlistData])
+                .select();
+            
+            if(insertResult.error){
+                failedNames.push(name+' (error insert)');
+                await db.from('members').update({show:member.show}).eq('id',member.id);
+                continue;
+            }
+            
+            member.show=newShow;
+            var activityText = setlist + (isBirthdayShow ? ' (STS ' + birthdayMember + ')' : '');
+            addActivity(member.name,1,newShow,activityText,member.status);
+            successCount++;
+            
+        }catch(err){
+            failedNames.push(name+' (exception)');
+        }
+    }
+    
+    renderMembers();
+    updateStats();
+    closeBulkAddModal();
+    
+    var toastDateInfo = formatDate(showDate)+' '+formatTime(showTime);
+    var toastBirthdayInfo = isBirthdayShow ? ' (STS ' + birthdayMember + ')' : '';
+    
+    if(failedNames.length>0){
+        var message = '✅ '+successCount+' berhasil, ❌ '+failedNames.length+' gagal'+toastBirthdayInfo+' ('+toastDateInfo+')';
+        showNotification('warning', 'Bulk Add Result', message);
+        console.log('Gagal:',failedNames);
+    }else{
+        var message = '✅ Semua '+successCount+' member berhasil ditambahkan!'+toastBirthdayInfo+' ('+toastDateInfo+')';
+        showNotification('success', 'Success', message);
+    }
+}
+
+async function updateShow(id, change){
+    var member = members.find(function(m) { return m.id === id });
+    if (!member) return;
+    
+    var setlistResult = await db.from('setlist_performance')
+        .select('*')
+        .eq('name', member.name)
+        .order('created_at', { ascending: false })
+        .limit(1);
+    
+    var lastSetlist = null;
+    if (setlistResult.data && setlistResult.data.length > 0) {
+        lastSetlist = setlistResult.data[0];
+    }
+    
+    var newShow = Math.max(0, member.show + change);
+    
+    try {
+        var updateResult = await db.from('members')
+            .update({ show: newShow })
+            .eq('id', id)
+            .select();
+        
+        if (updateResult.error) {
+            throw updateResult.error;
+        }
+        
+        if (lastSetlist && change < 0) {
+            await db.from('setlist_performance')
+                .delete()
+                .eq('id', lastSetlist.id);
+            
+            console.log('🗑️ Record dihapus (ID: '+lastSetlist.id+')');
+        }
+        
+        member.show = newShow;
+        
+        if (lastSetlist) {
+            addActivity(member.name, change, newShow, lastSetlist.setlist_name, member.status);
+            showNotification('success', 'Show Updated', member.name+': '+newShow+' show ('+lastSetlist.setlist_name+')');
+        } else {
+            addActivity(member.name, change, newShow, null, member.status);
+            showNotification('info', 'Show Updated', member.name+': '+newShow+' show');
+        }
+        
+        renderMembers();
+        updateStats();
+        
+    } catch (err) {
+        console.error('Update error:', err);
+        showNotification('error', 'Update Error', 'Gagal update: ' + err.message);
+    }
+}
+
+function updateStats(){
+    var filtered=members.filter(function(m){
+        var matchGen=currentGen==='all'||m.gen==currentGen;
+        var matchStatus=currentStatus==='all'||m.status===currentStatus;
+        var matchSearch=!searchQuery||m.name.toLowerCase().includes(searchQuery.toLowerCase());
+        return matchGen&&matchStatus&&matchSearch;
+    });
+    
+    var total=filtered.length;
+    var trainee=filtered.filter(function(m){return m.status==='trainee'}).length;
+    var inti=total-trainee;
+    var totalShows=filtered.reduce(function(sum,m){return sum+m.show},0);
+    
+    var statsText=total+' members • '+inti+' Inti • '+trainee+' Trainee • '+totalShows+' total show';
+    if(currentGen!=='all') statsText+=' • Gen '+currentGen;
+    if(currentStatus!=='all') statsText+=' • '+currentStatus.toUpperCase();
+    if(searchQuery) statsText+=' • Search: "'+searchQuery+'"';
+    
+    document.getElementById('stats').innerHTML=statsText;
+}
+
+function filterType(status){
+    currentStatus = status;
+    currentGen = 'all';
+    document.querySelectorAll('.filter').forEach(function(f) {
+        f.classList.remove('active');
+    });
+    event.target.classList.add('active');
+    renderMembers();
+    updateStats();
+}
+
+function filterGen(gen){
+    currentGen = gen;
+    currentStatus = 'all';
+    document.querySelectorAll('.filter').forEach(function(f) {
+        f.classList.remove('active');
+    });
+    event.target.classList.add('active');
+    renderMembers();
+    updateStats();
+}
+
+function searchMember(){
+    searchQuery=document.getElementById('searchInput').value.toLowerCase();
+    renderMembers();
+    updateStats();
+}
+
+function login(){
+    var email=document.getElementById('email').value.trim();
+    var password=document.getElementById('password').value.trim();
+    var error=document.getElementById('errorMsg');
+    
+    error.style.display='none';
+    
+    if(!email||!password){
+        error.textContent='Email dan password harus diisi';
+        error.style.display='block';
+        return;
+    }
+    
+    if(ADMIN_ACCOUNTS[email]===password){
+        var loginTime=new Date().getTime();
+        localStorage.setItem('jkt48_admin_email',email);
+        localStorage.setItem('jkt48_admin_login_time',loginTime.toString());
+        document.getElementById('loginModal').style.display='none';
+        loadData();
+        loadActivityLog();
+        showNotification('success', 'Login Success', 'Login berhasil! Selamat datang di admin panel.');
+    }else{
+        error.textContent='Email atau password salah';
+        error.style.display='block';
+        showNotification('error', 'Login Error', 'Email atau password salah');
+    }
+}
+
+function logout(){
+    document.getElementById('logoutModal').style.display='flex';
+}
+
+function closeLogoutModal(){
+    document.getElementById('logoutModal').style.display='none';
+}
+
+function confirmLogout(){
+    localStorage.removeItem('jkt48_admin_email');
+    localStorage.removeItem('jkt48_admin_login_time');
+    closeLogoutModal();
+    document.getElementById('loginModal').style.display='flex';
+    showNotification('info', 'Logged Out', 'Logout berhasil. Silakan login kembali untuk mengakses admin panel.');
+}
+
+function formatDate(dateString) {
+    if (!dateString) return '-';
+    const date = new Date(dateString);
+    const options = { day: 'numeric', month: 'long', year: 'numeric' };
+    return date.toLocaleDateString('id-ID', options);
+}
+
+function formatTime(timeString) {
+    if (!timeString) return '-';
+    const parts = timeString.split(':');
+    return `${parts[0]}:${parts[1]}`;
+}
+
+async function showCalendar() {
+    document.getElementById('calendarModal').style.display = 'flex';
+    
+    await loadCalendarShows();
+    renderCalendar();
+}
+
+function closeCalendarModal() {
+    document.getElementById('calendarModal').style.display = 'none';
+    selectedCalendarDate = null;
+}
+
+async function loadCalendarShows() {
+    try {
+        // Hitung tanggal awal dan akhir bulan yang ditampilkan
+        var year = calendarDate.getFullYear();
+        var month = calendarDate.getMonth();
+        
+        var startDate = new Date(year, month, 1);
+        var endDate = new Date(year, month + 1, 0);
+        
+        var result = await db.from('setlist_performance')
+            .select('*')
+            .gte('show_date', startDate.toISOString().split('T')[0])
+            .lte('show_date', endDate.toISOString().split('T')[0])
+            .order('show_time', { ascending: true });
+        
+        if (result.error) throw result.error;
+        
+        calendarShows = {};
+        if (result.data) {
+            result.data.forEach(function(show) {
+                var dateStr = show.show_date;
+                if (!calendarShows[dateStr]) {
+                    calendarShows[dateStr] = [];
+                }
+                calendarShows[dateStr].push(show);
+            });
+        }
+        
+        var monthName = calendarDate.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+        console.log('📅 Loaded calendar data for ' + monthName + ':', Object.keys(calendarShows).length + ' days with shows');
+    } catch (err) {
+        console.error('Error loading calendar data:', err);
+        showNotification('error', 'Calendar Error', 'Gagal memuat data kalender');
+    }
+}
+
+function renderCalendar() {
+    var year = calendarDate.getFullYear();
+    var month = calendarDate.getMonth();
+    
+    // Update title dengan bulan dan tahun yang benar
+    var monthName = calendarDate.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+    document.getElementById('calendarTitle').textContent = monthName.charAt(0).toUpperCase() + monthName.slice(1);
+    
+    var firstDay = new Date(year, month, 1);
+    var lastDay = new Date(year, month + 1, 0);
+    var daysInMonth = lastDay.getDate();
+    var startingDay = firstDay.getDay();
+    
+    // Indonesia: Senin = 1, Minggu = 0 -> kita ubah ke Senin = 0, Minggu = 6
+    var startingIndex = startingDay === 0 ? 6 : startingDay - 1;
+    
+    var today = new Date();
+    var todayStr = getTodayDate();
+    var todayYear = today.getFullYear();
+    var todayMonth = today.getMonth();
+    var todayDate = today.getDate();
+    
+    var calendarHTML = '';
+    var dayCount = 0;
+    
+    // Hari kosong di awal bulan
+    for (var i = 0; i < startingIndex; i++) {
+        calendarHTML += '<div class="calendar-day empty"></div>';
+        dayCount++;
+    }
+    
+    // Hari dalam bulan
+    for (var day = 1; day <= daysInMonth; day++) {
+        var dateStr = year + '-' + String(month + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+        var dayShows = calendarShows[dateStr] || [];
+        var isSelected = selectedCalendarDate === dateStr;
+        var isToday = (year === todayYear && month === todayMonth && day === todayDate);
+        
+        var dayClass = 'calendar-day';
+        if (isToday) dayClass += ' today';
+        if (dayShows.length > 0) dayClass += ' has-shows';
+        if (isSelected) dayClass += ' selected';
+        
+        calendarHTML += '<div class="' + dayClass + '" onclick="selectCalendarDate(\'' + dateStr + '\')">' +
+                        day + '</div>';
+        dayCount++;
+    }
+    
+    // Hari kosong di akhir bulan
+    while (dayCount % 7 !== 0) {
+        calendarHTML += '<div class="calendar-day empty"></div>';
+        dayCount++;
+    }
+    
+    document.getElementById('calendarDays').innerHTML = calendarHTML;
+    
+    if (!selectedCalendarDate) {
+        selectedCalendarDate = getTodayDate();
+        renderCalendarDayDetail(selectedCalendarDate);
+    }
+}
+
+function selectCalendarDate(dateStr) {
+    selectedCalendarDate = dateStr;
+    renderCalendar();
+    renderCalendarDayDetail(dateStr);
+}
+
+function renderCalendarDayDetail(dateStr) {
+    var dayShows = calendarShows[dateStr] || [];
+    var date = new Date(dateStr);
+    var dayNames = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+    var monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
+                     'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+    
+    var dayName = dayNames[date.getDay()];
+    var formattedDate = dayName + ', ' + date.getDate() + ' ' + monthNames[date.getMonth()] + ' ' + date.getFullYear();
+    
+    document.getElementById('detailDate').textContent = formattedDate;
+    
+    var detailHTML = '';
+    if (dayShows.length === 0) {
+        detailHTML = '<div class="no-events">Tidak ada show pada tanggal ini</div>';
+    } else {
+        dayShows.forEach(function(show) {
+            var color = show.status === 'trainee' ? '#f59e0b' : '#22c55e';
+            var timeText = show.show_time ? formatTime(show.show_time) + ' WIB' : '';
+            var birthdayBadge = show.is_birthday_show ? ' 🎂' : '';
+            detailHTML += '<div class="calendar-event" style="--event-color:' + color + '">' +
+                         '<div><span class="event-member">' + show.name + '</span>' +
+                         '<span class="event-setlist">' + show.setlist_name + birthdayBadge + '</span>' +
+                         (timeText ? '<span class="event-time">' + timeText + '</span>' : '') + '</div>' +
+                         '<div class="event-status ' + show.status + '">' + 
+                         (show.status === 'trainee' ? 'TRAINEE' : 'INTI') + '</div>' +
+                         '</div>';
+        });
+    }
+    
+    document.getElementById('detailEvents').innerHTML = detailHTML;
+    document.getElementById('detailEvents').className = dayShows.length === 0 ? 'no-events' : '';
+}
+
+function calendarPrevMonth() {
+    calendarDate.setMonth(calendarDate.getMonth() - 1);
+    loadCalendarShows().then(function() {
+        renderCalendar();
+        if (selectedCalendarDate) {
+            var selectedDate = new Date(selectedCalendarDate);
+            if (selectedDate.getMonth() !== calendarDate.getMonth() || 
+                selectedDate.getFullYear() !== calendarDate.getFullYear()) {
+                selectedCalendarDate = null;
+            }
+        }
+    });
+}
+
+function calendarNextMonth() {
+    calendarDate.setMonth(calendarDate.getMonth() + 1);
+    loadCalendarShows().then(function() {
+        renderCalendar();
+        if (selectedCalendarDate) {
+            var selectedDate = new Date(selectedCalendarDate);
+            if (selectedDate.getMonth() !== calendarDate.getMonth() || 
+                selectedDate.getFullYear() !== calendarDate.getFullYear()) {
+                selectedCalendarDate = null;
+            }
+        }
+    });
+}
+
+function calendarGoToday() {
+    var today = new Date();
+    calendarDate = new Date(today.getFullYear(), today.getMonth(), 1);
+    selectedCalendarDate = getTodayDate();
+    loadCalendarShows().then(function() {
+        renderCalendar();
+        renderCalendarDayDetail(selectedCalendarDate);
+        showNotification('info', 'Calendar', 'Kembali ke hari ini');
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    if(savedTheme==='dark'){
+        document.body.classList.add('dark');
+    }
+});
+</script>
+</body>
+</html>
