@@ -322,11 +322,9 @@ function toggleTheme() {
   const isDarkMode = !document.body.classList.contains('dark');
   
   if (isDarkMode) {
-    document.documentElement.classList.add('dark');
     document.body.classList.add('dark');
     localStorage.setItem('jkt48_theme', 'dark');
   } else {
-    document.documentElement.classList.remove('dark');
     document.body.classList.remove('dark');
     localStorage.setItem('jkt48_theme', 'light');
   }
