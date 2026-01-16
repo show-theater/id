@@ -9,6 +9,7 @@
 <meta http-equiv="Expires" content="0">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
+/* CSS tetap sama */
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:Arial,sans-serif;background:#f5f5f5;color:#333;min-height:100vh;padding:0;transition:background 0.3s,color 0.3s}
 body.dark{background:#0a0e1a;color:#e5e7eb}
@@ -105,6 +106,187 @@ body.dark .skeleton-card{background:#374151}
   .show-time{font-size:12px}
   .show-setlist{font-size:13px}
 }
+
+/* ============= DESKTOP LAYOUT ============= */
+@media (min-width: 1025px) {
+    .main-header {
+        position: relative;
+        background: #e60012;
+        border: none;
+        padding: 0;
+    }
+    
+    .theater-header {
+        color: #fff;
+        font-size: 28px;
+        padding: 25px 20px;
+        letter-spacing: 2px;
+    }
+    
+    .detail-header {
+        display: none;
+    }
+    
+    .container {
+        max-width: 1200px;
+        margin: 30px auto;
+        display: flex;
+        border-radius: 20px;
+        overflow: hidden;
+        min-height: 600px;
+    }
+    
+    .header {
+        display: none;
+    }
+    
+    /* Left Side - Member Info */
+    .member-info {
+        flex: 0 0 300px;
+        border-bottom: none;
+        border-right: 1px solid #e5e7eb;
+        padding: 30px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+    }
+    
+    body.dark .member-info {
+        border-right-color: #374151;
+    }
+    
+    .photo-container {
+        margin: 0 0 25px 0;
+    }
+    
+    .photo, .photo-error {
+        width: 200px;
+        height: 280px;
+    }
+    
+    .member-name {
+        font-size: 26px;
+        margin-bottom: 25px;
+    }
+    
+    .member-stats {
+        gap: 50px;
+        margin-top: 20px;
+    }
+    
+    .stat-number {
+        font-size: 32px;
+    }
+    
+    .stat-label {
+        font-size: 14px;
+    }
+    
+    /* Right Side - Shows */
+    .content {
+        flex: 1;
+        padding: 30px;
+        overflow-y: auto;
+        max-height: 600px;
+    }
+    
+    .filter-section {
+        padding: 20px 0;
+        border-bottom: 1px solid #e5e7eb;
+        margin-bottom: 25px;
+        background: transparent;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+    
+    body.dark .filter-section {
+        border-bottom-color: #374151;
+        background: transparent;
+    }
+    
+    .filter-btn {
+        padding: 12px 20px;
+        font-size: 14px;
+    }
+    
+    .show-list {
+        gap: 20px;
+    }
+    
+    .show-card {
+        padding: 22px;
+    }
+    
+    .show-date {
+        font-size: 17px;
+    }
+    
+    .show-time {
+        font-size: 14px;
+    }
+    
+    .show-time svg {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .show-setlist {
+        font-size: 16px;
+    }
+    
+    .show-badge {
+        font-size: 12px;
+        padding: 6px 14px;
+    }
+    
+    .live-badge {
+        font-size: 12px;
+        padding: 8px 14px;
+    }
+    
+    .sts-badge {
+        font-size: 12px;
+        padding: 8px 14px;
+    }
+    
+    .live-dot {
+        width: 8px;
+        height: 8px;
+    }
+    
+    .detail-footer {
+        padding: 20px;
+        font-size: 12px;
+        max-width: 1200px;
+        margin: 0 auto;
+        border: none;
+        border-top: 1px solid #e5e7eb;
+        margin-top: 40px;
+    }
+    
+    body.dark .detail-footer {
+        border-top-color: #374151;
+    }
+    
+    /* Skeleton Loading for Desktop */
+    .skeleton-loading {
+        display: flex;
+        gap: 30px;
+        padding: 30px;
+    }
+    
+    .skeleton-info {
+        flex: 0 0 250px;
+        height: 500px;
+    }
+    
+    .skeleton-card {
+        flex: 1;
+        height: 120px;
+    }
+}
 </style>
 </head>
 <body>
@@ -160,27 +342,28 @@ let memberData = null;
 let showsData = [];
 let currentFilter = 'all';
 
-// ============= THEME SYSTEM =============
-(function() {
+// ============= FUNGSI THEME GLOBAL =============
+(function initializeTheme() {
   const savedTheme = localStorage.getItem('jkt48_theme') || 'light';
-  if (savedTheme === 'dark') {
-    document.documentElement.classList.add('dark');
-    document.body.classList.add('dark');
-  }
+  const html = document.documentElement;
+  const body = document.body;
   
-  // Update icon setelah DOM ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', updateThemeIcon);
+  if (savedTheme === 'dark') {
+    html.classList.add('dark');
+    body.classList.add('dark');
+    updateThemeIcon('dark');
   } else {
-    updateThemeIcon();
+    html.classList.remove('dark');
+    body.classList.remove('dark');
+    updateThemeIcon('light');
   }
 })();
 
-function updateThemeIcon() {
+function updateThemeIcon(theme) {
   const icon = document.getElementById('themeIconDetail');
   if (!icon) return;
   
-  if (document.body.classList.contains('dark')) {
+  if (theme === 'dark') {
     // Icon matahari untuk dark mode
     icon.innerHTML = '<path d="M12,17a5,5,0,1,1,5-5A5,5,0,0,1,12,17Zm0-8a3,3,0,1,0,3,3A3,3,0,0,0,12,9Zm0-4a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41L6.34,5A1,1,0,0,0,4.93,6.34ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm.64,5.66a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71a1,1,0,0,0-1.41-1.41ZM12,19a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19Zm6.36-2.34a1,1,0,0,0-1.41,1.41l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-3.64-3.95a1,1,0,0,0,.7.29,1,1,0,0,0,.71-1.7l-.71-.71a1,1,0,0,0-1.41,1.41Z"/>';
   } else {
@@ -190,21 +373,24 @@ function updateThemeIcon() {
 }
 
 function toggleTheme() {
-  const body = document.body;
   const html = document.documentElement;
+  const body = document.body;
   
-  body.classList.toggle('dark');
-  html.classList.toggle('dark');
+  const isDark = body.classList.contains('dark');
   
-  if (body.classList.contains('dark')) {
-    localStorage.setItem('jkt48_theme', 'dark');
-  } else {
+  if (isDark) {
+    html.classList.remove('dark');
+    body.classList.remove('dark');
     localStorage.setItem('jkt48_theme', 'light');
+    updateThemeIcon('light');
+  } else {
+    html.classList.add('dark');
+    body.classList.add('dark');
+    localStorage.setItem('jkt48_theme', 'dark');
+    updateThemeIcon('dark');
   }
-  
-  updateThemeIcon();
 }
-// ============= END THEME SYSTEM =============
+// ============= END FUNGSI THEME =============
 
 async function loadData() {
   if (!MEMBER_NAME) {
@@ -259,10 +445,6 @@ function renderPage() {
   const setlists = [...new Set(showsData.map(s => s.setlist_name))];
   
   document.getElementById('container').innerHTML = `
-    <div class="header">
-      <h1>Riwayat Show Member</h1>
-    </div>
-    
     <div class="member-info">
       <div class="photo-container">
         <img class="photo" 
@@ -285,18 +467,20 @@ function renderPage() {
       </div>
     </div>
     
-    <div class="filter-section">
-      <button class="filter-btn ${currentFilter === 'all' ? 'active' : ''}" onclick="filterShows('all')">
-        Semua (${showsData.length})
-      </button>
-      ${setlists.map(setlist => {
-        const count = showsData.filter(s => s.setlist_name === setlist).length;
-        return `<button class="filter-btn ${currentFilter === setlist ? 'active' : ''}" onclick="filterShows('${setlist}')">${setlist} (${count})</button>`;
-      }).join('')}
-    </div>
-    
-    <div class="content" id="showListContainer">
-      ${renderShowList()}
+    <div class="content">
+      <div class="filter-section">
+        <button class="filter-btn ${currentFilter === 'all' ? 'active' : ''}" onclick="filterShows('all')">
+          Semua (${showsData.length})
+        </button>
+        ${setlists.map(setlist => {
+          const count = showsData.filter(s => s.setlist_name === setlist).length;
+          return `<button class="filter-btn ${currentFilter === setlist ? 'active' : ''}" onclick="filterShows('${setlist}')">${setlist} (${count})</button>`;
+        }).join('')}
+      </div>
+      
+      <div id="showListContainer">
+        ${renderShowList()}
+      </div>
     </div>
   `;
 }
@@ -376,7 +560,7 @@ function renderShowList() {
                ${isMemberBirthday ? `
                   <div class="sts-badge">
                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
-                      <path d="m7.994.013-.595.79a.747.747 0 0 0 .101 1.01V4H5a2 2 0 0 0-2 2v3H2a2 2 0 0 0-2 2v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4a2 2 0 0 0-2-2h-1V6a2 2 0 0 0-2-2H8.5V1.806A.747.747 0 0 0 8.592.802zM4 6a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v.414a.9.9 0 0 1-.646-.268 1.914 1.914 0 0 0-2.708 0 .914.914 0 0 1-1.292 0 1.914 1.914 0 0 0-2.708 0A.9.9 0 0 1 4 6.414zm0 1.414c.49 0 .98-.187 1.354-.56a.914.914 0 0 1 1.292 0c.748.747 1.96.747 2.708 0a.914.914 0 0 1 1.292 0c.374.373.864.56 1.354.56V9H4zM1 11a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v.793l-.354.354a.914.914 0 0 1-1.293 0 1.914 1.914 0 0 0-2.707 0 .914.914 0 0 1-1.292 0 1.914 1.914 0 0 0-2.708 0 .914.914 0 0 1-1.292 0 1.914 1.914 0 0 0-2.708 0 .914.914 0 0 1-1.292 0L1 11.793zm11.646 1.854a1.915 1.915 0 0 0 2.354.279V15H1v-1.867c.737.452 1.715.36 2.354-.28a.914.914 0 0 1 1.292 0c.748.748 1.96.748 2.708 0a.914.914 0 0 1 1.292 0c.748.748 1.96.748 2.707 0a.914.914 0 0 1 1.293 0Z"/>
+                      <path d="m7.994.013-.595.79a.747.747 0 0 0 .101 1.01V4H5a2 2 0 0 0-2 2v3H2a2 2 0 0,0-2 2v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4a2 2 0 0 0-2-2h-1V6a2 2 0 0 0-2-2H8.5V1.806A.747.747 0 0 0 8.592.802zM4 6a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v.414a.9.9 0 0 1-.646-.268 1.914 1.914 0 0 0-2.708 0 .914.914 0 0 1-1.292 0 1.914 1.914 0 0 0-2.708 0A.9.9 0 0 1 4 6.414zm0 1.414c.49 0 .98-.187 1.354-.56a.914.914 0 0 1 1.292 0c.748.747 1.96.747 2.708 0a.914.914 0 0 1 1.292 0c.374.373.864.56 1.354.56V9H4zM1 11a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v.793l-.354.354a.914.914 0 0 1-1.293 0 1.914 1.914 0 0 0-2.707 0 .914.914 0 0 1-1.292 0 1.914 1.914 0 0 0-2.708 0 .914.914 0 0 1-1.292 0 1.914 1.914 0 0 0-2.708 0 .914.914 0 0 1-1.292 0L1 11.793zm11.646 1.854a1.915 1.915 0 0 0 2.354.279V15H1v-1.867c.737.452 1.715.36 2.354-.28a.914.914 0 0 1 1.292 0c.748.748 1.96.748 2.708 0a.914.914 0 0 1 1.292 0c.748.748 1.96.748 2.707 0a.914.914 0 0 1 1.293 0Z"/>
                     </svg>
                     STS
                   </div>
@@ -433,10 +617,10 @@ function isShowLive(showDate, showTime) {
   
   showDateTime.setHours(showHours, showMinutes, 0, 0);
   
-  const diffMs = now - showDateTime;
-  const diffMins = Math.floor(diffMs / 60000);
+  const fifteenMinutesBefore = new Date(showDateTime.getTime() - (15 * 60 * 1000));
+  const fifteenMinutesAfter = new Date(showDateTime.getTime() + (15 * 60 * 1000));
   
-  return diffMins >= -5 && diffMins <= 180;
+  return now >= fifteenMinutesBefore && now <= fifteenMinutesAfter;
 }
 
 function adjustColor(color, amount) {

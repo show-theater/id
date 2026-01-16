@@ -11,11 +11,12 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
+/* Semua CSS tetap sama */
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:Arial,sans-serif;background:#f5f5f5;color:#333;min-height:100vh;padding:0;transition:background 0.3s,color 0.3s}
 body.dark{background:#0a0e1a;color:#e5e7eb}
 
-/* Header System - HAPUS theater-header */
+/* Header System */
 .main-header{position:fixed;top:0;left:0;right:0;background:#fff;z-index:1001;border-bottom:1px solid #ddd;transition:background 0.3s,border-color 0.3s}
 body.dark .main-header{background:#111827;border-color:#1f2937}
 
@@ -437,6 +438,260 @@ body.dark .spinner{border-color:rgba(255,255,255,0.1);border-top-color:#9ca3af}
   .skeleton-info{height:35px}
   .skeleton-info.small{height:28px}
 }
+
+/* ============= DESKTOP LAYOUT ============= */
+@media (min-width: 1025px) {
+    .main-header {
+        position: relative;
+        background: #e60012;
+        border: none;
+        padding: 0;
+    }
+    
+    .detail-header {
+        background: #e60012;
+        border: none;
+    }
+    
+    .back-btn {
+        color: #fff;
+    }
+    
+    .detail-title {
+        color: #fff;
+        font-size: 20px;
+    }
+    
+    body.dark .detail-header {
+        background: #e60012;
+    }
+    
+    body.dark .back-btn {
+        color: #fff;
+    }
+    
+    body.dark .detail-title {
+        color: #fff;
+    }
+    
+    .container {
+        max-width: 1200px;
+        margin: 30px auto;
+        display: flex;
+        border-radius: 20px;
+        overflow: hidden;
+        min-height: 600px;
+    }
+    
+    .header {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        border-radius: 20px 20px 0 0;
+        z-index: 1;
+    }
+    
+    /* Left Side - Photo & About */
+    .photo-container {
+        margin-top: 80px;
+        margin-bottom: 30px;
+    }
+    
+    .photo, .photo-error {
+        width: 200px;
+        height: 280px;
+    }
+    
+    .member-name {
+        font-size: 26px;
+        margin: 20px 0 30px 0;
+    }
+    
+    .about-section {
+        flex: 0 0 350px;
+        border-right: 1px solid #e5e7eb;
+        padding: 30px;
+        margin: 0;
+        padding-top: 80px;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    body.dark .about-section {
+        border-right-color: #374151;
+    }
+    
+    .about-title {
+        font-size: 18px;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+    }
+    
+    .info-card {
+        flex: 1;
+    }
+    
+    .info-row {
+        padding: 12px 0;
+    }
+    
+    .info-label {
+        font-size: 14px;
+        width: 120px;
+    }
+    
+    .info-value {
+        font-size: 14px;
+    }
+    
+    /* Right Side - Progress & Social Media */
+    .content {
+        flex: 1;
+        padding: 80px 30px 30px 30px;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .share-circle-btn {
+        top: 10px;
+        right: 10px;
+        width: 50px;
+        height: 50px;
+    }
+    
+    .share-circle-btn svg {
+        width: 24px;
+        height: 24px;
+    }
+    
+    .progress-section {
+        margin: 0 0 30px 0;
+        border-top: none;
+        padding-top: 0;
+        border-bottom: 1px solid #e5e7eb;
+        padding-bottom: 30px;
+    }
+    
+    body.dark .progress-section {
+        border-bottom-color: #374151;
+    }
+    
+    .progress-title {
+        font-size: 18px;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+    }
+    
+    .milestone-header {
+        margin-bottom: 15px;
+    }
+    
+    .milestone-title {
+        font-size: 12px;
+    }
+    
+    .milestone-target {
+        font-size: 16px;
+    }
+    
+    .progress-bar-container {
+        height: 20px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+    }
+    
+    .progress-text {
+        font-size: 11px;
+    }
+    
+    .progress-info {
+        font-size: 11px;
+    }
+    
+    .social-section {
+        margin: 0;
+        padding-top: 30px;
+        border-top: none;
+        flex: 1;
+    }
+    
+    .social-title {
+        font-size: 18px;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+    }
+    
+    .social-link {
+        padding: 12px 0;
+    }
+    
+    .social-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 10px;
+    }
+    
+    .social-icon svg {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .social-name {
+        font-size: 13px;
+    }
+    
+    .social-handle {
+        font-size: 11px;
+    }
+    
+    .social-arrow {
+        font-size: 15px;
+    }
+    
+    .detail-footer {
+        padding: 20px;
+        font-size: 12px;
+        max-width: 1200px;
+        margin: 0 auto;
+        border: none;
+        border-top: 1px solid #e5e7eb;
+        margin-top: 40px;
+    }
+    
+    body.dark .detail-footer {
+        border-top-color: #374151;
+    }
+    
+    /* Skeleton Loading for Desktop */
+    .skeleton-loading {
+        display: flex;
+        gap: 30px;
+        padding: 30px;
+    }
+    
+    .skeleton-photo {
+        width: 200px;
+        height: 280px;
+        margin: 80px 0 0 0;
+    }
+    
+    .skeleton-name {
+        width: 200px;
+        height: 30px;
+        margin: 20px 0;
+    }
+    
+    .skeleton-info {
+        flex: 0 0 300px;
+        height: 400px;
+    }
+    
+    .skeleton-info.small {
+        flex: 1;
+        height: 150px;
+    }
+}
 </style>
 </head>
 <body>
@@ -467,9 +722,6 @@ body.dark .spinner{border-color:rgba(255,255,255,0.1);border-top-color:#9ca3af}
 <div class="container" id="container">
   <!-- Skeleton Loading -->
   <div class="skeleton-loading">
-    <div class="skeleton-photo"></div>
-    <div class="skeleton-name"></div>
-    <div class="skeleton-info"></div>
     <div class="skeleton-info"></div>
     <div class="skeleton-info small"></div>
   </div>
@@ -498,40 +750,52 @@ const GEN_COLORS = {
 // State management
 let isLoading = true;
 
-// ============= FUNGSI THEME YANG SAMA DENGAN index.html =============
-function initializeTheme() {
+// ============= FUNGSI THEME GLOBAL =============
+(function initializeTheme() {
   const savedTheme = localStorage.getItem('jkt48_theme') || 'light';
-  const icon = document.getElementById('themeIconDetail');
+  const html = document.documentElement;
+  const body = document.body;
   
   if (savedTheme === 'dark') {
-    document.documentElement.classList.add('dark');
-    document.body.classList.add('dark');
-    if (icon) {
-      icon.innerHTML = '<path d="M12,17a5,5,0,1,1,5-5A5,5,0,0,1,12,17Zm0-8a3,3,0,1,0,3,3A3,3,0,0,0,12,9Zm0-4a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41L6.34,5A1,1,0,0,0,4.93,6.34ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm.64,5.66a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71a1,1,0,0,0-1.41-1.41ZM12,19a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19Zm6.36-2.34a1,1,0,0,0-1.41,1.41l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-3.64-3.95a1,1,0,0,0,.7.29,1,1,0,0,0,.71-1.7l-.71-.71a1,1,0,0,0-1.41,1.41Z"/>';
-    }
+    html.classList.add('dark');
+    body.classList.add('dark');
+    updateThemeIcon('dark');
   } else {
-    document.documentElement.classList.remove('dark');
-    document.body.classList.remove('dark');
-    if (icon) {
-      icon.innerHTML = '<path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/>';
-    }
+    html.classList.remove('dark');
+    body.classList.remove('dark');
+    updateThemeIcon('light');
+  }
+})();
+
+function updateThemeIcon(theme) {
+  const icon = document.getElementById('themeIconDetail');
+  if (!icon) return;
+  
+  if (theme === 'dark') {
+    // Icon matahari untuk dark mode
+    icon.innerHTML = '<path d="M12,17a5,5,0,1,1,5-5A5,5,0,0,1,12,17Zm0-8a3,3,0,1,0,3,3A3,3,0,0,0,12,9Zm0-4a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41L6.34,5A1,1,0,0,0,4.93,6.34ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm.64,5.66a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71a1,1,0,0,0-1.41-1.41ZM12,19a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19Zm6.36-2.34a1,1,0,0,0-1.41,1.41l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-3.64-3.95a1,1,0,0,0,.7.29,1,1,0,0,0,.71-1.7l-.71-.71a1,1,0,0,0-1.41,1.41Z"/>';
+  } else {
+    // Icon bulan untuk light mode
+    icon.innerHTML = '<path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/>';
   }
 }
 
 function toggleTheme() {
-  const body = document.body;
-  const icon = document.getElementById('themeIconDetail');
   const html = document.documentElement;
+  const body = document.body;
   
-  body.classList.toggle('dark');
-  html.classList.toggle('dark');
+  const isDark = body.classList.contains('dark');
   
-  if (body.classList.contains('dark')) {
-    icon.innerHTML = '<path d="M12,17a5,5,0,1,1,5-5A5,5,0,0,1,12,17Zm0-8a3,3,0,1,0,3,3A3,3,0,0,0,12,9Zm0-4a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41L6.34,5A1,1,0,0,0,4.93,6.34ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm.64,5.66a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71a1,1,0,0,0-1.41-1.41ZM12,19a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19Zm6.36-2.34a1,1,0,0,0-1.41,1.41l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-3.64-3.95a1,1,0,0,0,.7.29,1,1,0,0,0,.71-1.7l-.71-.71a1,1,0,0,0-1.41,1.41Z"/>';
-    localStorage.setItem('jkt48_theme', 'dark');
-  } else {
-    icon.innerHTML = '<path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/>';
+  if (isDark) {
+    html.classList.remove('dark');
+    body.classList.remove('dark');
     localStorage.setItem('jkt48_theme', 'light');
+    updateThemeIcon('light');
+  } else {
+    html.classList.add('dark');
+    body.classList.add('dark');
+    localStorage.setItem('jkt48_theme', 'dark');
+    updateThemeIcon('dark');
   }
 }
 // ============= END FUNGSI THEME =============
@@ -602,6 +866,10 @@ function renderMember(member) {
   }
   
   document.getElementById('container').innerHTML = `
+    <div class="header">
+      <h1>Profile Member</h1>
+    </div>
+    
     <!-- Tombol Share Bulat di Kanan Atas Container -->
     <button class="share-circle-btn" onclick="shareProfile('${member.name}', ${currentShow})" title="Share Profile" aria-label="Share Profile">
       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -611,50 +879,47 @@ function renderMember(member) {
       </svg>
     </button>
     
-    <div class="header">
-      <h1>Profile Member</h1>
-    </div>
-    ${photoHtml}
-    <div class="member-name">${member.name}</div>
-    
-    <div class="content">
+    <!-- Left Side - Photo & About -->
+    <div class="about-section">
+      ${photoHtml}
+      <div class="member-name">${member.name}</div>
       
-      <!-- ABOUT SECTION - TERPISAH -->
-      <div class="about-section">
-        <div class="about-title">About</div>
-        <div class="info-card">
-          <div class="info-row">
-            <div class="info-label">Nama</div>
-            <div class="info-value">${member.full_name || member.name}</div>
-          </div>
-          <div class="info-row">
-            <div class="info-label">Tanggal Lahir</div>
-            <div class="info-value">${member.birth_date || '-'}</div>
-          </div>
-          <div class="info-row">
-            <div class="info-label">Golongan Darah</div>
-            <div class="info-value">${member.blood_type || '-'}</div>
-          </div>
-          <div class="info-row">
-            <div class="info-label">Horoskop</div>
-            <div class="info-value">${member.zodiac || '-'}</div>
-          </div>
-          <div class="info-row">
-            <div class="info-label">Tinggi Badan</div>
-            <div class="info-value">${member.height || '-'}</div>
-          </div>
-          <div class="info-row">
-            <div class="info-label">Generasi</div>
-            <div class="info-value">${member.gen}</div>
-          </div>
-          <div class="info-row">
-            <div class="info-label">Team</div>
-            <div class="info-value">${member.team || 'No Team'}</div>
-          </div>
+      <div class="about-title">About</div>
+      <div class="info-card">
+        <div class="info-row">
+          <div class="info-label">Nama</div>
+          <div class="info-value">${member.full_name || member.name}</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Tanggal Lahir</div>
+          <div class="info-value">${member.birth_date || '-'}</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Golongan Darah</div>
+          <div class="info-value">${member.blood_type || '-'}</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Horoskop</div>
+          <div class="info-value">${member.zodiac || '-'}</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Tinggi Badan</div>
+          <div class="info-value">${member.height || '-'}</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Generasi</div>
+          <div class="info-value">${member.gen}</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Team</div>
+          <div class="info-value">${member.team || 'No Team'}</div>
         </div>
       </div>
-      
-      <!-- PROGRESS SECTION - TERPISAH DARI ABOUT -->
+    </div>
+    
+    <!-- Right Side - Progress & Social Media -->
+    <div class="content">
+      <!-- PROGRESS SECTION -->
       <div class="progress-section">
         <div class="progress-title">Progres</div>
         
@@ -673,6 +938,7 @@ function renderMember(member) {
         </div>
       </div>
       
+      <!-- SOCIAL MEDIA SECTION -->
       <div class="social-section">
         <div class="social-title">Social Media</div>
         ${member.twitter || member.instagram || member.tiktok ? `
@@ -680,7 +946,7 @@ function renderMember(member) {
           <a href="https://twitter.com/${member.twitter}" target="_blank" class="social-link">
             <div class="social-icon twitter">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="18" height="18" fill="currentColor">
-                <path d="M357.2 48L427.8 48 273.6 224.2 455 464 313 464 201.7 318.6 74.5 464 3.8 464 168.7 275.5-5.2 48 140.4 48 240.9 180.9 357.2 48zM332.4 421.8l39.1 0-252.4-333.8-42 0 255.3 333.8z"/>
+                <path d="M357.2 48L427.8 48 273.6 224.2 455 464 313 464 201.7 318.6 74.5 464 3.8 464 168.7 275.5-5.2 48 140.4 48 240.9 180.9 357.2 48z"/>
               </svg>
             </div>
             <div class="social-info">
@@ -814,7 +1080,6 @@ function showError(message) {
 
 // Initialize
 window.addEventListener('DOMContentLoaded', () => {
-  initializeTheme();
   loadMember();
 });
 </script>
