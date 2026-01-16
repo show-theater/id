@@ -133,12 +133,19 @@ const SUPABASE_URL="https://pprxfopqkvpeajeoxzig.supabase.co";
 const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBwcnhmb3Bxa3ZwZWFqZW94emlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYyNTI4MTIsImV4cCI6MjA4MTgyODgxMn0.iXRO_dAHhtVHRLqGTresG_63RD2zIaopNXtXYNfthdg";
 const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-// ============= THEME SYSTEM (SAMA DENGAN DETAIL.HTML) =============
+// ============= THEME SYSTEM =============
 (function() {
   const savedTheme = localStorage.getItem('jkt48_theme') || 'light';
   if (savedTheme === 'dark') {
     document.documentElement.classList.add('dark');
     document.body.classList.add('dark');
+  }
+  
+  // Update icon setelah DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', updateThemeIcon);
+  } else {
+    updateThemeIcon();
   }
 })();
 
@@ -412,7 +419,6 @@ window.location.href=`liveshow.html?setlist=${encodeURIComponent(setlist)}&date=
 }
 
 document.addEventListener('DOMContentLoaded',()=>{
-updateThemeIcon();
 loadSchedule();
 });
 </script>

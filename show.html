@@ -160,12 +160,19 @@ let memberData = null;
 let showsData = [];
 let currentFilter = 'all';
 
-// ============= THEME SYSTEM (SAMA DENGAN DETAIL.HTML) =============
+// ============= THEME SYSTEM =============
 (function() {
   const savedTheme = localStorage.getItem('jkt48_theme') || 'light';
   if (savedTheme === 'dark') {
     document.documentElement.classList.add('dark');
     document.body.classList.add('dark');
+  }
+  
+  // Update icon setelah DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', updateThemeIcon);
+  } else {
+    updateThemeIcon();
   }
 })();
 
@@ -468,7 +475,6 @@ function showError(message) {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-  updateThemeIcon();
   loadData();
 });
 </script>
