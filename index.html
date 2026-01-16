@@ -107,10 +107,7 @@ body.dark .gen-badge{background:rgba(0,0,0,0.6)}
 .bar-container{margin-top:auto;padding-top:6px;width:100%;padding-left:8px;padding-right:8px;position:relative}
 .bar{height:5px;background:rgba(0,0,0,0.2);border-radius:3px;overflow:hidden}
 .bar span{display:block;height:100%;background:#fff;transition:width 0.5s ease}
-.bar-milestone{position:absolute;top:-12px;font-size:8px;font-weight:bold;color:rgba(255,255,255,0.7);transform:translateX(-50%)}
-.bar-milestone.zero{left:0%}
-.bar-milestone.half{left:50%}
-.bar-milestone.full{left:100%}
+/* CSS untuk bar-milestone DIHAPUS - tidak ada lagi angka 0, 500, 1000 */
 body.dark .bar{background:rgba(255,255,255,0.2)}
 body.dark .bar span{background:#fff}
 .rank-badge{position:absolute;top:6px;left:6px;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:11px;z-index:2}
@@ -158,8 +155,8 @@ body.dark .gen-option.active{border-color:#f87171}
 .gen-option.gen-12{background:#fde047;color:#000}
 .gen-option.gen-13{background:#facc15;color:#000}
 .gen-option.gen-14{background:#e879f9;color:#fff}
-@media (max-width:767px){header{padding:12px 15px;min-height:55px}.header-title{font-size:18px;padding:0 5px}.header-buttons{gap:6px}.schedule-button,.theme-toggle{width:35px;height:35px}.schedule-button svg,.theme-toggle svg{width:18px;height:18px}.name{font-size:12px}.show-info{font-size:10px;margin:3px 0 6px 0}.gen-badge{font-size:9px;padding:3px 8px;min-width:45px}.bar{height:4px}.bar-container{padding-left:6px;padding-right:6px}.bar-milestone{font-size:7px;top:-10px}.rank-badge{width:20px;height:20px;font-size:10px}.photo-setlist-badge{font-size:7px;padding:1px 4px}.card-footer{padding:8px 6px;min-height:85px}.name-container{min-height:28px}.top-member-filter{min-width:110px;padding:8px 12px;font-size:12px}.filter{min-width:100px;padding:8px 12px;font-size:12px}.live-show-content{flex-direction:column;align-items:stretch;gap:10px}.live-show-left{flex-direction:column;align-items:flex-start;gap:8px}.live-show-info{width:100%}.live-show-title{font-size:14px}.live-show-time{font-size:12px}.live-show-right{width:100%;justify-content:flex-end}}
-@media (max-width:480px){.header-title{font-size:16px}.schedule-button,.theme-toggle{width:32px;height:32px}.schedule-button svg,.theme-toggle svg{width:16px;height:16px}.header-buttons{gap:4px}.bar-milestone{font-size:6px;top:-8px}}
+@media (max-width:767px){header{padding:12px 15px;min-height:55px}.header-title{font-size:18px;padding:0 5px}.header-buttons{gap:6px}.schedule-button,.theme-toggle{width:35px;height:35px}.schedule-button svg,.theme-toggle svg{width:18px;height:18px}.name{font-size:12px}.show-info{font-size:10px;margin:3px 0 6px 0}.gen-badge{font-size:9px;padding:3px 8px;min-width:45px}.bar{height:4px}.bar-container{padding-left:6px;padding-right:6px}.rank-badge{width:20px;height:20px;font-size:10px}.photo-setlist-badge{font-size:7px;padding:1px 4px}.card-footer{padding:8px 6px;min-height:85px}.name-container{min-height:28px}.top-member-filter{min-width:110px;padding:8px 12px;font-size:12px}.filter{min-width:100px;padding:8px 12px;font-size:12px}.live-show-content{flex-direction:column;align-items:stretch;gap:10px}.live-show-left{flex-direction:column;align-items:flex-start;gap:8px}.live-show-info{width:100%}.live-show-title{font-size:14px}.live-show-time{font-size:12px}.live-show-right{width:100%;justify-content:flex-end}}
+@media (max-width:480px){.header-title{font-size:16px}.schedule-button,.theme-toggle{width:32px;height:32px}.schedule-button svg,.theme-toggle svg{width:16px;height:16px}.header-buttons{gap:4px}}
 .detail-footer{text-align:center;padding:12px;color:#6b7280;font-size:10px;border-top:1px solid #e5e7eb;margin-top:20px;background:#fff;transition:background 0.3s,color 0.3s,border-color 0.3s}
 body.dark .detail-footer{background:#0a0e1a;color:#9ca3af;border-top-color:#374151}
 </style>
@@ -656,6 +653,7 @@ function renderMembers() {
         
         const genText = m.gen ? `Gen ${m.gen}` : 'Gen ?';
         
+        // HTML TANPA tulisan 0, 500, 1000 (bar-milestone dihapus)
         card.innerHTML = `
             <div class="avatar-container">
                 <img class="avatar" src="img/${m.name.toLowerCase()}.jpg" alt="${m.name}" loading="lazy" onerror="this.onerror=null;this.style.display='none';this.parentNode.innerHTML='<div class=&quot;avatar-placeholder&quot;>${m.name.charAt(0)}</div>'">
@@ -670,9 +668,6 @@ function renderMembers() {
                     <div class="bar">
                         <span style="width:${percent}%"></span>
                     </div>
-                    <span class="bar-milestone zero">0</span>
-                    <span class="bar-milestone half">500</span>
-                    <span class="bar-milestone full">1000</span>
                 </div>
             </div>
         `;
@@ -761,7 +756,7 @@ function updateStats() {
     
     const total = filtered.reduce((sum, m) => sum + m.show, 0);
     let txt = filtered.length + ' members • ' + total.toLocaleString() + ' total shows';
-    txt += ` • Milestone: ${MILESTONE} show`; // Selalu tampilkan milestone 1000
+    // HAPUS "Milestone: 1000 show" dari stats
     if (currentGen !== 'all') txt += ' • Gen ' + currentGen;
     if (currentTeam !== 'all') txt += ' • ' + currentTeam;
     
@@ -899,4 +894,4 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 </body>
-</html> 
+</html>
