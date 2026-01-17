@@ -3,110 +3,265 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jadwal Show - JKT48 Theater</title>
+<title>Jadwal Show - JKT48 Show Theater</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
 <style>
-/* CSS tetap sama */
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:Arial,sans-serif;background:#f5f5f5;color:#333;min-height:100vh;transition:background 0.3s,color 0.3s}
+body{font-family:Arial,sans-serif;background:#f5f5f5;color:#333;min-height:100vh;padding-bottom:60px;transition:background 0.3s,color 0.3s}
 body.dark{background:#0a0e1a;color:#e5e7eb}
-header{background:#e60012;text-align:center;padding:20px 60px 20px 20px;font-size:24px;font-weight:bold;color:#fff;position:relative;display:flex;align-items:center;justify-content:center}
-.back-btn{position:absolute;left:20px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.2);border:none;color:#fff;width:40px;height:40px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.3s}
-.back-btn:hover{background:rgba(255,255,255,0.3)}
-.theme-toggle{position:absolute;right:20px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.2);border:none;color:#fff;width:40px;height:40px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:8px;transition:all 0.3s}
-.theme-toggle:hover{background:rgba(255,255,255,0.3)}
-.theme-toggle svg{width:20px;height:20px}
-body.dark .back-btn,body.dark .theme-toggle{background:rgba(0,0,0,0.2)}
-.container{max-width:1200px;margin:0 auto;padding:20px}
 
-.calendar-container{background:#fff;border-radius:12px;padding:20px;margin-bottom:20px;border:1px solid #e5e7eb}
-body.dark .calendar-container{background:#1b1f3a;border-color:#2d3548}
-.calendar-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding:0 10px}
-.calendar-title{font-size:18px;font-weight:bold;color:#e60012;text-align:center;flex:1}
-body.dark .calendar-title{color:#f87171}
+/* ============= HEADER SAMA DENGAN LIVESHOW ============= */
+.main-header{position:fixed;top:0;left:0;right:0;background:#fff;z-index:1001;border-bottom:1px solid #ddd;transition:background 0.3s,border-color 0.3s}
+body.dark .main-header{background:#111827;border-color:#1f2937}
+.theater-header{text-align:center;padding:10px 20px;font-size:14px;font-weight:bold;color:#333;letter-spacing:1px}
+body.dark .theater-header{color:#e5e7eb}
+.detail-header{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:#fff;border-top:1px solid #eee;border-bottom:1px solid #ddd;transition:background 0.3s,border-color 0.3s}
+body.dark .detail-header{background:#111827;border-color:#1f2937}
+.back-btn{background:transparent;border:none;color:#333;font-size:16px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;padding:8px 0;transition:all 0.3s}
+body.dark .back-btn{color:#e5e7eb}
+.back-btn:hover{opacity:0.7}
+.detail-title{font-size:16px;font-weight:bold;color:#333;text-align:center;flex:1;margin:0 10px}
+body.dark .detail-title{color:#e5e7eb}
+.header-controls{display:flex;align-items:center;gap:10px}
+.theme-toggle-detail{background:#e60012;border:none;width:40px;height:40px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:8px;transition:all 0.3s}
+.theme-toggle-detail:hover{background:#d5000f;transform:scale(1.1)}
+.theme-toggle-detail svg{width:100%;height:100%;color:#fff}
+
+/* ============= CONTAINER SAMA DENGAN LIVESHOW ============= */
+.container{max-width:800px;width:100%;margin:140px auto 30px;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.1);transition:background 0.3s,box-shadow 0.3s}
+body.dark .container{background:#111827;box-shadow:0 2px 8px rgba(0,0,0,0.4)}
+
+/* ============= KALENDER SECTION ============= */
+.calendar-section{padding:25px;border-bottom:1px solid #e5e7eb}
+body.dark .calendar-section{border-color:#374151}
+.calendar-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.calendar-title{font-size:18px;font-weight:bold;color:#333}
+body.dark .calendar-title{color:#e5e7eb}
 .calendar-nav{display:flex;gap:8px}
 .calendar-nav button{background:#f0f0f0;border:none;width:36px;height:36px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
 .calendar-nav button:hover{background:#e0e0e0}
-body.dark .calendar-nav button{background:#2d3548;color:#9ca3af}
-body.dark .calendar-nav button:hover{background:#3d4558}
+body.dark .calendar-nav button{background:#374151;color:#9ca3af}
+body.dark .calendar-nav button:hover{background:#4b5563}
 .calendar-nav button svg{width:18px;height:18px}
-.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-top:10px}
+.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
 .calendar-day-header{padding:12px 0;text-align:center;font-size:12px;font-weight:bold;color:#666;text-transform:uppercase}
 body.dark .calendar-day-header{color:#9ca3af}
-.calendar-day{padding:12px 0;text-align:center;border-radius:8px;cursor:pointer;transition:all 0.2s;position:relative;min-height:50px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.calendar-day{padding:12px 0;text-align:center;border-radius:8px;cursor:pointer;transition:all 0.2s;position:relative;min-height:45px;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .calendar-day:hover{background:#f0f0f0}
 .calendar-day.active{background:#e60012;color:#fff}
 .calendar-day.today{border:2px solid #e60012}
 .calendar-day.other-month{color:#999}
-body.dark .calendar-day:hover{background:#2d3548}
-body.dark .calendar-day.active{background:#f87171}
-body.dark .calendar-day.today{border-color:#f87171}
+body.dark .calendar-day:hover{background:#374151}
+body.dark .calendar-day.active{background:#e60012}
+body.dark .calendar-day.today{border-color:#e60012}
 body.dark .calendar-day.other-month{color:#666}
-.calendar-indicators{margin-top:4px;display:flex;gap:3px;justify-content:center;flex-wrap:wrap}
+.calendar-indicators{display:flex;gap:3px;justify-content:center;margin-top:4px;flex-wrap:wrap}
 .calendar-indicator{width:6px;height:6px;border-radius:50%}
 
-.show-card{background:#fff;border-radius:12px;padding:20px;margin-bottom:16px;cursor:pointer;border:1px solid #e5e7eb;transition:all 0.3s}
-.show-card:hover{background:#f9fafb;border-color:#d1d5db}
-body.dark .show-card{background:#1b1f3a;border-color:#2d3548}
-body.dark .show-card:hover{background:#1f2437;border-color:#3d4558}
-.show-card.show-live{border:2px solid #ef4444;background:#fff5f5;animation:live-glow 2s ease-in-out infinite}
-body.dark .show-card.show-live{background:#1f1515;border-color:#ef4444}
-@keyframes live-glow{0%,100%{box-shadow:0 2px 8px rgba(239,68,68,0.3)}50%{box-shadow:0 4px 16px rgba(239,68,68,0.6)}}
-.live-indicator{display:inline-flex;align-items:center;gap:6px;background:#ef4444;color:#fff;padding:4px 10px;border-radius:12px;font-size:11px;font-weight:bold;margin-right:8px;animation:pulse-live 2s infinite}
-.live-dot-pulse{width:8px;height:8px;background:#fff;border-radius:50%;animation:pulse-dot 1.5s ease-in-out infinite}
-@keyframes pulse-live{0%,100%{opacity:1}50%{opacity:0.85}}
-@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.6;transform:scale(0.8)}}
-.show-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;flex-wrap:wrap;gap:12px}
-.show-title{font-size:18px;font-weight:bold;color:#e60012;flex:1}
-body.dark .show-title{color:#f87171}
-.show-time{font-size:14px;font-weight:bold;color:#666;padding:6px 12px;background:#f0f0f0;border-radius:12px;white-space:nowrap}
-body.dark .show-time{background:#0a0e1a;color:#9ca3af}
-.show-date{font-size:12px;color:#9ca3af;margin-bottom:8px}
-.show-members{font-size:13px;color:#666;line-height:1.6}
-body.dark .show-members{color:#9ca3af}
-.setlist-badge{display:inline-block;padding:4px 10px;border-radius:12px;font-size:11px;font-weight:bold;margin-left:8px;color:#fff}
-.loading{text-align:center;padding:60px 20px;color:#9ca3af}
-.spinner{display:inline-block;width:40px;height:40px;border:4px solid rgba(0,0,0,0.1);border-top-color:#e60012;border-radius:50%;animation:spin 0.8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-body.dark .spinner{border-color:rgba(255,255,255,0.1);border-top-color:#f87171}
-.no-shows{text-align:center;padding:60px 20px;color:#9ca3af;font-size:14px}
+/* ============= SHOW LIST SECTION ============= */
+.shows-section{padding:25px}
+.section-title{font-size:16px;font-weight:bold;color:#333;margin-bottom:20px;display:flex;align-items:center;gap:8px}
+body.dark .section-title{color:#e5e7eb}
+.shows-count{background:#e60012;color:#fff;padding:3px 8px;border-radius:10px;font-size:11px;font-weight:bold;min-width:25px;text-align:center}
+.shows-list{display:flex;flex-direction:column;gap:15px}
 
-@media (max-width:767px){
-header{padding:15px 50px 15px 50px;font-size:20px}
-.back-btn,.theme-toggle{width:35px;height:35px;left:10px}
-.theme-toggle{right:10px;left:auto}
-.container{padding:15px}
-.show-header{flex-direction:column;align-items:flex-start}
-.show-time{width:100%}
-.calendar-header{padding:0 5px}
-.calendar-day-header{font-size:10px;padding:8px 0}
-.calendar-day{padding:10px 0;font-size:14px;min-height:45px}
-.calendar-nav button{width:32px;height:32px}
-.calendar-nav button svg{width:16px;height:16px}
-.calendar-indicator{width:5px;height:5px}
+/* ============= SHOW CARD SAMA STYLING DENGAN LIVESHOW ============= */
+.show-card{background:#fff;border-radius:15px;overflow:hidden;cursor:pointer;transition:all 0.3s;box-shadow:0 2px 8px rgba(0,0,0,0.1);border:2px solid transparent}
+body.dark .show-card{background:#1f2937;box-shadow:0 2px 8px rgba(0,0,0,0.3)}
+.show-card:hover{transform:translateY(-3px);box-shadow:0 6px 16px rgba(0,0,0,0.15);border-color:#e60012}
+.show-card-header{background:linear-gradient(135deg, #ef4444 0%, #dc2626 100%);padding:20px;position:relative}
+.show-card-header.live-now{background:linear-gradient(135deg, #ef4444 0%, #dc2626 100%)}
+.show-card-header.live-soon{background:linear-gradient(135deg, #f97316 0%, #ea580c 100%)}
+.show-card-header.upcoming{background:linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)}
+.show-card-header.finished{background:linear-gradient(135deg, #6b7280 0%, #4b5563 100%)}
+.show-status-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.2);padding:6px 12px;border-radius:15px;font-size:12px;font-weight:bold;margin-bottom:10px;color:#fff}
+.show-live-dot{width:8px;height:8px;background:#fff;border-radius:50%;animation:pulse 2s infinite}
+.show-soon-dot{width:8px;height:8px;background:#fff;border-radius:50%}
+.show-upcoming-dot{width:8px;height:8px;background:#fff;border-radius:50%}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+.show-card-title{font-size:16px;font-weight:bold;color:#fff;margin:0 0 10px 0;line-height:1.3;display:flex;align-items:center;flex-wrap:wrap;gap:8px}
+.show-card-time{display:flex;align-items:center;justify-content:space-between;color:rgba(255,255,255,0.9);font-size:13px;flex-wrap:wrap;gap:10px}
+.show-card-time div{display:flex;align-items:center;gap:6px}
+.show-card-time svg{width:14px;height:14px;flex-shrink:0}
+.show-card-members{padding:15px;border-top:1px solid #e5e7eb}
+body.dark .show-card-members{border-color:#374151}
+.show-card-members p{font-size:13px;color:#666;line-height:1.5}
+body.dark .show-card-members p{color:#9ca3af}
+.show-card-members strong{color:#333;font-weight:600}
+body.dark .show-card-members strong{color:#e5e7eb}
+
+/* Birthday Badge */
+.birthday-badge {
+    background: rgba(255,255,255,0.2);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: bold;
+    color: #fff;
+    animation: birthday-glow 2s ease-in-out infinite;
+}
+
+.birthday-badge svg {
+    width: 12px;
+    height: 12px;
+    fill: currentColor;
+}
+
+@keyframes birthday-glow {
+    0%, 100% { box-shadow: 0 0 8px rgba(255,255,255,0.3); }
+    50% { box-shadow: 0 0 12px rgba(255,255,255,0.5); }
+}
+
+/* Loading & No Shows */
+.loading{text-align:center;padding:60px 20px;color:#6b7280;display:flex;align-items:center;justify-content:center;gap:12px;flex-direction:column}
+body.dark .loading{color:#9ca3af}
+.spinner{display:inline-block;width:32px;height:32px;border:3px solid rgba(0,0,0,0.1);border-top-color:#9ca3af;border-radius:50%;animation:spin 0.8s linear infinite}
+body.dark .spinner{border-color:rgba(255,255,255,0.1);border-top-color:#9ca3af}
+@keyframes spin{to{transform:rotate(360deg)}}
+.no-shows-message{text-align:center;padding:60px 20px;color:#6b7280}
+body.dark .no-shows-message{color:#9ca3af}
+.no-shows-icon{font-size:64px;margin-bottom:20px;opacity:0.5}
+.no-shows-title{font-size:18px;font-weight:bold;margin-bottom:10px}
+.no-shows-desc{font-size:14px;line-height:1.5;margin-bottom:30px}
+
+/* ============= FOOTER SAMA DENGAN LIVESHOW ============= */
+.detail-footer{text-align:center;padding:15px;color:#6b7280;font-size:10px;border-top:1px solid #e5e7eb;margin-top:20px}
+body.dark .detail-footer{color:#9ca3af;border-top-color:#374151}
+
+/* Responsive Breakpoints */
+@media (max-width:1024px){
+    .container{max-width:90%;margin:130px auto 25px}
+}
+
+@media (max-width:768px){
+    .container{max-width:95%;margin:120px auto 20px;border-radius:16px}
+    .calendar-section{padding:20px}
+    .shows-section{padding:20px}
+    .show-card-header{padding:15px}
+    .show-card-title{font-size:14px}
+    .show-status-badge{font-size:11px;padding:5px 10px}
+    .show-card-time{font-size:12px}
+    .show-card-time svg{width:12px;height:12px}
+    .show-card-members{padding:12px}
+    .calendar-day-header{padding:10px 0;font-size:11px}
+    .calendar-day{padding:10px 0;font-size:14px;min-height:40px}
+}
+
+@media (max-width:480px){
+    .main-header{position:sticky}
+    .container{margin:0 auto 15px;border-radius:0;box-shadow:none;width:100%;max-width:100%}
+    body.dark .container{box-shadow:none}
+    .calendar-section{padding:15px}
+    .shows-section{padding:15px}
+    .calendar-title{font-size:16px}
+    .calendar-nav button{width:32px;height:32px}
+    .calendar-nav button svg{width:16px;height:16px}
+    .calendar-day-header{padding:8px 0;font-size:10px}
+    .calendar-day{padding:8px 0;font-size:13px;min-height:35px}
+    .calendar-indicator{width:5px;height:5px}
+    .show-card-header{padding:12px}
+    .show-card-title{font-size:13px;margin-bottom:8px}
+    .show-status-badge{font-size:10px;padding:4px 8px;margin-bottom:8px}
+    .show-live-dot,.show-soon-dot,.show-upcoming-dot{width:6px;height:6px}
+    .show-card-time{font-size:11px;flex-direction:column;align-items:flex-start;gap:5px}
+    .show-card-time div{gap:4px}
+    .show-card-time svg{width:11px;height:11px}
+    .show-card-members{padding:10px}
+    .show-card-members p{font-size:12px}
+    .detail-header{padding:10px 15px}
+    .back-btn{font-size:14px;gap:4px}
+    .back-btn svg{width:14px;height:14px}
+    .detail-title{font-size:14px;margin:0 5px}
+    .theme-toggle-detail{width:36px;height:36px}
+    .theater-header{font-size:13px;padding:8px 15px}
+    .birthday-badge{font-size:10px;padding:3px 8px}
+}
+
+@media (max-width:360px){
+    .calendar-grid{gap:5px}
+    .calendar-day{padding:6px 0;font-size:12px;min-height:30px}
+    .show-card-title{font-size:12px}
+    .show-card-time{font-size:10px}
+    .show-card-members p{font-size:11px}
+    .section-title{font-size:14px}
 }
 
 /* ============= DESKTOP LAYOUT ============= */
 @media (min-width: 1025px) {
+    body {
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+    
+    .main-header {
+        position: relative;
+        background: #fff;
+        border-bottom: 1px solid #ddd;
+        width: 100%;
+    }
+    
+    .theater-header {
+        color: #333;
+        font-size: 16px;
+        padding: 12px 20px;
+        letter-spacing: 1px;
+    }
+    
+    .detail-header {
+        background: #fff;
+        border-top: none;
+        border-bottom: 1px solid #ddd;
+    }
+    
+    body.dark .main-header {
+        background: #111827;
+        border-color: #1f2937;
+    }
+    
+    body.dark .theater-header {
+        color: #e5e7eb;
+    }
+    
+    body.dark .detail-header {
+        background: #111827;
+        border-color: #1f2937;
+    }
+    
     .container {
         display: flex;
-        gap: 30px;
-        max-width: 1400px;
+        flex: 1;
+        max-width: 1200px;
+        width: 100%;
+        margin: 20px auto;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    .calendar-section {
+        flex: 0 0 350px;
+        border-right: 1px solid #e5e7eb;
+        border-bottom: none;
         padding: 30px;
-        align-items: flex-start;
     }
     
-    .calendar-container {
-        flex: 0 0 400px;
-        margin-bottom: 0;
-        position: sticky;
-        top: 30px;
+    body.dark .calendar-section {
+        border-color: #374151;
     }
     
-    #showList {
+    .shows-section {
         flex: 1;
         min-width: 0;
+        padding: 30px;
     }
     
     .calendar-title {
@@ -119,7 +274,7 @@ header{padding:15px 50px 15px 50px;font-size:20px}
     
     .calendar-day {
         padding: 15px 0;
-        min-height: 60px;
+        min-height: 50px;
         font-size: 16px;
     }
     
@@ -133,108 +288,157 @@ header{padding:15px 50px 15px 50px;font-size:20px}
         height: 8px;
     }
     
-    .show-card {
-        margin-bottom: 20px;
-        padding: 25px;
-    }
-    
-    .show-title {
+    .section-title {
         font-size: 20px;
+        margin-bottom: 25px;
     }
     
-    .show-time {
-        font-size: 16px;
-        padding: 8px 16px;
-    }
-    
-    .show-date {
-        font-size: 14px;
-    }
-    
-    .show-members {
-        font-size: 15px;
-    }
-    
-    .setlist-badge {
+    .shows-count {
         font-size: 12px;
-        padding: 5px 12px;
+        padding: 4px 10px;
+        min-width: 30px;
     }
     
-    .live-indicator {
-        font-size: 12px;
-        padding: 6px 12px;
+    .shows-list {
+        gap: 20px;
     }
     
-    .live-dot-pulse {
+    .show-card-title {
+        font-size: 18px;
+    }
+    
+    .show-status-badge {
+        font-size: 13px;
+        padding: 8px 14px;
+        margin-bottom: 12px;
+    }
+    
+    .show-live-dot, .show-soon-dot, .show-upcoming-dot {
         width: 10px;
         height: 10px;
     }
     
-    header {
-        padding: 25px 80px 25px 80px;
-        font-size: 28px;
+    .show-card-time {
+        font-size: 14px;
+        gap: 20px;
     }
     
-    .back-btn, .theme-toggle {
-        width: 50px;
-        height: 50px;
+    .show-card-time svg {
+        width: 16px;
+        height: 16px;
     }
     
-    .back-btn {
-        left: 30px;
+    .show-card-members {
+        padding: 18px;
     }
     
-    .theme-toggle {
-        right: 30px;
+    .show-card-members p {
+        font-size: 14px;
+    }
+    
+    .birthday-badge {
+        font-size: 12px;
+        padding: 5px 12px;
+    }
+    
+    .detail-footer {
+        padding: 15px;
+        font-size: 11px;
+        width: 100%;
+        margin-top: auto;
+        border: none;
+        border-top: 1px solid #e5e7eb;
+        background: #fff;
+    }
+    
+    body.dark .detail-footer {
+        border-top-color: #374151;
+        background: #111827;
+        color: #9ca3af;
+    }
+}
+
+@media (max-height: 700px) {
+    .container {
+        margin: 10px auto;
     }
 }
 </style>
 </head>
 <body>
-<header>
-<button class="back-btn" onclick="goBack()" title="Kembali">
-<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-</button>
-JADWAL SHOW
-<button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark Mode">
-<svg id="themeIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/></svg>
-</button>
+<!-- ============= HEADER SAMA DENGAN LIVESHOW ============= -->
+<header class="main-header">
+  <div class="theater-header">JKT48 SHOW THEATER</div>
+  <div class="detail-header">
+    <button onclick="goBack()" class="back-btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+      Kembali
+    </button>
+    <div class="detail-title">JADWAL SHOW</div>
+    <div class="header-controls">
+      <button class="theme-toggle-detail" onclick="toggleTheme()">
+        <svg id="themeIconDetail" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
 </header>
 
 <div class="container">
-<div class="calendar-container">
-<div class="calendar-header">
-<div class="calendar-nav">
-<button onclick="changeMonth(-1)" title="Bulan sebelumnya">
-<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-<path fill-rule="evenodd" d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5z"/>
-</svg>
-</button>
-</div>
-<h3 class="calendar-title" id="currentMonth">Januari 2024</h3>
-<div class="calendar-nav">
-<button onclick="changeMonth(1)" title="Bulan berikutnya">
-<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-<path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8"/>
-</svg>
-</button>
-</div>
-</div>
-<div class="calendar-grid" id="calendar"></div>
+  <div class="calendar-section">
+    <div class="calendar-header">
+      <div class="calendar-nav">
+        <button onclick="changeMonth(-1)" title="Bulan sebelumnya">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5z"/>
+          </svg>
+        </button>
+      </div>
+      <h3 class="calendar-title" id="currentMonth">Januari 2024</h3>
+      <div class="calendar-nav">
+        <button onclick="changeMonth(1)" title="Bulan berikutnya">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div class="calendar-grid" id="calendar"></div>
+  </div>
+
+  <div class="shows-section">
+    <div class="section-title">
+      <span>Daftar Show</span>
+      <span class="shows-count" id="showsCount">0</span>
+    </div>
+    
+    <div id="showList">
+      <div class="loading">
+        <div class="spinner"></div>
+        <span>Memuat jadwal show...</span>
+      </div>
+    </div>
+  </div>
 </div>
 
-<div id="showList">
-<div class="loading">
-<div class="spinner"></div>
-<div style="margin-top:16px">Memuat jadwal...</div>
-</div>
-</div>
-</div>
+<!-- ============= FOOTER SAMA DENGAN LIVESHOW ============= -->
+<footer class="detail-footer">
+  <p>JKT48 Show Theater • Jadwal Show</p>
+</footer>
 
 <script>
-const SUPABASE_URL="https://pprxfopqkvpeajeoxzig.supabase.co";
-const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBwcnhmb3Bxa3ZwZWFqZW94emlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYyNTI4MTIsImV4cCI6MjA4MTgyODgxMn0.iXRO_dAHhtVHRLqGTresG_63RD2zIaopNXtXYNfthdg";
-const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const SUPABASE_URL = "https://pprxfopqkvpeajeoxzig.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBwcnhmb3Bxa3ZwZWFqZW94emlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYyNTI4MTIsImV4cCI6MjA4MTgyODgxMn0.iXRO_dAHhtVHRLqGTresG_63RD2zIaopNXtXYNfthdg";
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ============= KONFIGURASI LIVE SHOW YANG SAMA =============
+const LIVE_CONFIG = {
+    BEFORE_MINUTES: 15,
+    DURATION_MINUTES: 155
+};
 
 // ============= FUNGSI THEME GLOBAL =============
 (function initializeTheme() {
@@ -254,14 +458,12 @@ const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 })();
 
 function updateThemeIcon(theme) {
-  const icon = document.getElementById('themeIcon');
+  const icon = document.getElementById('themeIconDetail');
   if (!icon) return;
   
   if (theme === 'dark') {
-    // Icon matahari untuk dark mode
     icon.innerHTML = '<path d="M12,17a5,5,0,1,1,5-5A5,5,0,0,1,12,17Zm0-8a3,3,0,1,0,3,3A3,3,0,0,0,12,9Zm0-4a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41L6.34,5A1,1,0,0,0,4.93,6.34ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm.64,5.66a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71a1,1,0,0,0-1.41-1.41ZM12,19a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19Zm6.36-2.34a1,1,0,0,0-1.41,1.41l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-3.64-3.95a1,1,0,0,0,.7.29,1,1,0,0,0,.71-1.7l-.71-.71a1,1,0,0,0-1.41,1.41Z"/>';
   } else {
-    // Icon bulan untuk light mode
     icon.innerHTML = '<path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/>';
   }
 }
@@ -284,7 +486,41 @@ function toggleTheme() {
     updateThemeIcon('dark');
   }
 }
-// ============= END FUNGSI THEME =============
+
+// ============= FUNGSI LIVE STATUS YANG SAMA =============
+function getLiveStatus(showDate, showTime) {
+    if (!showDate || !showTime) return 'FINISHED';
+    
+    const now = new Date();
+    const showDateTime = new Date(`${showDate}T${showTime}`);
+    
+    const liveStart = new Date(showDateTime.getTime() - (LIVE_CONFIG.BEFORE_MINUTES * 60 * 1000));
+    const liveEnd = new Date(showDateTime.getTime() + (LIVE_CONFIG.DURATION_MINUTES * 60 * 1000));
+    
+    if (now < liveStart) return 'UPCOMING';
+    if (now >= liveStart && now <= liveEnd) return 'LIVE';
+    return 'FINISHED';
+}
+
+function isShowSoon(showDate, showTime) {
+    if (!showDate || !showTime) return false;
+    
+    const now = new Date();
+    const showDateTime = new Date(`${showDate}T${showTime}`);
+    const liveStart = new Date(showDateTime.getTime() - (LIVE_CONFIG.BEFORE_MINUTES * 60 * 1000));
+    const timeUntilLive = liveStart - now;
+    
+    return timeUntilLive > 0 && timeUntilLive <= 30 * 60 * 1000; // 30 menit sebelum
+}
+
+// ============= FUNGSI UTAMA =============
+let allShows = [];
+let currentDate = new Date().toISOString().split('T')[0];
+let currentMonth = moment(currentDate);
+
+function goBack() {
+  window.location.href = 'index.html';
+}
 
 function saveSelectedDate(dateStr) {
     localStorage.setItem('jkt48_selected_date', dateStr);
@@ -295,238 +531,379 @@ function loadSelectedDate() {
     return savedDate || new Date().toISOString().split('T')[0];
 }
 
-let currentDate = loadSelectedDate();
-let allShows=[];
-let currentMonth=moment(currentDate);
+async function loadSchedule() {
+    try {
+        const today = new Date();
+        const startDate = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+        const endDate = new Date(today.getFullYear(), today.getMonth() + 2, 0);
+        const startStr = startDate.toISOString().split('T')[0];
+        const endStr = endDate.toISOString().split('T')[0];
 
-function goBack(){
-window.location.href='index.html';
+        const { data, error } = await db
+            .from('setlist_performance')
+            .select('*')
+            .gte('show_date', startStr)
+            .lte('show_date', endStr)
+            .order('show_date', { ascending: true })
+            .order('show_time', { ascending: true });
+
+        if (error) throw error;
+        
+        allShows = data || [];
+        currentDate = loadSelectedDate();
+        currentMonth = moment(currentDate);
+        
+        renderCalendar();
+        renderShows(currentDate);
+        
+    } catch (err) {
+        console.error('Error:', err);
+        document.getElementById('showList').innerHTML = `
+            <div class="no-shows-message">
+                <div class="no-shows-icon">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                </div>
+                <div class="no-shows-title">Gagal Memuat Jadwal</div>
+                <div class="no-shows-desc">Silakan coba refresh halaman atau cek koneksi internet Anda.</div>
+            </div>
+        `;
+    }
 }
 
-async function loadSchedule(){
-try{
-const today=new Date();
-const startDate=new Date(today.getFullYear(), today.getMonth() - 1, 1);
-const endDate=new Date(today.getFullYear(), today.getMonth() + 2, 0);
-const startStr=startDate.toISOString().split('T')[0];
-const endStr=endDate.toISOString().split('T')[0];
-
-const{data,error}=await db.from('setlist_performance').select('*').gte('show_date',startStr).lte('show_date',endStr).order('show_date',{ascending:true}).order('show_time',{ascending:true});
-if(error)throw error;
-allShows=data||[];
-renderCalendar();
-renderShows(currentDate);
-}catch(err){
-console.error('Error:',err);
-document.getElementById('showList').innerHTML='<div class="no-shows">Gagal memuat jadwal</div>';
-}
-}
-
-function isShowLiveOrStartingSoon(showDate, showTime) {
-const now = new Date();
-const showDateTime = new Date(showDate + 'T' + showTime);
-const fifteenMinutesBefore = new Date(showDateTime.getTime() - (15 * 60 * 1000));
-const fifteenMinutesAfter = new Date(showDateTime.getTime() + (15 * 60 * 1000));
-return now >= fifteenMinutesBefore && now <= fifteenMinutesAfter;
-}
-
-function getSetlistColor(setlistName, memberCount) {
-if (!setlistName) return '#e60012';
-const setlistLower = setlistName.toLowerCase().trim();
-  
-if(setlistLower.includes('te wo tsunaginagara') || 
-   setlistLower.includes('tewo') ||
-   setlistLower.includes('tsunaginagara') ||
-   setlistName.includes('Te Wo Tsunaginagara')) {
-return '#FF69B4';
-} else if(setlistLower.includes('ramune')) {
-return '#00CED1';
-} else if(setlistLower.includes('pertaruhan')) {
-return '#D30000';
-} else if(setlistLower.includes('pajama')) {
-return '#00006d';
-} else {
-return '#e60012';
-}
+function getSetlistColor(setlistName) {
+    if (!setlistName) return '#e60012';
+    const setlistLower = setlistName.toLowerCase().trim();
+    
+    if (setlistLower.includes('te wo tsunaginagara') || 
+        setlistLower.includes('tewo') ||
+        setlistLower.includes('tsunaginagara')) {
+        return '#FF69B4';
+    } else if (setlistLower.includes('ramune')) {
+        return '#00CED1';
+    } else if (setlistLower.includes('pertaruhan')) {
+        return '#D30000';
+    } else if (setlistLower.includes('pajama')) {
+        return '#00006d';
+    } else {
+        return '#e60012';
+    }
 }
 
 function getSetlistsForDate(dateStr) {
-const showsOnDate = allShows.filter(s => s.show_date === dateStr);
-if(showsOnDate.length === 0) return [];
-  
-const setlistGroups = {};
-showsOnDate.forEach(show => {
-const setlistKey = show.setlist_name || 'Unknown';
-if (!setlistGroups[setlistKey]) {
-setlistGroups[setlistKey] = [];
-}
-setlistGroups[setlistKey].push(show);
-});
-
-const uniqueSetlists = [];
-for (const [setlistName, shows] of Object.entries(setlistGroups)) {
-const memberCount = shows.length;
-const color = getSetlistColor(setlistName, memberCount);
-uniqueSetlists.push({
-name: setlistName,
-color: color,
-count: shows.length
-});
-}
-
-uniqueSetlists.sort((a, b) => {
-const priorityOrder = {
-'#FF69B4': 1,
-'#00CED1': 2,
-'#D30000': 3,
-'#00006d': 4,
-'#e60012': 5
-};
-return (priorityOrder[a.color] || 6) - (priorityOrder[b.color] || 6);
-});
-
-return uniqueSetlists.slice(0, 3);
+    const showsOnDate = allShows.filter(s => s.show_date === dateStr);
+    if (showsOnDate.length === 0) return [];
+    
+    // Kelompokkan berdasarkan setlist DAN waktu (UNIQUE)
+    const uniqueShows = [];
+    const seen = new Set();
+    
+    showsOnDate.forEach(show => {
+        const key = `${show.setlist_name}_${show.show_time}`;
+        if (!seen.has(key)) {
+            seen.add(key);
+            const color = getSetlistColor(show.setlist_name);
+            uniqueShows.push({ color, name: show.setlist_name, time: show.show_time });
+        }
+    });
+    
+    return uniqueShows;
 }
 
 function createIndicatorsHTML(dateStr) {
-const setlists = getSetlistsForDate(dateStr);
-if(setlists.length === 0) return '';
-
-let indicatorsHTML = '<div class="calendar-indicators">';
-setlists.forEach(setlist => {
-indicatorsHTML += `<span class="calendar-indicator" style="background:${setlist.color}" title="${setlist.name}"></span>`;
-});
-indicatorsHTML += '</div>';
-
-return indicatorsHTML;
-}
-
-function renderCalendar(){
-const calendarEl=document.getElementById('calendar');
-const monthYearEl=document.getElementById('currentMonth');
-const monthNames=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
-const dayNames=['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
-
-currentMonth = moment(currentDate);
-
-monthYearEl.textContent=`${monthNames[currentMonth.month()]} ${currentMonth.year()}`;
-
-const startOfMonth=currentMonth.clone().startOf('month');
-const endOfMonth=currentMonth.clone().endOf('month');
-const startDate=startOfMonth.clone().startOf('week');
-const endDate=endOfMonth.clone().endOf('week');
-
-let html='';
-
-for(let i=0;i<7;i++){
-html+=`<div class="calendar-day-header">${dayNames[i]}</div>`;
-}
-
-const currentDay=moment();
-let date=startDate.clone();
-
-while(date.isBefore(endDate)||date.isSame(endDate,'day')){
-const dateStr=date.format('YYYY-MM-DD');
-const isToday=date.isSame(currentDay,'day');
-const isCurrentMonth=date.month()===currentMonth.month();
-const isActive=dateStr===currentDate;
-const hasShow=allShows.some(show=>show.show_date===dateStr);
-
-let dayClass='calendar-day';
-if(!isCurrentMonth)dayClass+=' other-month';
-if(isToday)dayClass+=' today';
-if(isActive)dayClass+=' active';
-
-const indicatorsHTML = hasShow ? createIndicatorsHTML(dateStr) : '';
-
-html+=`<div class="${dayClass}" data-date="${dateStr}" onclick="selectDate('${dateStr}')">
-<div>${date.date()}</div>
-${indicatorsHTML}
-</div>`;
-date.add(1,'day');
-}
-
-calendarEl.innerHTML=html;
-}
-
-function changeMonth(direction){
-currentMonth.add(direction,'month');
-renderCalendar();
-}
-
-function selectDate(date){
-currentDate = date;
-saveSelectedDate(date);
+    const setlists = getSetlistsForDate(dateStr);
+    if (setlists.length === 0) return '';
     
-const today = moment();
-if(today.month()!==moment(date).month()){
-currentMonth = moment(date);
-}
-renderCalendar();
-renderShows(date);
-}
-
-function renderShows(date){
-const filtered=allShows.filter(s=>s.show_date===date);
-const container=document.getElementById('showList');
-if(filtered.length===0){
-container.innerHTML='<div class="no-shows">Tidak ada show pada tanggal ini</div>';
-return;
-}
-const grouped={};
-filtered.forEach(show=>{
-const key=`${show.setlist_name}_${show.show_time}`;
-if(!grouped[key]){
-grouped[key]={
-setlist:show.setlist_name,
-time:show.show_time,
-date:show.show_date,
-members:[],
-isBirthday:show.is_birthday_show,
-birthdayMember:show.birthday_member
-};
-}
-grouped[key].members.push(show.name);
-});
-container.innerHTML='';
-Object.values(grouped).forEach(show=>{
-const card=document.createElement('div');
-card.className='show-card';
-const isLive = isShowLiveOrStartingSoon(show.date, show.time);
-if(isLive) card.classList.add('show-live');
-card.onclick=()=>openShowDetail(show.setlist,show.date);
-const memberCount=show.members.length;
-const badgeColor=getSetlistColor(show.setlist, memberCount);
-let title=show.setlist;
-if(show.isBirthday&&show.birthdayMember)title+=` (STS ${show.birthdayMember})`;
-const dayNames=['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
-const monthNames=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
-const d=new Date(show.date);
-const dayName=dayNames[d.getDay()];
-const dayNumber=d.getDate();
-const monthName=monthNames[d.getMonth()];
-const year=d.getFullYear();
-card.innerHTML=`
-<div class="show-header">
-<div class="show-title">
-${isLive ? '<span class="live-indicator"><span class="live-dot-pulse"></span>LIVE</span>' : ''}
-${title}<span class="setlist-badge" style="background:${badgeColor}">${memberCount} member</span>
-</div>
-<div class="show-time">${show.time.slice(0,5)} WIB</div>
-</div>
-<div class="show-date">${dayName}, ${dayNumber} ${monthName} ${year}</div>
-<div class="show-members">${show.members.sort().join(', ')}</div>
-`;
-container.appendChild(card);
-});
+    const limitedSetlists = setlists.slice(0, 3);
+    
+    let indicatorsHTML = '<div class="calendar-indicators">';
+    limitedSetlists.forEach(setlist => {
+        indicatorsHTML += `<span class="calendar-indicator" style="background:${setlist.color}" title="${setlist.name} (${setlist.time.slice(0,5)})"></span>`;
+    });
+    
+    if (setlists.length > 3) {
+        indicatorsHTML += `<span class="calendar-indicator" style="background:#6b7280; width:8px; height:8px; font-size:6px; line-height:8px; text-align:center;" title="+${setlists.length - 3} show lagi">+</span>`;
+    }
+    
+    indicatorsHTML += '</div>';
+    return indicatorsHTML;
 }
 
-function openShowDetail(setlist,date){
-window.location.href=`liveshow.html?setlist=${encodeURIComponent(setlist)}&date=${date}`;
+function renderCalendar() {
+    const calendarEl = document.getElementById('calendar');
+    const monthYearEl = document.getElementById('currentMonth');
+    
+    const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
+                       'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+    const dayNames = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+    
+    const month = currentMonth.month();
+    const year = currentMonth.year();
+    
+    monthYearEl.textContent = `${monthNames[month]} ${year}`;
+    
+    const startOfMonth = currentMonth.clone().startOf('month');
+    const endOfMonth = currentMonth.clone().endOf('month');
+    const startDate = startOfMonth.clone().startOf('week');
+    const endDate = endOfMonth.clone().endOf('week');
+    
+    let html = '';
+    
+    for (let i = 0; i < 7; i++) {
+        html += `<div class="calendar-day-header">${dayNames[i]}</div>`;
+    }
+    
+    const currentDay = moment();
+    let date = startDate.clone();
+    
+    while (date.isBefore(endDate) || date.isSame(endDate, 'day')) {
+        const dateStr = date.format('YYYY-MM-DD');
+        const isToday = date.isSame(currentDay, 'day');
+        const isCurrentMonth = date.month() === month;
+        const isActive = dateStr === currentDate;
+        const hasShow = allShows.some(show => show.show_date === dateStr);
+        
+        let dayClass = 'calendar-day';
+        if (!isCurrentMonth) dayClass += ' other-month';
+        if (isToday) dayClass += ' today';
+        if (isActive) dayClass += ' active';
+        
+        const indicatorsHTML = hasShow ? createIndicatorsHTML(dateStr) : '';
+        
+        html += `<div class="${dayClass}" data-date="${dateStr}" onclick="selectDate('${dateStr}')">
+                    <div>${date.date()}</div>
+                    ${indicatorsHTML}
+                 </div>`;
+        date.add(1, 'day');
+    }
+    
+    calendarEl.innerHTML = html;
 }
 
-document.addEventListener('DOMContentLoaded',()=>{
-loadSchedule();
+function changeMonth(direction) {
+    currentMonth.add(direction, 'month');
+    renderCalendar();
+    
+    const firstDay = currentMonth.clone().startOf('month');
+    const firstDayStr = firstDay.format('YYYY-MM-DD');
+    
+    if (allShows.some(show => show.show_date >= firstDayStr)) {
+        selectDate(firstDayStr);
+    } else {
+        // Cari tanggal terdekat yang ada show di bulan ini
+        const showsThisMonth = allShows.filter(show => {
+            const showDate = moment(show.show_date);
+            return showDate.month() === currentMonth.month() && 
+                   showDate.year() === currentMonth.year();
+        });
+        
+        if (showsThisMonth.length > 0) {
+            const firstShowDate = showsThisMonth[0].show_date;
+            selectDate(firstShowDate);
+        } else {
+            selectDate(firstDayStr);
+        }
+    }
+}
+
+function selectDate(date) {
+    currentDate = date;
+    saveSelectedDate(date);
+    
+    const today = moment();
+    const selectedMoment = moment(date);
+    
+    // Jika tanggal yang dipilih bukan di bulan saat ini, ubah bulan
+    if (selectedMoment.month() !== currentMonth.month() || 
+        selectedMoment.year() !== currentMonth.year()) {
+        currentMonth = selectedMoment.clone();
+    }
+    
+    renderCalendar();
+    renderShows(date);
+}
+
+function renderShows(date) {
+    const filtered = allShows.filter(s => s.show_date === date);
+    const container = document.getElementById('showList');
+    const showsCount = document.getElementById('showsCount');
+    
+    if (filtered.length === 0) {
+        showsCount.textContent = '0';
+        container.innerHTML = `
+            <div class="no-shows-message">
+                <div class="no-shows-icon">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                </div>
+                <div class="no-shows-title">Tidak Ada Show</div>
+                <div class="no-shows-desc">Tidak ada show yang dijadwalkan pada tanggal ini.</div>
+            </div>
+        `;
+        return;
+    }
+    
+    // Kelompokkan berdasarkan setlist DAN waktu (UNIQUE)
+    const grouped = {};
+    filtered.forEach(show => {
+        const key = `${show.setlist_name}_${show.show_time}`;
+        if (!grouped[key]) {
+            grouped[key] = {
+                setlist: show.setlist_name,
+                time: show.show_time,
+                date: show.show_date,
+                members: [],
+                isBirthday: show.is_birthday_show,
+                birthdayMember: show.birthday_member
+            };
+        }
+        grouped[key].members.push(show.name);
+    });
+    
+    // Urutkan berdasarkan waktu
+    const sortedShows = Object.values(grouped).sort((a, b) => {
+        return a.time.localeCompare(b.time);
+    });
+    
+    showsCount.textContent = sortedShows.length;
+    
+    let showsHTML = '<div class="shows-list">';
+    
+    sortedShows.forEach(show => {
+        const status = getLiveStatus(show.date, show.time);
+        const isSoon = isShowSoon(show.date, show.time);
+        
+        let headerClass = '';
+        let statusBadge = '';
+        
+        if (status === 'LIVE') {
+            headerClass = 'live-now';
+            statusBadge = `
+                <div class="show-status-badge">
+                    <span class="show-live-dot"></span>
+                    LIVE NOW
+                </div>
+            `;
+        } else if (status === 'UPCOMING') {
+            if (isSoon) {
+                headerClass = 'live-soon';
+                statusBadge = `
+                    <div class="show-status-badge">
+                        <span class="show-soon-dot"></span>
+                        LIVE SOON
+                    </div>
+                `;
+            } else {
+                headerClass = 'upcoming';
+                statusBadge = `
+                    <div class="show-status-badge">
+                        <span class="show-upcoming-dot"></span>
+                        UPCOMING
+                    </div>
+                `;
+            }
+        } else {
+            headerClass = 'finished';
+            statusBadge = '<div class="show-status-badge">SHOW ENDED</div>';
+        }
+        
+        const dayNames = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+        const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
+                           'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        const d = new Date(show.date);
+        const dayName = dayNames[d.getDay()];
+        const dayNumber = d.getDate();
+        const monthName = monthNames[d.getMonth()];
+        const year = d.getFullYear();
+        
+        let birthdayBadge = '';
+        
+        if (show.isBirthday && show.birthdayMember) {
+            birthdayBadge = `
+                <div class="birthday-badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="m7.994.013-.595.79a.747.747 0 0 0 .101 1.01V4H5a2 2 0 0 0-2 2v3H2a2 2 0 0 0-2 2v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4a2 2 0 0 0-2-2h-1V6a2 2 0 0 0-2-2H8.5V1.806A.747.747 0 0 0 8.592.802zM4 6a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v.414a.9.9 0 0 1-.646-.268 1.914 1.914 0 0 0-2.708 0 .914.914 0 0 1-1.292 0 1.914 1.914 0 0 0-2.708 0A.9.9 0 0 1 4 6.414zm0 1.414c.49 0 .98-.187 1.354-.56a.914.914 0 0 1 1.292 0c.748.747 1.96.747 2.708 0a.914.914 0 0 1 1.292 0c.374.373.864.56 1.354.56V9H4zM1 11a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v.793l-.354.354a.914.914 0 0 1-1.293 0 1.914 1.914 0 0 0-2.707 0 .914.914 0 0 1-1.292 0 1.914 1.914 0 0 0-2.708 0 .914.914 0 0 1-1.292 0L1 11.793zm11.646 1.854a1.915 1.915 0 0 0 2.354.279V15H1v-1.867c.737.452 1.715.36 2.354-.28a.914.914 0 0 1 1.292 0c.748.748 1.96.748 2.708 0a.914.914 0 0 1 1.292 0c.748.748 1.96.748 2.707 0a.914.914 0 0 1 1.293 0Z"/>
+                    </svg>
+                    STS ${show.birthdayMember}
+                </div>
+            `;
+        }
+        
+        // Encode semua parameter dengan benar
+        const setlistParam = encodeURIComponent(show.setlist);
+        const dateParam = encodeURIComponent(show.date);
+        const timeParam = encodeURIComponent(show.time);
+        
+        showsHTML += `
+            <div class="show-card" data-setlist="${setlistParam}" data-date="${dateParam}" data-time="${timeParam}" onclick="openShowDetail(this)">
+                <div class="show-card-header ${headerClass}">
+                    ${statusBadge}
+                    <div class="show-card-title">
+                        <span>${show.setlist}</span>
+                        ${birthdayBadge}
+                    </div>
+                    <div class="show-card-time">
+                        <div>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                            ${dayName}, ${dayNumber} ${monthName} ${year}
+                        </div>
+                        <div>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            ${show.time.slice(0, 5)} WIB • ${show.members.length} member
+                        </div>
+                    </div>
+                </div>
+                <div class="show-card-members">
+                    <p><strong>Member yang tampil:</strong> ${show.members.sort().join(', ')}</p>
+                </div>
+            </div>
+        `;
+    });
+    
+    showsHTML += '</div>';
+    container.innerHTML = showsHTML;
+}
+
+function openShowDetail(element) {
+    // Ambil data dari atribut data-*
+    const setlist = element.getAttribute('data-setlist');
+    const date = element.getAttribute('data-date');
+    const time = element.getAttribute('data-time');
+    
+    // Simpan data show yang dipilih ke localStorage
+    localStorage.setItem('jkt48_selected_setlist', setlist);
+    localStorage.setItem('jkt48_selected_date', date);
+    localStorage.setItem('jkt48_selected_time', time);
+    
+    // Navigasi ke liveshow.html dengan parameter
+    const url = `liveshow.html?setlist=${setlist}&date=${date}&time=${time}`;
+    console.log('Navigating to:', url);
+    window.location.href = url;
+}
+
+// Auto-refresh setiap 30 detik
+setInterval(() => {
+    if (allShows.length > 0) {
+        renderShows(currentDate);
+    }
+}, 30000);
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadSchedule();
 });
 </script>
 </body>

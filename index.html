@@ -21,12 +21,15 @@ header{background:#e60012;padding:15px 20px;font-size:20px;font-weight:bold;colo
 .schedule-button:active svg,.theme-toggle:active svg{transform:scale(0.9)}
 body.dark .schedule-button,body.dark .theme-toggle{background:rgba(0,0,0,0.2)}
 .live-show-banner{color:white;padding:14px 20px;margin:0;border-bottom:3px solid #f59e0b;cursor:pointer;transition:all 0.3s;display:none;position:relative;overflow:hidden;background:linear-gradient(135deg,#ef4444 0%,#dc2626 100%)}
-.live-show-banner:hover{transform:translateY(-1px);background:linear-gradient(135deg,#dc2626 0%,#b91c1c 100%)}
+.live-show-banner.live-soon{background:linear-gradient(135deg,#f97316 0%,#ea580c 100%)}
+.live-show-banner.finished{background:linear-gradient(135deg,#6b7280 0%,#4b5563 100%)}
+.live-show-banner:hover{transform:translateY(-1px);opacity:0.95}
 .live-show-banner::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,0.1) 50%,transparent 100%);animation:shimmer 3s infinite;pointer-events:none}
 @keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
 .live-show-content{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;max-width:1400px;margin:0 auto;width:100%}
 .live-show-left{display:flex;align-items:center;gap:12px;flex:1}
 .live-badge{background:rgba(255,255,255,0.2);padding:6px 12px;border-radius:20px;font-size:12px;font-weight:bold;display:flex;align-items:center;gap:6px;white-space:nowrap;flex-shrink:0}
+.live-badge.live-soon{background:rgba(0,0,0,0.2)}
 .live-dot{width:8px;height:8px;background:#fff;border-radius:50%;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
 .live-show-info{display:flex;flex-direction:column;gap:4px;flex:1}
@@ -87,7 +90,6 @@ body.dark .setlist-stats{background:#1b1f3a;color:#e5e7eb;border-top:2px solid #
 .card{background:#fff;border-radius:12px;overflow:hidden;text-align:center;cursor:pointer;transition:all 0.3s;display:flex;flex-direction:column;height:100%}
 .card:hover{transform:translateY(-4px)}
 body.dark .card{background:#1b1f3a}
-body.dark .card:hover{}
 .card.setlist-card{position:relative;border:2px solid transparent}
 .card.setlist-card.rank-1{border-color:#f59e0b}
 .card.setlist-card.rank-2{border-color:#9ca3af}
@@ -107,7 +109,6 @@ body.dark .gen-badge{background:rgba(0,0,0,0.6)}
 .bar-container{margin-top:auto;padding-top:6px;width:100%;padding-left:8px;padding-right:8px;position:relative}
 .bar{height:5px;background:rgba(0,0,0,0.2);border-radius:3px;overflow:hidden}
 .bar span{display:block;height:100%;background:#fff;transition:width 0.5s ease}
-/* CSS untuk bar-milestone DIHAPUS - tidak ada lagi angka 0, 500, 1000 */
 body.dark .bar{background:rgba(255,255,255,0.2)}
 body.dark .bar span{background:#fff}
 .rank-badge{position:absolute;top:6px;left:6px;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:11px;z-index:2}
@@ -167,7 +168,7 @@ body.dark .detail-footer{background:#0a0e1a;color:#9ca3af;border-top-color:#3741
     <div class="header-buttons">
         <button class="schedule-button" onclick="openSchedule()" title="Jadwal Show">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M19,4H18V3a1,1,0,0,0-2,0V4H8V3A1,1,0,0,0,6,3V4H5A3,3,0,0,0,2,7V19a3,3,0,0,0,3,3H19a3,3,0,0,0,3-3V7A3,3,0,0,0,19,4Zm1,15a1,1,0,0,1-1,1H5a1,1,0,0,1-1-1V12H20Zm0-9H4V7A1,1,0,0,1,5,6H6V7A1,1,0,0,0,8,7V6h8V7a1,1,0,0,0,2,0V6h1a1,1,0,0,1,1,1Z"/>
+                <path d="M19,4H18V3a1,1,0,0,0-2,0V4H8V3A1,1,0,0,0,6,3V4H5A3,3,0,0,0,2,7V19a3,3,0,0,0,3,3H19a3,3,0,0,0,3-3V7A3,3,0,0,0,19,4Zm1,15a1,1,0,0,1-1,1H5a1,1,0,0,1-1,1V12H20Zm0-9H4V7A1,1,0,0,1,5,6H6V7A1,1,0,0,0,8,7V6h8V7a1,1,0,0,0,2,0V6h1a1,1,0,0,1,1,1Z"/>
             </svg>
         </button>
         <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark Mode">
@@ -178,7 +179,9 @@ body.dark .detail-footer{background:#0a0e1a;color:#9ca3af;border-top-color:#3741
 <div class="live-show-banner" id="liveShowBanner" onclick="openLiveShowDetail()">
     <div class="live-show-content">
         <div class="live-show-left">
-            <div class="live-badge"><span class="live-dot"></span><span>LIVE NOW</span></div>
+            <div class="live-badge" id="liveStatusBadge">
+                <span class="live-dot"></span><span>LIVE NOW</span>
+            </div>
             <div class="live-show-info">
                 <h3 class="live-show-title" id="liveShowTitle">Loading...</h3>
                 <div class="live-show-time" id="liveShowTime">-</div>
@@ -232,7 +235,7 @@ body.dark .detail-footer{background:#0a0e1a;color:#9ca3af;border-top-color:#3741
     </div>
 </div>
 
-<footer class="detail-footer">
+<footer class="detail-footer" id="mainFooter">
     <p>JKT48 Show Theater • Data diperbarui secara real-time</p>
 </footer>
 
@@ -272,12 +275,47 @@ const SETLIST_DATA = {
     pertaruhan: {id: 'pertaruhan', title: 'Pertaruhan Cinta', members: {}},
     pajama: {id: 'pajama', title: 'Pajama Drive', members: {}}
 };
-const TIME_CONFIG = {LIVE_BEFORE: 5, LIVE_AFTER: 150};
-const MILESTONE = 1000; // Milestone fixed ke 1000 show
+const TIME_CONFIG = {LIVE_BEFORE: 15, LIVE_DURATION: 155};
+const MILESTONE = 1000;
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 let members = [], allMembersData = [], currentGen = 'all', currentTeam = 'all', 
     searchQuery = '', isDataLoaded = false, scrollSaveTimeout, 
-    currentSetlistView = null, currentLiveShowData = null, liveShowRefreshInterval = null;
+    currentSetlistView = null, currentLiveShowData = null, liveShowRefreshInterval = null,
+    latestUpdateTime = null;
+
+// ============= FUNGSI LIVE STATUS GLOBAL =============
+function getLiveStatus(showDate, showTime) {
+    if (!showDate || !showTime) return 'FINISHED';
+    
+    const now = new Date();
+    const showDateTime = new Date(`${showDate}T${showTime}`);
+    
+    // LIVE mulai 15 menit SEBELUM jam tayang (18:55 untuk jam 19:00)
+    const liveStart = new Date(showDateTime.getTime() - (TIME_CONFIG.LIVE_BEFORE * 60 * 1000));
+    const liveEnd = new Date(showDateTime.getTime() + (TIME_CONFIG.LIVE_DURATION * 60 * 1000));
+    
+    if (now < liveStart) return 'UPCOMING';
+    if (now >= liveStart && now <= liveEnd) return 'LIVE';
+    return 'FINISHED';
+}
+
+function isLiveNow(showDate, showTime) {
+    const status = getLiveStatus(showDate, showTime);
+    return status === 'LIVE';
+}
+
+function isLiveSoon(showDate, showTime) {
+    const now = new Date();
+    const showDateTime = new Date(`${showDate}T${showTime}`);
+    const liveStart = new Date(showDateTime.getTime() - (TIME_CONFIG.LIVE_BEFORE * 60 * 1000));
+    const timeUntilLive = liveStart - now;
+    
+    // LIVE SOON muncul 1 jam sebelum JAM TAYANG (bukan LIVE START)
+    const oneHourBeforeShow = 60 * 60 * 1000;
+    const timeUntilShow = showDateTime - now;
+    
+    return timeUntilShow > 0 && timeUntilShow <= oneHourBeforeShow;
+}
 
 (function initializeTheme() {
     const savedTheme = localStorage.getItem('jkt48_theme') || 'light';
@@ -332,9 +370,6 @@ async function checkLiveShows() {
     try {
         const now = new Date();
         const today = now.toISOString().split('T')[0];
-        const currentHour = now.getHours();
-        const currentMinute = now.getMinutes();
-        const currentTotalMinutes = currentHour * 60 + currentMinute;
         
         const { data: shows, error } = await db
             .from('setlist_performance')
@@ -353,14 +388,9 @@ async function checkLiveShows() {
         shows.forEach(show => {
             if (!show.show_time) return;
             
-            const timeParts = show.show_time.split(':');
-            const showHour = parseInt(timeParts[0]) || 0;
-            const showMinute = parseInt(timeParts[1]) || 0;
-            const showTotalMinutes = showHour * 60 + showMinute;
-            const timeDiff = showTotalMinutes - currentTotalMinutes;
-            
-            if (timeDiff >= -TIME_CONFIG.LIVE_AFTER && timeDiff <= TIME_CONFIG.LIVE_BEFORE) {
-                liveShows.push(show);
+            const status = getLiveStatus(show.show_date, show.show_time);
+            if (status === 'LIVE' || status === 'UPCOMING') {
+                liveShows.push({...show, status});
             }
         });
         
@@ -374,32 +404,52 @@ async function checkLiveShows() {
 }
 
 function prepareShowData(shows) {
-    const showsBySetlist = {};
+    // Group by EXACT combination: setlist_name + show_date + show_time
+    const groupedShows = {};
+    
     shows.forEach(show => {
-        const setlistName = show.setlist_name || 'Unknown';
-        if (!showsBySetlist[setlistName]) showsBySetlist[setlistName] = [];
-        showsBySetlist[setlistName].push(show);
-    });
-    
-    let bestSetlist = null;
-    let maxMembers = 0;
-    
-    Object.keys(showsBySetlist).forEach(setlistName => {
-        const memberCount = new Set(showsBySetlist[setlistName].map(s => s.name)).size;
-        if (memberCount > maxMembers) {
-            maxMembers = memberCount;
-            bestSetlist = {
-                name: setlistName,
-                shows: showsBySetlist[setlistName],
-                memberCount: memberCount,
-                earliestTime: getEarliestTime(showsBySetlist[setlistName]),
-                isBirthdayShow: showsBySetlist[setlistName][0]?.is_birthday_show || false,
-                birthdayMember: showsBySetlist[setlistName][0]?.birthday_member || null
+        // Key unik untuk setiap show (setlist + tanggal + jam)
+        const key = `${show.setlist_name}|${show.show_date}|${show.show_time}`;
+        
+        if (!groupedShows[key]) {
+            groupedShows[key] = {
+                setlistName: show.setlist_name,
+                showDate: show.show_date,
+                showTime: show.show_time,
+                members: [],
+                isBirthdayShow: show.is_birthday_show || false,
+                birthdayMember: show.birthday_member || null,
+                status: show.status
             };
         }
+        
+        groupedShows[key].members.push(show);
     });
     
-    return bestSetlist;
+    // Ambil show pertama (earliest time)
+    const sortedKeys = Object.keys(groupedShows).sort((a, b) => {
+        const timeA = a.split('|')[2]; // Ambil show_time dari key
+        const timeB = b.split('|')[2];
+        return timeA.localeCompare(timeB);
+    });
+    
+    if (sortedKeys.length === 0) return null;
+    
+    const firstShowKey = sortedKeys[0];
+    const firstShow = groupedShows[firstShowKey];
+    
+    // Hitung unique member HANYA dari show ini (setlist + date + time yang sama)
+    const uniqueMemberCount = new Set(firstShow.members.map(m => m.name)).size;
+    
+    return {
+        name: firstShow.setlistName,
+        shows: firstShow.members,
+        memberCount: uniqueMemberCount,
+        earliestTime: firstShow.showTime,
+        isBirthdayShow: firstShow.isBirthdayShow,
+        birthdayMember: firstShow.birthdayMember,
+        status: firstShow.status
+    };
 }
 
 function getEarliestTime(shows) {
@@ -415,6 +465,7 @@ async function updateLiveShowBanner() {
     const banner = document.getElementById('liveShowBanner');
     const title = document.getElementById('liveShowTitle');
     const timeElement = document.getElementById('liveShowTime');
+    const badge = document.getElementById('liveStatusBadge');
     
     try {
         const showData = await checkLiveShows();
@@ -432,6 +483,22 @@ async function updateLiveShowBanner() {
         }
         title.textContent = displayTitle;
         
+        // Update banner based on status
+        banner.className = 'live-show-banner';
+        badge.className = 'live-badge';
+        
+        if (showData.status === 'LIVE') {
+            banner.classList.add('live-now');
+            badge.innerHTML = '<span class="live-dot"></span><span>LIVE NOW</span>';
+        } else if (showData.status === 'UPCOMING') {
+            banner.classList.add('live-soon');
+            badge.innerHTML = '<span class="live-dot" style="background:#f97316"></span><span>LIVE SOON</span>';
+            badge.classList.add('live-soon');
+        } else {
+            banner.classList.add('finished');
+            badge.innerHTML = '<span>SHOW ENDED</span>';
+        }
+        
         if (showData.earliestTime) {
             const timeStr = showData.earliestTime.slice(0, 5);
             timeElement.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> ${timeStr} WIB • ${showData.memberCount} member`;
@@ -446,9 +513,19 @@ async function updateLiveShowBanner() {
 
 function openLiveShowDetail() {
     if (!currentLiveShowData) return;
-    const setlistName = encodeURIComponent(currentLiveShowData.name);
-    const today = new Date().toISOString().split('T')[0];
-    window.location.href = `liveshow.html?setlist=${setlistName}&date=${today}`;
+    
+    // Encode parameter dengan benar seperti di schedule.html
+    const setlistParam = encodeURIComponent(currentLiveShowData.name);
+    const dateParam = encodeURIComponent(new Date().toISOString().split('T')[0]);
+    const timeParam = encodeURIComponent(currentLiveShowData.earliestTime);
+    
+    // Simpan data show yang dipilih ke localStorage
+    localStorage.setItem('jkt48_selected_setlist', currentLiveShowData.name);
+    localStorage.setItem('jkt48_selected_date', dateParam);
+    localStorage.setItem('jkt48_selected_time', currentLiveShowData.earliestTime);
+    
+    // Navigasi ke liveshow.html dengan parameter lengkap
+    window.location.href = `liveshow.html?setlist=${setlistParam}&date=${dateParam}&time=${timeParam}`;
 }
 
 function openGenModal() {
@@ -510,6 +587,7 @@ async function loadData() {
         
         await loadSetlistData();
         await updateLiveShowBanner();
+        await updateFooterWithLatestUpdate();
         restoreState();
         
         if (members.length === 0) {
@@ -577,6 +655,45 @@ async function loadSetlistData() {
     }
 }
 
+async function updateFooterWithLatestUpdate() {
+    try {
+        const { data, error } = await db
+            .from('setlist_performance')
+            .select('updated_at')
+            .order('updated_at', { ascending: false })
+            .limit(1);
+        
+        if (!error && data && data.length > 0) {
+            const record = data[0];
+            if (record.updated_at) {
+                latestUpdateTime = new Date(record.updated_at);
+                updateFooter();
+                return true;
+            }
+        }
+        return false;
+    } catch (err) {
+        console.error('Error update footer:', err);
+        return false;
+    }
+}
+
+function updateFooter() {
+    if (!latestUpdateTime) return;
+    
+    const day = latestUpdateTime.getDate();
+    const month = latestUpdateTime.getMonth();
+    const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
+                       'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+    
+    const formatted = `${day} ${monthNames[month]}`;
+    
+    const footer = document.getElementById('mainFooter');
+    if (footer) {
+        footer.innerHTML = `<p>JKT48 Show Theater • Update ${formatted}</p>`;
+    }
+}
+
 async function updateLastUpdate() {
     if (members.length === 0) return;
     
@@ -594,10 +711,8 @@ async function updateLastUpdate() {
                 const day = date.getDate();
                 const month = date.getMonth();
                 const year = date.getFullYear();
-                const hours = date.getHours().toString().padStart(2, '0');
-                const minutes = date.getMinutes().toString().padStart(2, '0');
                 const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Oct', 'Nov', 'Des'];
-                const formatted = `${day} ${monthNames[month]} ${year}, ${hours}:${minutes}`;
+                const formatted = `${day} ${monthNames[month]} ${year}`;
                 document.getElementById('lastUpdate').innerHTML = `Update: ${formatted}`;
                 return;
             }
@@ -644,7 +759,6 @@ function renderMembers() {
     list.innerHTML = '';
     
     filtered.sort((a, b) => b.show - a.show).forEach(m => {
-        // Selalu gunakan milestone 1000 untuk progress bar
         const percent = Math.min(100, (m.show / MILESTONE) * 100);
         const color = GEN_COLORS[m.gen] || '#6366f1';
         const card = document.createElement('div');
@@ -653,7 +767,6 @@ function renderMembers() {
         
         const genText = m.gen ? `Gen ${m.gen}` : 'Gen ?';
         
-        // HTML TANPA tulisan 0, 500, 1000 (bar-milestone dihapus)
         card.innerHTML = `
             <div class="avatar-container">
                 <img class="avatar" src="img/${m.name.toLowerCase()}.jpg" alt="${m.name}" loading="lazy" onerror="this.onerror=null;this.style.display='none';this.parentNode.innerHTML='<div class=&quot;avatar-placeholder&quot;>${m.name.charAt(0)}</div>'">
@@ -756,7 +869,6 @@ function updateStats() {
     
     const total = filtered.reduce((sum, m) => sum + m.show, 0);
     let txt = filtered.length + ' members • ' + total.toLocaleString() + ' total shows';
-    // HAPUS "Milestone: 1000 show" dari stats
     if (currentGen !== 'all') txt += ' • Gen ' + currentGen;
     if (currentTeam !== 'all') txt += ' • ' + currentTeam;
     
@@ -849,7 +961,7 @@ function restoreState() {
                 btn.classList.remove('active');
                 const txt = btn.textContent.toLowerCase();
                 if ((currentSetlistView === 'ramune' && txt.includes('ramune')) ||
-                    (currentSetlistView === 'tte' && txt.includes('tsunaginagara')) ||
+                    (currentSetlistView === 'tte' && txt.includes('menggandeng')) ||
                     (currentSetlistView === 'pertaruhan' && txt.includes('pertaruhan')) ||
                     (currentSetlistView === 'pajama' && txt.includes('pajama'))) {
                     btn.classList.add('active');
