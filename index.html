@@ -9,6 +9,7 @@
 <meta http-equiv="Expires" content="0">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
+/* [CSS SAMA PERSIS DENGAN SEBELUMNYA - TIDAK PERLU DIUBAH] */
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:Arial,sans-serif;background:#f5f5f5;color:#333;min-height:100vh;padding-bottom:60px;transition:background 0.3s,color 0.3s}
 body.dark{background:#0a0e1a;color:#e5e7eb}
@@ -21,7 +22,6 @@ header{background:#e60012;padding:15px 20px;font-size:20px;font-weight:bold;colo
 .schedule-button:active svg,.theme-toggle:active svg{transform:scale(0.9)}
 body.dark .schedule-button,body.dark .theme-toggle{background:rgba(0,0,0,0.2)}
 .live-show-banner{color:white;padding:14px 20px;margin:0;border-bottom:3px solid #f59e0b;cursor:pointer;transition:all 0.3s;display:none;position:relative;overflow:hidden;background:linear-gradient(135deg,#ef4444 0%,#dc2626 100%)}
-.live-show-banner.live-soon{background:linear-gradient(135deg,#f97316 0%,#ea580c 100%)}
 .live-show-banner.finished{background:linear-gradient(135deg,#6b7280 0%,#4b5563 100%)}
 .live-show-banner:hover{transform:translateY(-1px);opacity:0.95}
 .live-show-banner::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,0.1) 50%,transparent 100%);animation:shimmer 3s infinite;pointer-events:none}
@@ -29,7 +29,6 @@ body.dark .schedule-button,body.dark .theme-toggle{background:rgba(0,0,0,0.2)}
 .live-show-content{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;max-width:1400px;margin:0 auto;width:100%}
 .live-show-left{display:flex;align-items:center;gap:12px;flex:1}
 .live-badge{background:rgba(255,255,255,0.2);padding:6px 12px;border-radius:20px;font-size:12px;font-weight:bold;display:flex;align-items:center;gap:6px;white-space:nowrap;flex-shrink:0}
-.live-badge.live-soon{background:rgba(0,0,0,0.2)}
 .live-dot{width:8px;height:8px;background:#fff;border-radius:50%;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
 .live-show-info{display:flex;flex-direction:column;gap:4px;flex:1}
@@ -160,6 +159,54 @@ body.dark .gen-option.active{border-color:#f87171}
 @media (max-width:480px){.header-title{font-size:16px}.schedule-button,.theme-toggle{width:32px;height:32px}.schedule-button svg,.theme-toggle svg{width:16px;height:16px}.header-buttons{gap:4px}}
 .detail-footer{text-align:center;padding:12px;color:#6b7280;font-size:10px;border-top:1px solid #e5e7eb;margin-top:20px;background:#fff;transition:background 0.3s,color 0.3s,border-color 0.3s}
 body.dark .detail-footer{background:#0a0e1a;color:#9ca3af;border-top-color:#374151}
+
+/* Graduation Badge (seperti STS di live banner) */
+.graduation-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+    color: white;
+    font-size: 9px;
+    font-weight: bold;
+    padding: 4px 10px;
+    border-radius: 12px;
+    z-index: 2;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.graduation-badge::before {
+    content: '🎓';
+    font-size: 10px;
+}
+
+/* Styling khusus untuk card yang memiliki graduation badge */
+.card.setlist-card .graduation-badge {
+    top: 6px;
+    left: 6px;
+    font-size: 8px;
+    padding: 3px 8px;
+}
+
+/* Efek redup ringan untuk member graduated */
+.card.graduated-member {
+    opacity: 0.9;
+}
+
+.card.graduated-member:hover {
+    opacity: 1;
+}
+
+/* Warna background khusus untuk graduated member */
+.card-footer.graduated-bg {
+    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%) !important;
+}
 </style>
 </head>
 <body>
@@ -264,33 +311,45 @@ body.dark .detail-footer{background:#0a0e1a;color:#9ca3af;border-top-color:#3741
 <script>
 const SUPABASE_URL = "https://pprxfopqkvpeajeoxzig.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBwcnhmb3Bxa3ZwZWFqZW94emlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYyNTI4MTIsImV4cCI6MjA4MTgyODgxMn0.iXRO_dAHhtVHRLqGTresG_63RD2zIaopNXtXYNfthdg";
+
 const GEN_COLORS = {
     3: '#ec4899', 6: '#22c55e', 7: '#15803d', 8: '#1e40af',
     9: '#06b6d4', 10: '#38bdf8', 11: '#f97316', 12: '#fde047',
     13: '#facc15', 14: '#e879f9'
 };
+
 const SETLIST_DATA = {
     ramune: {id: 'ramune', title: 'Cara Meminum Ramune', members: {}},
     tte: {id: 'tte', title: 'Te Wo Tsunaginagara', members: {}},
     pertaruhan: {id: 'pertaruhan', title: 'Pertaruhan Cinta', members: {}},
     pajama: {id: 'pajama', title: 'Pajama Drive', members: {}}
 };
+
 const TIME_CONFIG = {LIVE_BEFORE: 15, LIVE_DURATION: 155};
 const MILESTONE = 1000;
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-let members = [], allMembersData = [], currentGen = 'all', currentTeam = 'all', 
-    searchQuery = '', isDataLoaded = false, scrollSaveTimeout, 
-    currentSetlistView = null, currentLiveShowData = null, liveShowRefreshInterval = null,
-    latestUpdateTime = null;
 
-// ============= FUNGSI LIVE STATUS GLOBAL =============
+let members = [], 
+    membersMap = {},
+    allMembersData = [], 
+    currentGen = 'all', 
+    currentTeam = 'all', 
+    searchQuery = '', 
+    isDataLoaded = false, 
+    scrollSaveTimeout, 
+    currentSetlistView = null, 
+    currentLiveShowData = null, 
+    liveShowRefreshInterval = null,
+    latestUpdateTime = null,
+    allShowsData = []; // NEW: Store semua show data
+
+// ============= FUNGSI LIVE STATUS =============
 function getLiveStatus(showDate, showTime) {
     if (!showDate || !showTime) return 'FINISHED';
     
     const now = new Date();
     const showDateTime = new Date(`${showDate}T${showTime}`);
     
-    // LIVE mulai 15 menit SEBELUM jam tayang (18:55 untuk jam 19:00)
     const liveStart = new Date(showDateTime.getTime() - (TIME_CONFIG.LIVE_BEFORE * 60 * 1000));
     const liveEnd = new Date(showDateTime.getTime() + (TIME_CONFIG.LIVE_DURATION * 60 * 1000));
     
@@ -299,24 +358,7 @@ function getLiveStatus(showDate, showTime) {
     return 'FINISHED';
 }
 
-function isLiveNow(showDate, showTime) {
-    const status = getLiveStatus(showDate, showTime);
-    return status === 'LIVE';
-}
-
-function isLiveSoon(showDate, showTime) {
-    const now = new Date();
-    const showDateTime = new Date(`${showDate}T${showTime}`);
-    const liveStart = new Date(showDateTime.getTime() - (TIME_CONFIG.LIVE_BEFORE * 60 * 1000));
-    const timeUntilLive = liveStart - now;
-    
-    // LIVE SOON muncul 1 jam sebelum JAM TAYANG (bukan LIVE START)
-    const oneHourBeforeShow = 60 * 60 * 1000;
-    const timeUntilShow = showDateTime - now;
-    
-    return timeUntilShow > 0 && timeUntilShow <= oneHourBeforeShow;
-}
-
+// ============= FUNGSI THEME =============
 (function initializeTheme() {
     const savedTheme = localStorage.getItem('jkt48_theme') || 'light';
     const html = document.documentElement;
@@ -366,49 +408,75 @@ function openSchedule() {
     window.location.href = 'schedule.html';
 }
 
+// ============= LIVE SHOW BANNER =============
 async function checkLiveShows() {
     try {
         const now = new Date();
         const today = now.toISOString().split('T')[0];
         
-        const { data: shows, error } = await db
-            .from('setlist_performance')
-            .select('*')
-            .eq('show_date', today)
-            .order('show_time', { ascending: true });
+        console.log('Checking live shows for:', today);
+        console.log('Total shows in database:', allShowsData.length);
         
-        if (error) {
-            console.error('Error:', error);
+        // Filter dari allShowsData yang sudah dimuat
+        const todayShows = allShowsData.filter(show => show.show_date === today);
+        
+        console.log('Shows found today:', todayShows.length);
+        
+        if (todayShows.length === 0) {
+            console.log('No shows scheduled for today');
             return null;
         }
         
-        if (!shows || shows.length === 0) return null;
+        console.log('First show today:', todayShows[0]);
         
         const liveShows = [];
-        shows.forEach(show => {
-            if (!show.show_time) return;
+        
+        todayShows.forEach((show, index) => {
+            console.log('Processing Show', index + 1);
             
             const status = getLiveStatus(show.show_date, show.show_time);
-            if (status === 'LIVE' || status === 'UPCOMING') {
-                liveShows.push({...show, status});
+            console.log('Status:', status);
+            
+            if (status === 'LIVE') {
+                const member = membersMap[show.member_id];
+                
+                console.log('Looking for member_id:', show.member_id);
+                console.log('Member found:', member ? member.name : 'NOT FOUND');
+                
+                if (member) {
+                    liveShows.push({
+                        ...show,
+                        memberName: member.name,
+                        status
+                    });
+                    console.log('Added to live shows:', member.name);
+                } else {
+                    console.error('Member NOT FOUND for member_id:', show.member_id);
+                }
             }
         });
         
-        if (liveShows.length > 0) return prepareShowData(liveShows);
+        console.log('Total live shows found:', liveShows.length);
+        
+        if (liveShows.length > 0) {
+            console.log('Live shows:', liveShows.map(s => s.memberName));
+            return prepareShowData(liveShows);
+        }
+        
         return null;
         
     } catch (err) {
-        console.error('Error checkLiveShows:', err);
+        console.error('Error in checkLiveShows:', err);
         return null;
     }
 }
 
 function prepareShowData(shows) {
-    // Group by EXACT combination: setlist_name + show_date + show_time
+    console.log('Preparing show data from', shows.length, 'shows');
+    
     const groupedShows = {};
     
     shows.forEach(show => {
-        // Key unik untuk setiap show (setlist + tanggal + jam)
         const key = `${show.setlist_name}|${show.show_date}|${show.show_time}`;
         
         if (!groupedShows[key]) {
@@ -419,27 +487,38 @@ function prepareShowData(shows) {
                 members: [],
                 isBirthdayShow: show.is_birthday_show || false,
                 birthdayMember: show.birthday_member || null,
+                isGraduationShow: show.is_graduation_show || false,
+                graduationMember: show.graduation_member || null,
                 status: show.status
             };
         }
         
-        groupedShows[key].members.push(show);
+        if (show.memberName && !groupedShows[key].members.includes(show.memberName)) {
+            groupedShows[key].members.push(show.memberName);
+        }
     });
     
-    // Ambil show pertama (earliest time)
     const sortedKeys = Object.keys(groupedShows).sort((a, b) => {
-        const timeA = a.split('|')[2]; // Ambil show_time dari key
+        const timeA = a.split('|')[2];
         const timeB = b.split('|')[2];
         return timeA.localeCompare(timeB);
     });
     
-    if (sortedKeys.length === 0) return null;
+    if (sortedKeys.length === 0) {
+        console.log('No grouped shows available');
+        return null;
+    }
     
     const firstShowKey = sortedKeys[0];
     const firstShow = groupedShows[firstShowKey];
     
-    // Hitung unique member HANYA dari show ini (setlist + date + time yang sama)
-    const uniqueMemberCount = new Set(firstShow.members.map(m => m.name)).size;
+    const uniqueMemberCount = firstShow.members.length;
+    
+    console.log('Prepared show data:', {
+        name: firstShow.setlistName,
+        memberCount: uniqueMemberCount,
+        members: firstShow.members
+    });
     
     return {
         name: firstShow.setlistName,
@@ -448,17 +527,10 @@ function prepareShowData(shows) {
         earliestTime: firstShow.showTime,
         isBirthdayShow: firstShow.isBirthdayShow,
         birthdayMember: firstShow.birthdayMember,
+        isGraduationShow: firstShow.isGraduationShow,
+        graduationMember: firstShow.graduationMember,
         status: firstShow.status
     };
-}
-
-function getEarliestTime(shows) {
-    if (!shows || shows.length === 0) return null;
-    let earliest = shows[0].show_time;
-    shows.forEach(show => {
-        if (show.show_time && show.show_time < earliest) earliest = show.show_time;
-    });
-    return earliest;
 }
 
 async function updateLiveShowBanner() {
@@ -468,32 +540,38 @@ async function updateLiveShowBanner() {
     const badge = document.getElementById('liveStatusBadge');
     
     try {
+        console.log('Updating live show banner...');
+        
         const showData = await checkLiveShows();
         currentLiveShowData = showData;
         
         if (!showData) {
+            console.log('No live show data, hiding banner');
             banner.style.display = 'none';
             return;
         }
         
+        console.log('Displaying live show banner');
         banner.style.display = 'block';
+        
         let displayTitle = showData.name;
+        
         if (showData.isBirthdayShow && showData.birthdayMember) {
             displayTitle += ` (STS ${showData.birthdayMember})`;
         }
+        
+        if (showData.isGraduationShow && showData.graduationMember) {
+            displayTitle += ` (Graduation ${showData.graduationMember})`;
+        }
+        
         title.textContent = displayTitle;
         
-        // Update banner based on status
         banner.className = 'live-show-banner';
         badge.className = 'live-badge';
         
         if (showData.status === 'LIVE') {
             banner.classList.add('live-now');
             badge.innerHTML = '<span class="live-dot"></span><span>LIVE NOW</span>';
-        } else if (showData.status === 'UPCOMING') {
-            banner.classList.add('live-soon');
-            badge.innerHTML = '<span class="live-dot" style="background:#f97316"></span><span>LIVE SOON</span>';
-            badge.classList.add('live-soon');
         } else {
             banner.classList.add('finished');
             badge.innerHTML = '<span>SHOW ENDED</span>';
@@ -505,8 +583,11 @@ async function updateLiveShowBanner() {
         } else {
             timeElement.textContent = `Hari ini • ${showData.memberCount} member`;
         }
+        
+        console.log('Banner updated successfully');
+        
     } catch (err) {
-        console.error('Error:', err);
+        console.error('Error updating banner:', err);
         banner.style.display = 'none';
     }
 }
@@ -514,78 +595,47 @@ async function updateLiveShowBanner() {
 function openLiveShowDetail() {
     if (!currentLiveShowData) return;
     
-    // Encode parameter dengan benar seperti di schedule.html
     const setlistParam = encodeURIComponent(currentLiveShowData.name);
     const dateParam = encodeURIComponent(new Date().toISOString().split('T')[0]);
     const timeParam = encodeURIComponent(currentLiveShowData.earliestTime);
     
-    // Simpan data show yang dipilih ke localStorage
     localStorage.setItem('jkt48_selected_setlist', currentLiveShowData.name);
     localStorage.setItem('jkt48_selected_date', dateParam);
     localStorage.setItem('jkt48_selected_time', currentLiveShowData.earliestTime);
     
-    // Navigasi ke liveshow.html dengan parameter lengkap
     window.location.href = `liveshow.html?setlist=${setlistParam}&date=${dateParam}&time=${timeParam}`;
 }
 
-function openGenModal() {
-    document.getElementById('genModal').classList.add('active');
-    document.body.style.overflow = 'hidden';
-    
-    setTimeout(() => {
-        document.querySelectorAll('.gen-option').forEach(option => {
-            option.classList.remove('active');
-            if (option.classList.contains('all-gen') && currentGen === 'all') {
-                option.classList.add('active');
-            } else if (option.textContent.includes('Gen')) {
-                const genNum = parseInt(option.textContent.replace('Gen ', '').trim());
-                if (genNum === currentGen) option.classList.add('active');
-            }
-        });
-    }, 10);
-}
-
-function closeGenModal() {
-    document.getElementById('genModal').classList.remove('active');
-    document.body.style.overflow = 'auto';
-}
-
-function closeModalOnOverlay(e) {
-    if (e.target === document.getElementById('genModal')) closeGenModal();
-}
-
-function selectGen(gen) {
-    currentGen = gen;
-    currentTeam = 'all';
-    currentSetlistView = null;
-    searchQuery = '';
-    document.getElementById('searchInput').value = '';
-    
-    document.querySelectorAll('.team-filter').forEach(btn => btn.classList.remove('active'));
-    document.querySelectorAll('.top-member-filter').forEach(btn => btn.classList.remove('active'));
-    
-    document.getElementById('stats').style.display = 'block';
-    document.getElementById('setlistStats').style.display = 'none';
-    
-    closeGenModal();
-    renderMembers();
-    updateStats();
-    saveCurrentState();
-}
-
+// ============= LOAD DATA =============
 async function loadData() {
     try {
+        console.log('Loading members...');
+        
         const { data: membersData, error: membersError } = await db
             .from('members')
-            .select('*')
+            .select('id, name, gen, team, show, status')
             .order('show', { ascending: false });
         
-        if (membersError) throw membersError;
+        if (membersError) {
+            console.error('Members error:', membersError);
+            throw membersError;
+        }
+        
+        console.log('Members loaded:', membersData?.length || 0);
         
         members = membersData || [];
         allMembersData = [...members];
         
-        await loadSetlistData();
+        membersMap = {};
+        members.forEach(member => {
+            membersMap[member.id] = member;
+        });
+        
+        console.log('Members map created with', Object.keys(membersMap).length, 'entries');
+        
+        // LOAD SEMUA SHOWS - SAMA SEPERTI show.html
+        await loadAllShows();
+        
         await updateLiveShowBanner();
         await updateFooterWithLatestUpdate();
         restoreState();
@@ -608,50 +658,99 @@ async function loadData() {
     }
 }
 
-async function loadSetlistData() {
+// NEW: Load semua shows seperti di show.html
+async function loadAllShows() {
     try {
-        const { data: setlistData } = await db.from('setlist_performance').select('*');
+        console.log('Loading all shows...');
         
+        // Query SEMUA show records - SAMA SEPERTI show.html
+        const { data: showsData, error: showsError } = await db
+            .from('setlist_performance')
+            .select('*')
+            .order('show_date', { ascending: false })
+            .order('show_time', { ascending: false });
+        
+        if (showsError) {
+            console.error('Shows error:', showsError);
+            throw showsError;
+        }
+        
+        allShowsData = showsData || [];
+        console.log('All shows loaded:', allShowsData.length);
+        
+        if (allShowsData.length > 0) {
+            console.log('Sample show:', allShowsData[0]);
+        }
+        
+        // Process setlist counts dari allShowsData
+        processSetlistCounts();
+        
+    } catch (err) {
+        console.error('Error loading shows:', err);
+    }
+}
+
+// NEW: Process setlist counts dari allShowsData
+function processSetlistCounts() {
+    try {
+        console.log('Processing setlist counts...');
+        
+        // Reset
         Object.keys(SETLIST_DATA).forEach(key => {
             SETLIST_DATA[key].members = {};
         });
         
+        // Initialize
         members.forEach(member => {
             Object.keys(SETLIST_DATA).forEach(key => {
                 SETLIST_DATA[key].members[member.name] = 0;
             });
         });
         
-        if (setlistData && setlistData.length > 0) {
-            const showCountMap = {};
-            setlistData.forEach(record => {
-                const memberName = record.name;
-                const setlistName = record.setlist_name;
-                const shows = parseInt(record.show_count) || 1;
-                
-                if (setlistName) {
-                    const setName = setlistName.toLowerCase();
-                    let key = null;
-                    
-                    if (setName.includes('ramune')) key = 'ramune';
-                    else if (setName.includes('tsunaginagara') || setName.includes('tte')) key = 'tte';
-                    else if (setName.includes('pertaruhan')) key = 'pertaruhan';
-                    else if (setName.includes('pajama')) key = 'pajama';
-                    
-                    if (key) {
-                        const mapKey = `${memberName}_${key}`;
-                        showCountMap[mapKey] = (showCountMap[mapKey] || 0) + shows;
-                    }
-                }
-            });
+        // Count shows per member per setlist
+        const showCountMap = {};
+        
+        allShowsData.forEach(show => {
+            const member = membersMap[show.member_id];
             
-            Object.keys(showCountMap).forEach(mapKey => {
-                const [memberName, key] = mapKey.split('_');
-                if (SETLIST_DATA[key]) SETLIST_DATA[key].members[memberName] = showCountMap[mapKey];
-            });
-        }
+            if (!member || !show.setlist_name) return;
+            
+            const memberName = member.name;
+            const setlistName = show.setlist_name.toLowerCase().trim();
+            
+            let key = null;
+            if (setlistName.includes('ramune')) key = 'ramune';
+            else if (setlistName.includes('tsunaginagara') || setlistName.includes('tte') || setlistName.includes('te wo')) key = 'tte';
+            else if (setlistName.includes('pertaruhan')) key = 'pertaruhan';
+            else if (setlistName.includes('pajama')) key = 'pajama';
+            
+            if (key) {
+                const mapKey = `${memberName}_${key}`;
+                showCountMap[mapKey] = (showCountMap[mapKey] || 0) + 1;
+            }
+        });
+        
+        // Apply counts
+        Object.keys(showCountMap).forEach(mapKey => {
+            const parts = mapKey.split('_');
+            const key = parts.pop();
+            const memberName = parts.join('_');
+            
+            if (SETLIST_DATA[key] && memberName) {
+                SETLIST_DATA[key].members[memberName] = showCountMap[mapKey];
+            }
+        });
+        
+        console.log('Setlist counts processed');
+        console.log('Sample counts:', {
+            ramune: Object.values(SETLIST_DATA.ramune.members).filter(v => v > 0).length,
+            tte: Object.values(SETLIST_DATA.tte.members).filter(v => v > 0).length,
+            pertaruhan: Object.values(SETLIST_DATA.pertaruhan.members).filter(v => v > 0).length,
+            pajama: Object.values(SETLIST_DATA.pajama.members).filter(v => v > 0).length
+        });
+        
     } catch (err) {
-        console.error('Error setlist:', err);
+        console.error('Error processing setlist counts:', err);
     }
 }
 
@@ -729,6 +828,7 @@ function openMemberPage(name) {
     window.location.href = (currentSetlistView ? 'show.html' : 'detail.html') + '?member=' + encodeURIComponent(name);
 }
 
+// ============= RENDER MEMBERS =============
 function renderMembers() {
     const list = document.getElementById('list');
     searchQuery = document.getElementById('searchInput').value.trim();
@@ -761,17 +861,27 @@ function renderMembers() {
     filtered.sort((a, b) => b.show - a.show).forEach(m => {
         const percent = Math.min(100, (m.show / MILESTONE) * 100);
         const color = GEN_COLORS[m.gen] || '#6366f1';
+        const isGraduated = m.status === 'graduated';
         const card = document.createElement('div');
-        card.className = 'card';
+        
+        if (isGraduated) {
+            card.className = 'card graduated-member';
+        } else {
+            card.className = 'card';
+        }
+        
         card.addEventListener('click', () => openMemberPage(m.name));
         
         const genText = m.gen ? `Gen ${m.gen}` : 'Gen ?';
+        const graduationBadge = isGraduated ? '<div class="graduation-badge">GRADUATED</div>' : '';
+        const footerColor = isGraduated ? '#6b7280' : color;
         
         card.innerHTML = `
             <div class="avatar-container">
                 <img class="avatar" src="img/${m.name.toLowerCase()}.jpg" alt="${m.name}" loading="lazy" onerror="this.onerror=null;this.style.display='none';this.parentNode.innerHTML='<div class=&quot;avatar-placeholder&quot;>${m.name.charAt(0)}</div>'">
+                ${graduationBadge}
             </div>
-            <div class="card-footer" style="background-color:${color}">
+            <div class="card-footer" style="background-color:${footerColor}">
                 <div class="gen-badge">${genText}</div>
                 <div class="name-container">
                     <div class="name">${m.name}</div>
@@ -827,20 +937,28 @@ function renderSetlistMembers() {
         const rank = i + 1;
         const percent = Math.min(100, (m.shows / scale) * 100);
         const color = GEN_COLORS[m.memberData.gen] || '#6366f1';
+        const isGraduated = m.memberData.status === 'graduated';
+        
         const card = document.createElement('div');
         card.className = `card setlist-card ${rank <= 3 ? 'rank-' + rank : ''}`;
+        if (isGraduated) {
+            card.classList.add('graduated-member');
+        }
         card.addEventListener('click', () => openMemberPage(m.name));
         
         const rankBadge = rank <= 10 ? `<div class="rank-badge rank-${rank}">${rank}</div>` : '';
+        const graduationBadge = isGraduated ? '<div class="graduation-badge">GRADUATED</div>' : '';
         const genText = m.memberData.gen ? `Gen ${m.memberData.gen}` : 'Gen ?';
+        const footerColor = isGraduated ? '#6b7280' : color;
         
         card.innerHTML = `
             <div class="avatar-container">
                 <img class="avatar" src="img/${m.name.toLowerCase()}.jpg" alt="${m.name}" loading="lazy" onerror="this.onerror=null;this.style.display='none';this.parentNode.innerHTML='<div class=&quot;avatar-placeholder&quot;>${m.name.charAt(0)}</div>'">
                 ${rankBadge}
+                ${graduationBadge}
                 <div class="photo-setlist-badge">${badge}</div>
             </div>
-            <div class="card-footer" style="background-color:${color}">
+            <div class="card-footer" style="background-color:${footerColor}">
                 <div class="gen-badge">${genText}</div>
                 <div class="name-container">
                     <div class="name">${m.name}</div>
@@ -867,14 +985,24 @@ function updateStats() {
         return matchGen && matchTeam && matchSearch;
     });
     
-    const total = filtered.reduce((sum, m) => sum + m.show, 0);
-    let txt = filtered.length + ' members • ' + total.toLocaleString() + ' total shows';
+    const total = 
+ filtered.length;
+    const totalShows = filtered.reduce((sum, m) => sum + m.show, 0);
+    const graduatedCount = filtered.filter(m => m.status === 'graduated').length;
+    
+    let txt = `${total} members • ${totalShows.toLocaleString()} total shows`;
+    
+    if (graduatedCount > 0) {
+        txt += ` • ${graduatedCount} Graduated`;
+    }
+    
     if (currentGen !== 'all') txt += ' • Gen ' + currentGen;
     if (currentTeam !== 'all') txt += ' • ' + currentTeam;
     
     document.getElementById('stats').innerHTML = txt;
 }
 
+// ============= FILTER & SEARCH =============
 function searchMember() {
     searchQuery = document.getElementById('searchInput').value;
     currentSetlistView = null;
@@ -930,6 +1058,7 @@ function showSetlist(type) {
     saveCurrentState();
 }
 
+// ============= STATE MANAGEMENT =============
 function saveCurrentState() {
     sessionStorage.setItem('jkt48_current_gen', currentGen);
     sessionStorage.setItem('jkt48_current_team', currentTeam);
@@ -996,14 +1125,72 @@ window.addEventListener('scroll', () => {
 
 window.addEventListener('beforeunload', () => saveCurrentState());
 
+// ============= MODAL GEN =============
+function openGenModal() {
+    document.getElementById('genModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+    
+    setTimeout(() => {
+        document.querySelectorAll('.gen-option').forEach(option => {
+            option.classList.remove('active');
+            if (option.classList.contains('all-gen') && currentGen === 'all') {
+                option.classList.add('active');
+            } else if (option.textContent.includes('Gen')) {
+                const genNum = parseInt(option.textContent.replace('Gen ', '').trim());
+                if (genNum === currentGen) option.classList.add('active');
+            }
+        });
+    }, 10);
+}
+
+function closeGenModal() {
+    document.getElementById('genModal').classList.remove('active');
+    document.body.style.overflow = 'auto';
+}
+
+function closeModalOnOverlay(e) {
+    if (e.target === document.getElementById('genModal')) closeGenModal();
+}
+
+function selectGen(gen) {
+    currentGen = gen;
+    currentTeam = 'all';
+    currentSetlistView = null;
+    searchQuery = '';
+    document.getElementById('searchInput').value = '';
+    
+    document.querySelectorAll('.team-filter').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.top-member-filter').forEach(btn => btn.classList.remove('active'));
+    
+    document.getElementById('stats').style.display = 'block';
+    document.getElementById('setlistStats').style.display = 'none';
+    
+    closeGenModal();
+    renderMembers();
+    updateStats();
+    saveCurrentState();
+}
+
+// ============= INITIALIZATION =============
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('Initializing JKT48 Show Theater...');
+    console.log('Current date:', new Date().toISOString().split('T')[0]);
+    
     loadData();
     
     if (liveShowRefreshInterval) clearInterval(liveShowRefreshInterval);
     liveShowRefreshInterval = setInterval(() => {
+        console.log('Auto-refreshing live show banner...');
         updateLiveShowBanner();
     }, 30000);
 });
+
+window.addEventListener('unload', () => {
+    if (liveShowRefreshInterval) {
+        clearInterval(liveShowRefreshInterval);
+    }
+});
+
 </script>
 </body>
 </html>

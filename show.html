@@ -3,12 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Riwayat Show - JKT48 Show Theater</title>
+<title>Jadwal Show - JKT48 Show Theater</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
 <style>
+/* [CSS SAMA PERSIS DENGAN SEBELUMNYA - TIDAK PERLU DIUBAH] */
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:Arial,sans-serif;background:#f5f5f5;color:#333;min-height:100vh;padding:0;transition:background 0.3s,color 0.3s}
 body.dark{background:#0a0e1a;color:#e5e7eb}
@@ -265,13 +267,6 @@ body.dark .show-card{
 body.dark .show-card.live-now{
     background:#1f1515;
 }
-.show-card.live-soon{
-    border:2px solid #f97316;
-    background:#fff7ed;
-}
-body.dark .show-card.live-soon{
-    background:#1f170f;
-}
 @keyframes pulse-live{
     0%,100%{opacity:1}
     50%{opacity:0.9}
@@ -332,19 +327,6 @@ body.dark .show-time{color:#9ca3af}
     50%{opacity:0.7}
 }
 
-.soon-badge{
-    background:#f97316;
-    color:#fff;
-    padding:6px 12px;
-    border-radius:15px;
-    font-size:11px;
-    font-weight:bold;
-    display:inline-flex;
-    align-items:center;
-    gap:5px;
-    white-space:nowrap;
-}
-
 .live-dot{
     width:6px;
     height:6px;
@@ -358,7 +340,7 @@ body.dark .show-time{color:#9ca3af}
 }
 
 .sts-badge{
-    background:#ec4899;
+    background:#f59e0b;
     color:#fff;
     padding:6px 12px;
     border-radius:15px;
@@ -368,6 +350,32 @@ body.dark .show-time{color:#9ca3af}
     align-items:center;
     gap:4px;
     white-space:nowrap;
+}
+
+/* Graduation Badge */
+.lastshow-badge{
+    background:#1e40af;
+    color:#fff;
+    padding:6px 12px;
+    border-radius:15px;
+    font-size:11px;
+    font-weight:bold;
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+    white-space:nowrap;
+    animation:graduation-pulse 2s infinite;
+}
+
+@keyframes graduation-pulse {
+    0%, 100% { 
+        opacity: 1;
+        box-shadow: 0 0 8px rgba(30, 64, 175, 0.4);
+    }
+    50% { 
+        opacity: 0.8;
+        box-shadow: 0 0 12px rgba(30, 64, 175, 0.6);
+    }
 }
 
 .badge-container{
@@ -417,7 +425,7 @@ body.dark .empty-state{color:#9ca3af}
     display:flex;
     align-items:center;
     justify-content:center;
-    gap:8px;
+        gap:8px;
 }
 
 @keyframes spin{
@@ -655,12 +663,13 @@ body.dark .skeleton-card{background:#374151}
         padding: 6px 14px;
     }
     
-    .live-badge, .soon-badge {
+    .live-badge {
         font-size: 12px;
         padding: 8px 14px;
     }
     
-    .sts-badge {
+    .sts-badge,
+    .lastshow-badge {
         font-size: 12px;
         padding: 8px 14px;
     }
@@ -750,46 +759,15 @@ const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const GEN_COLORS = {
   3: '#ec4899', 6: '#22c55e', 7: '#15803d', 8: '#1e40af',
   9: '#06b6d4', 10: '#38bdf8', 11: '#f97316', 12: '#fde68a',
-  13: '#facc15'
+  13: '#facc15', 14: '#e879f9'
 };
 
-// ============= KONFIGURASI LIVE SHOW YANG SAMA =============
 const LIVE_CONFIG = {
     BEFORE_MINUTES: 15,
     DURATION_MINUTES: 155
 };
 
-// ============= FUNGSI LIVE STATUS YANG SAMA =============
-function getLiveStatus(showDate, showTime) {
-    if (!showDate || !showTime) return 'FINISHED';
-    
-    const now = new Date();
-    const showDateTime = new Date(`${showDate}T${showTime}`);
-    
-    const liveStart = new Date(showDateTime.getTime() - (LIVE_CONFIG.BEFORE_MINUTES * 60 * 1000));
-    const liveEnd = new Date(showDateTime.getTime() + (LIVE_CONFIG.DURATION_MINUTES * 60 * 1000));
-    
-    if (now < liveStart) return 'UPCOMING';
-    if (now >= liveStart && now <= liveEnd) return 'LIVE';
-    return 'FINISHED';
-}
-
-function isShowSoon(showDate, showTime) {
-    if (!showDate || !showTime) return false;
-    
-    const now = new Date();
-    const showDateTime = new Date(`${showDate}T${showTime}`);
-    const liveStart = new Date(showDateTime.getTime() - (LIVE_CONFIG.BEFORE_MINUTES * 60 * 1000));
-    const timeUntilLive = liveStart - now;
-    
-    return timeUntilLive > 0 && timeUntilLive <= 30 * 60 * 1000; // 30 menit sebelum
-}
-
-let memberData = null;
-let showsData = [];
-let currentFilter = 'all';
-
-// ============= FUNGSI THEME GLOBAL =============
+// ============= THEME =============
 (function initializeTheme() {
   const savedTheme = localStorage.getItem('jkt48_theme') || 'light';
   const html = document.documentElement;
@@ -835,8 +813,27 @@ function toggleTheme() {
     updateThemeIcon('dark');
   }
 }
-// ============= END FUNGSI THEME =============
 
+// ============= LIVE STATUS =============
+function getLiveStatus(showDate, showTime) {
+    if (!showDate || !showTime) return 'FINISHED';
+    
+    const now = new Date();
+    const showDateTime = new Date(`${showDate}T${showTime}`);
+    
+    const liveStart = new Date(showDateTime.getTime() - (LIVE_CONFIG.BEFORE_MINUTES * 60 * 1000));
+    const liveEnd = new Date(showDateTime.getTime() + (LIVE_CONFIG.DURATION_MINUTES * 60 * 1000));
+    
+    if (now < liveStart) return 'UPCOMING';
+    if (now >= liveStart && now <= liveEnd) return 'LIVE';
+    return 'FINISHED';
+}
+
+let memberData = null;
+let showsData = [];
+let currentFilter = 'all';
+
+// ============= LOAD DATA =============
 async function loadData() {
   if (!MEMBER_NAME) {
     showError('Parameter member tidak ditemukan');
@@ -844,6 +841,8 @@ async function loadData() {
   }
 
   try {
+    console.log('🔍 Loading member:', MEMBER_NAME);
+    
     const { data: member, error: memberError } = await db
       .from('members')
       .select('*')
@@ -851,6 +850,7 @@ async function loadData() {
       .single();
 
     if (memberError) {
+      console.error('❌ Member error:', memberError);
       if (memberError.code === 'PGRST116') {
         showError('Member tidak ditemukan');
       } else {
@@ -859,23 +859,29 @@ async function loadData() {
       return;
     }
     
+    console.log('✅ Member loaded:', member.name);
     memberData = member;
     
+    // Load shows menggunakan member_id
     const { data: shows, error: showsError } = await db
       .from('setlist_performance')
       .select('*')
-      .eq('name', MEMBER_NAME)
+      .eq('member_id', member.id)
       .order('show_date', { ascending: false })
       .order('show_time', { ascending: false });
 
-    if (showsError) throw showsError;
+    if (showsError) {
+      console.error('❌ Shows error:', showsError);
+      throw showsError;
+    }
     
     showsData = shows || [];
+    console.log('✅ Shows loaded:', showsData.length);
     
     renderPage();
     
   } catch (err) {
-    console.error('Error:', err);
+    console.error('❌ Error:', err);
     showError('Gagal memuat data. Coba refresh halaman.');
   }
 }
@@ -889,6 +895,14 @@ function renderPage() {
   
   const setlists = [...new Set(showsData.map(s => s.setlist_name))];
   
+  const graduationInfo = memberData.status === 'graduated' ? 
+    `<div style="margin-top: 10px; padding: 8px 16px; background: #1e40af; color: white; border-radius: 12px; font-size: 12px; display: inline-flex; align-items: center; gap: 6px;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zM4.5 6.5a.5.5 0 0 1 0-1h5.793L8.146 4.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 7.5H4.5z"/>
+      </svg>
+      Graduated Member
+    </div>` : '';
+  
   document.getElementById('container').innerHTML = `
     <div class="member-info">
       <div class="photo-container">
@@ -900,6 +914,7 @@ function renderPage() {
              alt="${memberData.name}">
       </div>
       <div class="member-name">${memberData.name}</div>
+      ${graduationInfo}
       <div class="member-stats">
         <div class="stat-item">
           <div class="stat-number">${showsData.length}</div>
@@ -980,13 +995,12 @@ function renderShowList() {
         
         const status = getLiveStatus(show.show_date, show.show_time);
         const isLive = status === 'LIVE';
-        const isSoon = isShowSoon(show.show_date, show.show_time);
         
         const isMemberBirthday = show.is_birthday_show && show.birthday_member === memberData.name;
+        const isMemberGraduation = show.is_graduation_show && show.graduation_member === memberData.name;
         
         let cardClass = 'show-card';
         if (isLive) cardClass += ' live-now';
-        else if (isSoon) cardClass += ' live-soon';
         
         return `
           <div class="${cardClass}">
@@ -1010,24 +1024,29 @@ function renderShowList() {
                     LIVE NOW
                   </div>
                 ` : ''}
-                ${isSoon ? `
-                  <div class="soon-badge">
-                    LIVE SOON
-                  </div>
-                ` : ''}
-               ${isMemberBirthday ? `
+                ${isMemberBirthday ? `
                   <div class="sts-badge">
                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
-                      <path d="m7.994.013-.595.79a.747.747 0 0 0 .101 1.01V4H5a2 2 0 0 0-2 2v3H2a2 2 0 0,0-2 2v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4a2 2 0 0 0-2-2h-1V6a2 2 0 0 0-2-2H8.5V1.806A.747.747 0 0 0 8.592.802zM4 6a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v.414a.9.9 0 0 1-.646-.268 1.914 1.914 0 0 0-2.708 0 .914.914 0 0 1-1.292 0 1.914 1.914 0 0 0-2.708 0A.9.9 0 0 1 4 6.414zm0 1.414c.49 0 .98-.187 1.354-.56a.914.914 0 0 1 1.292 0c.748.747 1.96.747 2.708 0a.914.914 0 0 1 1.292 0c.374.373.864.56 1.354.56V9H4zM1 11a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v.793l-.354.354a.914.914 0 0 1-1.293 0 1.914 1.914 0 0 0-2.707 0 .914.914 0 0 1-1.292 0 1.914 1.914 0 0 0-2.708 0 .914.914 0 0 1-1.292 0 1.914 1.914 0 0 0-2.708 0 .914.914 0 0 1-1.292 0L1 11.793zm11.646 1.854a1.915 1.915 0 0 0 2.354.279V15H1v-1.867c.737.452 1.715.36 2.354-.28a.914.914 0 0 1 1.292 0c.748.748 1.96.748 2.708 0a.914.914 0 0 1 1.292 0c.748.748 1.96.748 2.707 0a.914.914 0 0 1 1.293 0Z"/>
+                      <path d="m7.994.013-.595.79a.747.747 0 0 0 .101 1.01V4H5a2 2 0 0 0-2 2v3H2a2 2 0 0 0-2 2v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4a2 2 0 0 0-2-2h-1V6a2 2 0 0 0-2-2H8.5V1.806A.747.747 0 0 0 8.592.802zM4 6a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v.414a.9.9 0 0 1-.646-.268 1.914 1.914 0 0 0-2.708 0 .914.914 0 0 1-1.292 0 1.914 1.914 0 0 0-2.708 0A.9.9 0 0 1 4 6.414zm0 1.414c.49 0 .98-.187 1.354-.56a.914.914 0 0 1 1.292 0c.748.747 1.96.747 2.708 0a.914.914 0 0 1 1.292 0c.374.373.864.56 1.354.56V9H4zM1 11a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v.793l-.354.354a.914.914 0 0 1-1.293 0 1.914 1.914 0 0 0-2.707 0 .914.914 0 0 1-1.292 0 1.914 1.914 0 0 0-2.708 0 .914.914 0 0 1-1.292 0L1 11.793zm11.646 1.854a1.915 1.915 0 0 0 2.354.279V15H1v-1.867c.737.452 1.715.36 2.354-.28a.914.914 0 0 1 1.292 0c.748.748 1.96.748 2.708 0a.914.914 0 0 1 1.292 0c.748.748 1.96.748 2.707 0a.914.914 0 0 1 1.293 0Z"/>
                     </svg>
                     STS
+                  </div>
+                ` : ''}
+                ${isMemberGraduation ? `
+                  <div class="lastshow-badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
+                      <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zM4.5 6.5a.5.5 0 0 1 0-1h5.793L8.146 4.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 7.5H4.5z"/>
+                    </svg>
+                    Last Show
                   </div>
                 ` : ''}
                 <div class="show-badge">#${showNumber}</div>
               </div>
             </div>
             <div class="show-setlist">
-              ${show.setlist_name}${show.is_birthday_show && show.birthday_member ? ` (STS ${show.birthday_member})` : ''}
+              ${show.setlist_name}
+              ${show.is_birthday_show && show.birthday_member ? ` (STS ${show.birthday_member})` : ''}
+              ${show.is_graduation_show && show.graduation_member ? ` (Last Show ${show.graduation_member})` : ''}
             </div>
           </div>
         `;
