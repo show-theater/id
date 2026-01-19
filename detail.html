@@ -904,15 +904,18 @@ function renderMember(member) {
         </div>
         <div class="info-row">
           <div class="info-label">Tinggi Badan</div>
-          <div class="info-value">${member.height || '-'}</div>
-        </div>
+        <div class="info-value">${member.height ? member.height + ' cm' : '-'}</div>
+            </div>
         <div class="info-row">
           <div class="info-label">Generasi</div>
           <div class="info-value">${member.gen}</div>
         </div>
-        <div class="info-row">
-          <div class="info-label">Team</div>
-          <div class="info-value">${member.team || 'No Team'}</div>
+        ${member.status !== 'trainee' ? `
+<div class="info-row">
+  <div class="info-label">Team</div>
+  <div class="info-value">${member.team || '-'}</div>
+</div>
+` : ''}
         </div>
       </div>
     </div>
