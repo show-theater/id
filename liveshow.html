@@ -9,7 +9,6 @@
 <meta http-equiv="Expires" content="0">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-/* [CSS SAMA PERSIS DENGAN SEBELUMNYA - TIDAK PERLU DIUBAH] */
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:Arial,sans-serif;background:#f5f5f5;color:#333;min-height:100vh;padding-bottom:60px;transition:background 0.3s,color 0.3s}
 body.dark{background:#0a0e1a;color:#e5e7eb}
@@ -36,6 +35,8 @@ body.dark .container{background:#111827;box-shadow:0 2px 8px rgba(0,0,0,0.4)}
 .live-show-header{background:linear-gradient(135deg, #ef4444 0%, #dc2626 100%);padding:25px;text-align:center;position:relative;overflow:hidden}
 .live-show-header.upcoming{background:linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)}
 .live-show-header.finished{background:linear-gradient(135deg, #6b7280 0%, #4b5563 100%)}
+.setlist-banner{width:100%;max-width:600px;height:auto;margin:0 auto 15px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.3);display:block}
+.setlist-banner-container{margin-bottom:15px}
 
 .status-badge-main{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.2);padding:6px 12px;border-radius:15px;font-size:12px;font-weight:bold;margin-bottom:10px;color:#fff}
 .live-dot-main{width:8px;height:8px;background:#fff;border-radius:50%;animation:pulse 2s infinite}
@@ -118,6 +119,7 @@ body.dark .detail-footer{color:#9ca3af;border-top-color:#374151}
 @media (max-width:768px){
     .container{max-width:95%;margin:120px auto 20px;border-radius:16px}
     .live-show-header{padding:20px 15px}
+    .setlist-banner{max-width:100%;border-radius:10px;margin-bottom:12px}
     .live-show-header h1{font-size:18px;margin-bottom:10px}
     .live-show-date-time{gap:12px;font-size:12px}
     .live-show-date-time div{gap:5px}
@@ -138,6 +140,7 @@ body.dark .detail-footer{color:#9ca3af;border-top-color:#374151}
     .main-header{position:sticky}
     .container{margin:0 auto 15px;border-radius:0;box-shadow:none;width:100%;max-width:100%}
     body.dark .container{box-shadow:none}
+    .setlist-banner{max-width:100%;border-radius:8px;margin-bottom:12px}
     .live-show-header{padding:15px}
     .live-show-header h1{font-size:16px;margin-bottom:8px}
     .status-badge-main{padding:5px 10px;font-size:11px;margin-bottom:8px}
@@ -202,6 +205,7 @@ body.dark .detail-footer{color:#9ca3af;border-top-color:#374151}
     body.dark .detail-header{background:#111827;border-color:#1f2937}
     .container{max-width:1000px;margin:0 auto 40px;border-radius:15px}
     .live-show-header{padding:30px}
+    .setlist-banner{max-width:650px;border-radius:15px;margin-bottom:20px}
     .live-show-header h1{font-size:24px;margin-bottom:15px}
     .status-badge-main{padding:8px 16px;font-size:14px;margin-bottom:15px}
     .live-dot-main,.upcoming-dot-main{width:10px;height:10px}
@@ -294,7 +298,6 @@ function getLiveStatus(show_date, show_time) {
     return 'FINISHED';
 }
 
-// ============= THEME =============
 (function initializeTheme() {
   const savedTheme = localStorage.getItem('jkt48_theme') || 'light';
   const html = document.documentElement;
@@ -337,7 +340,18 @@ function toggleTheme() {
   }
 }
 
-// ============= HELPER FUNCTIONS =============
+function getSetlistBannerUrl(setlistName) {
+  const bannerMap = {
+    'Te wo Tsunaginagara': 'banner/te_wo_tsunaginagara.jpg',
+    'Pertaruhan Cinta': 'banner/pertaruhan_cinta.jpg',
+    'Pajama Drive': 'banner/pajama_drive.jpg',
+    'Ramune no Nomikata': 'banner/ramune_no_nomikata.jpg',
+  };
+  
+  const normalizedName = setlistName.trim();
+  return bannerMap[normalizedName] || null;
+}
+
 function getMemberPhotoUrl(memberName) {
   const formattedName = memberName.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
   return `img/${formattedName}.jpg`;
@@ -351,16 +365,14 @@ function adjustColor(color, amount) {
   return '#' + ((r << 16) | (g << 8) | b).toString(16).padStart(6, '0');
 }
 
-// ============= LOAD DATA =============
 async function loadData() {
   if (!SETLIST_NAME || !SHOW_DATE) {
     showError('Data tidak lengkap. Silakan kembali ke halaman jadwal.');
     return;
   }
   try {
-    console.log('🔍 Loading show:', SETLIST_NAME, SHOW_DATE, SHOW_TIME);
+    console.log('Loading show:', SETLIST_NAME, SHOW_DATE, SHOW_TIME);
     
-    // JOIN dengan members untuk mendapatkan nama
     let query = db
       .from('setlist_performance')
       .select(`
@@ -378,11 +390,11 @@ async function loadData() {
     const { data: shows, error: showsError } = await query;
     
     if (showsError) {
-      console.error('❌ Database error:', showsError);
+      console.error('Database error:', showsError);
       throw showsError;
     }
     
-    console.log('✅ Shows loaded:', shows?.length || 0);
+    console.log('Shows loaded:', shows?.length || 0);
     
     if (!shows || shows.length === 0) {
       const retryQuery = db
@@ -406,7 +418,7 @@ async function loadData() {
       renderShowData(shows);
     }
   } catch (err) {
-    console.error('❌ Error:', err);
+    console.error('Error:', err);
     showError('Gagal memuat data show. Silakan coba lagi atau periksa koneksi internet.');
   }
 }
@@ -426,15 +438,12 @@ async function renderShowData(shows) {
   const graduationMember = firstShow.graduation_member || null;
   const showTime = firstShow.show_time || '';
   
-  // Extract members dari JOIN result
   const membersData = showData.map(show => show.members).filter(Boolean);
-  
-  // Remove duplicates berdasarkan member ID
   const uniqueMembers = Array.from(
     new Map(membersData.map(m => [m.id, m])).values()
   );
   
-  console.log('👥 Members loaded:', uniqueMembers.length);
+  console.log('Members loaded:', uniqueMembers.length);
   
   renderPage(firstShow, showTime, isBirthdayShow, birthdayMember, isGraduationShow, graduationMember, uniqueMembers);
 }
@@ -465,8 +474,8 @@ function renderPage(showData, showTime, isBirthdayShow, birthdayMember, isGradua
         </div>
       </div>`;
   } else if (status === 'LIVE') {
-    statusBadge = `<div class="status-badge-main"><span class="live-dot-main"></span>LIVE NOW</div>`;
-    watchLiveButton = `<button class="watch-live-btn" onclick="window.open('https://www.idn.app/jkt48-official', '_blank')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>Tonton Live di IDN App</button>`;
+    statusBadge = `<div class="status-badge-main"><span class="live-dot-main"></span>LIVE</div>`;
+    watchLiveButton = `<button class="watch-live-btn" onclick="window.open('https://www.idn.app', '_blank')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>Tonton Live di IDN App</button>`;
   } else {
     statusBadge = '<div class="status-badge-main">SHOW ENDED</div>';
   }
@@ -484,9 +493,16 @@ function renderPage(showData, showTime, isBirthdayShow, birthdayMember, isGradua
     specialBadges += `<div class="graduation-badge-header"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zM4.5 6.5a.5.5 0 0 1 0-1h5.793L8.146 4.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 7.5H4.5z"/></svg>Last Show ${graduationMember}</div>`;
   }
   
+  const bannerUrl = getSetlistBannerUrl(SETLIST_NAME);
+  const bannerHTML = bannerUrl ? `
+    <div class="setlist-banner-container">
+      <img src="${bannerUrl}" alt="${SETLIST_NAME}" class="setlist-banner" onerror="this.style.display='none'">
+    </div>` : '';
+  
   document.getElementById('container').innerHTML = `
     <div class="live-show-header ${headerClass}">
       ${statusBadge}
+      ${bannerHTML}
       <h1>${displayTitle}</h1>
       ${specialBadges}
       <div class="live-show-date-time">
@@ -531,7 +547,7 @@ function renderMembersGrid(membersData, birthdayMember, graduationMember) {
               </div>
               <div class="member-info" style="border-top: 3px solid ${borderColor}">
                 <div class="member-name">${member.name}</div>
-                <div class="member-gen">Gen ${member.gen || '?'} • ${member.team || 'JKT48'}${isGraduationStar ? ' • 🎓' : ''}</div>
+                <div class="member-gen">Gen ${member.gen || '?'} • ${member.team || 'JKT48'}${isGraduationStar ? ' • ' : ''}</div>
               </div>
             </div>`;
   }).join('');

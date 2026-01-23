@@ -553,7 +553,7 @@ function loadSelectedDate() {
 
 async function loadSchedule() {
     try {
-        console.log('📅 Loading schedule...');
+        console.log('Loading schedule...');
         
         const today = new Date();
         const startDate = new Date(today.getFullYear(), today.getMonth() - 1, 1);
@@ -581,7 +581,7 @@ async function loadSchedule() {
             memberName: show.members?.name
         }));
         
-        console.log('✅ Shows loaded:', allShows.length);
+        console.log('Shows loaded:', allShows.length);
         
         currentDate = loadSelectedDate();
         currentMonth = moment(currentDate);
@@ -590,7 +590,7 @@ async function loadSchedule() {
         renderShows(currentDate);
         
     } catch (err) {
-        console.error('❌ Error:', err);
+        console.error('Error:', err);
         document.getElementById('showList').innerHTML = `
             <div class="no-shows-message">
                 <div class="no-shows-icon">
@@ -836,7 +836,7 @@ function renderShows(date) {
             statusBadge = `
                 <div class="show-status-badge">
                     <span class="show-live-dot"></span>
-                    LIVE NOW
+                    LIVE
                 </div>
             `;
         } else if (status === 'UPCOMING') {

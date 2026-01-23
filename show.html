@@ -10,12 +10,10 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
 <style>
-/* [CSS SAMA PERSIS DENGAN SEBELUMNYA - TIDAK PERLU DIUBAH] */
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:Arial,sans-serif;background:#f5f5f5;color:#333;min-height:100vh;padding:0;transition:background 0.3s,color 0.3s}
 body.dark{background:#0a0e1a;color:#e5e7eb}
 
-/* Header Fix - TAMPILKAN SEMUA */
 .main-header{position:fixed;top:0;left:0;right:0;background:#fff;z-index:1001;border-bottom:1px solid #ddd;transition:background 0.3s,border-color 0.3s}
 body.dark .main-header{background:#111827;border-color:#1f2937}
 
@@ -95,29 +93,11 @@ body.dark .detail-title{color:#e5e7eb}
 .container{
     max-width:480px;
     width:100%;
-    margin:140px auto 30px;
-    background:#fff;
-    border-radius:20px;
-    overflow:hidden;
-    box-shadow:0 2px 8px rgba(0,0,0,0.1);
-    transition:background 0.3s,box-shadow 0.3s;
-}
-body.dark .container{
-    background:#111827;
-    box-shadow:0 2px 8px rgba(0,0,0,0.4);
-}
-
-.header{
-    background:linear-gradient(135deg,var(--gen-color),var(--gen-color-dark));
-    padding:18px;
-    text-align:center;
-    position:relative;
-}
-.header h1{
-    font-size:16px;
-    margin:0;
-    color:#fff;
-    font-weight:600;
+    margin:120px auto 30px;
+    background:transparent;
+    border-radius:0;
+    overflow:visible;
+    box-shadow:none;
 }
 
 .member-info{
@@ -195,6 +175,19 @@ body.dark .member-name{color:#e5e7eb}
 }
 body.dark .stat-label{color:#9ca3af}
 
+.header{
+    background:linear-gradient(135deg,var(--gen-color),var(--gen-color-dark));
+    padding:18px;
+    text-align:center;
+    position:relative;
+}
+.header h1{
+    font-size:16px;
+    margin:0;
+    color:#fff;
+    font-weight:600;
+}
+
 .filter-section{
     padding:15px 20px;
     background:#f9fafb;
@@ -251,6 +244,7 @@ body.dark .filter-btn{
     border-radius:12px;
     padding:18px;
     transition:all 0.3s;
+    cursor:pointer;
 }
 body.dark .show-card{
     background:#1f2937;
@@ -352,7 +346,6 @@ body.dark .show-time{color:#9ca3af}
     white-space:nowrap;
 }
 
-/* Graduation Badge */
 .lastshow-badge{
     background:#1e40af;
     color:#fff;
@@ -425,7 +418,7 @@ body.dark .empty-state{color:#9ca3af}
     display:flex;
     align-items:center;
     justify-content:center;
-        gap:8px;
+    gap:8px;
 }
 
 @keyframes spin{
@@ -468,15 +461,6 @@ body.dark .detail-footer{
     50%{opacity:0.5}
 }
 
-.skeleton-info{
-    width:100%;
-    height:100px;
-    background:#e5e7eb;
-    border-radius:12px;
-    margin-bottom:12px;
-}
-body.dark .skeleton-info{background:#374151}
-
 .skeleton-card{
     width:100%;
     height:110px;
@@ -488,9 +472,9 @@ body.dark .skeleton-card{background:#374151}
 
 @media (max-width:480px){
     .container{
-        max-width:calc(100% - 20px);
-        margin:120px 10px 15px;
-        border-radius:16px;
+        max-width:100%;
+        margin:120px 0 15px;
+        border-radius:0;
     }
     .member-info{padding:16px}
     .photo,.photo-error{
@@ -514,7 +498,6 @@ body.dark .skeleton-card{background:#374151}
     .show-setlist{font-size:13px}
 }
 
-/* ============= DESKTOP LAYOUT ============= */
 @media (min-width: 1025px) {
     .main-header {
         position: relative;
@@ -554,7 +537,9 @@ body.dark .skeleton-card{background:#374151}
         max-width: 1200px;
         margin: 0 auto 40px;
         display: flex;
-        border-radius: 15px;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
         min-height: 600px;
     }
     
@@ -605,12 +590,9 @@ body.dark .skeleton-card{background:#374151}
         font-size: 14px;
     }
     
-    /* Right Side - Shows */
     .content {
-        flex: 1;
         padding: 30px;
         overflow-y: auto;
-        max-height: 600px;
     }
     
     .filter-section {
@@ -693,27 +675,17 @@ body.dark .skeleton-card{background:#374151}
         border-top-color: #374151;
     }
     
-    /* Skeleton Loading for Desktop */
     .skeleton-loading {
-        display: flex;
-        gap: 30px;
         padding: 30px;
     }
     
-    .skeleton-info {
-        flex: 0 0 250px;
-        height: 500px;
-    }
-    
     .skeleton-card {
-        flex: 1;
         height: 120px;
     }
 }
 </style>
 </head>
 <body>
-<!-- Header Fix - TAMPILKAN SEMUA ELEMEN -->
 <header class="main-header">
   <div class="theater-header">JKT48 SHOW THEATER</div>
   <div class="detail-header">
@@ -736,7 +708,6 @@ body.dark .skeleton-card{background:#374151}
 
 <div class="container" id="container">
   <div class="skeleton-loading">
-    <div class="skeleton-info"></div>
     <div class="skeleton-card"></div>
     <div class="skeleton-card"></div>
     <div class="skeleton-card"></div>
@@ -767,7 +738,6 @@ const LIVE_CONFIG = {
     DURATION_MINUTES: 155
 };
 
-// ============= THEME =============
 (function initializeTheme() {
   const savedTheme = localStorage.getItem('jkt48_theme') || 'light';
   const html = document.documentElement;
@@ -814,7 +784,6 @@ function toggleTheme() {
   }
 }
 
-// ============= LIVE STATUS =============
 function getLiveStatus(showDate, showTime) {
     if (!showDate || !showTime) return 'FINISHED';
     
@@ -833,7 +802,6 @@ let memberData = null;
 let showsData = [];
 let currentFilter = 'all';
 
-// ============= LOAD DATA =============
 async function loadData() {
   if (!MEMBER_NAME) {
     showError('Parameter member tidak ditemukan');
@@ -841,8 +809,6 @@ async function loadData() {
   }
 
   try {
-    console.log('🔍 Loading member:', MEMBER_NAME);
-    
     const { data: member, error: memberError } = await db
       .from('members')
       .select('*')
@@ -850,7 +816,6 @@ async function loadData() {
       .single();
 
     if (memberError) {
-      console.error('❌ Member error:', memberError);
       if (memberError.code === 'PGRST116') {
         showError('Member tidak ditemukan');
       } else {
@@ -859,10 +824,8 @@ async function loadData() {
       return;
     }
     
-    console.log('✅ Member loaded:', member.name);
     memberData = member;
     
-    // Load shows menggunakan member_id
     const { data: shows, error: showsError } = await db
       .from('setlist_performance')
       .select('*')
@@ -870,18 +833,14 @@ async function loadData() {
       .order('show_date', { ascending: false })
       .order('show_time', { ascending: false });
 
-    if (showsError) {
-      console.error('❌ Shows error:', showsError);
-      throw showsError;
-    }
+    if (showsError) throw showsError;
     
     showsData = shows || [];
-    console.log('✅ Shows loaded:', showsData.length);
     
     renderPage();
     
   } catch (err) {
-    console.error('❌ Error:', err);
+    console.error('Error:', err);
     showError('Gagal memuat data. Coba refresh halaman.');
   }
 }
@@ -988,7 +947,7 @@ function renderShowList() {
   
   return `
     <div class="show-list">
-      ${showsForDisplay.map((show, index) => {
+      ${showsForDisplay.map(show => {
         const date = show.show_date ? formatDate(show.show_date) : 'Tanggal tidak tersedia';
         const time = show.show_time ? formatTime(show.show_time) : null;
         const showNumber = sortedFilteredShows.findIndex(s => s.id === show.id) + 1;
@@ -1003,7 +962,7 @@ function renderShowList() {
         if (isLive) cardClass += ' live-now';
         
         return `
-          <div class="${cardClass}">
+          <div class="${cardClass}" onclick="openShowDetail('${show.setlist_name}', '${show.show_date}', '${show.show_time}')">
             <div class="show-header">
               <div>
                 <div class="show-date">${date}</div>
@@ -1096,6 +1055,16 @@ function goBack() {
   } else {
     window.location.href = 'index.html';
   }
+}
+
+function openShowDetail(setlistName, showDate, showTime) {
+  const params = new URLSearchParams();
+  params.append('setlist', setlistName);
+  params.append('date', showDate);
+  if (showTime) {
+    params.append('time', showTime);
+  }
+  window.location.href = `liveshow.html?${params.toString()}`;
 }
 
 function showError(message) {
