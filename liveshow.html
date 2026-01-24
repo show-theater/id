@@ -35,7 +35,8 @@ body.dark .container{background:#111827;box-shadow:0 2px 8px rgba(0,0,0,0.4)}
 .live-show-header{background:linear-gradient(135deg, #ef4444 0%, #dc2626 100%);padding:25px;text-align:center;position:relative;overflow:hidden}
 .live-show-header.upcoming{background:linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)}
 .live-show-header.finished{background:linear-gradient(135deg, #6b7280 0%, #4b5563 100%)}
-.setlist-banner{width:100%;max-width:600px;height:auto;margin:0 auto 15px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.3);display:block}
+.setlist-banner{width:100%;max-width:600px;height:auto;margin:0 auto 15px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.3);display:block;opacity:0;transition:opacity 0.3s ease-in-out}
+.setlist-banner.loaded{opacity:1}
 .setlist-banner-container{margin-bottom:15px}
 
 .status-badge-main{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.2);padding:6px 12px;border-radius:15px;font-size:12px;font-weight:bold;margin-bottom:10px;color:#fff}
@@ -76,9 +77,10 @@ body.dark .section-title{color:#e5e7eb}
 .member-card{background:#fff;border-radius:12px;overflow:hidden;cursor:pointer;transition:all 0.3s;box-shadow:0 2px 8px rgba(0,0,0,0.1);border:2px solid transparent}
 body.dark .member-card{background:#1f2937;box-shadow:0 2px 8px rgba(0,0,0,0.3)}
 .member-card:hover{transform:translateY(-4px);box-shadow:0 6px 16px rgba(0,0,0,0.15);border-color:#e60012}
-.member-avatar{width:100%;aspect-ratio:3/4;overflow:hidden;background:#f0f0f0;position:relative}
-body.dark .member-avatar{background:#0a0e1a}
-.member-avatar img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;transition:transform 0.3s}
+.member-avatar{width:100%;aspect-ratio:3/4;overflow:hidden;background:linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);position:relative}
+body.dark .member-avatar{background:linear-gradient(135deg, #1f2937 0%, #111827 100%)}
+.member-avatar img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;transition:transform 0.3s,opacity 0.3s;opacity:0}
+.member-avatar img.loaded{opacity:1}
 .member-card:hover .member-avatar img{transform:scale(1.08)}
 .member-info{padding:12px 8px;text-align:center}
 .member-name{font-size:13px;font-weight:bold;color:#333;margin-bottom:4px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:30px}
@@ -237,7 +239,7 @@ body.dark .detail-footer{color:#9ca3af;border-top-color:#374151}
 <header class="main-header">
   <div class="theater-header">JKT48 SHOW THEATER</div>
   <div class="detail-header">
-    <button onclick="goBack()" class="back-btn">
+    <button onclick="goBack()" class="back-btn" aria-label="Kembali ke halaman sebelumnya">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M19 12H5M12 19l-7-7 7-7"/>
       </svg>
@@ -245,7 +247,7 @@ body.dark .detail-footer{color:#9ca3af;border-top-color:#374151}
     </button>
     <div class="detail-title">Live Show Detail</div>
     <div class="header-controls">
-      <button class="theme-toggle-detail" onclick="toggleTheme()">
+      <button class="theme-toggle-detail" onclick="toggleTheme()" aria-label="Toggle tema gelap/terang">
         <svg id="themeIconDetail" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
           <path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/>
         </svg>
@@ -268,6 +270,10 @@ body.dark .detail-footer{color:#9ca3af;border-top-color:#374151}
 <script>
 const SUPABASE_URL = "https://pprxfopqkvpeajeoxzig.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBwcnhmb3Bxa3ZwZWFqZW94emlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYyNTI4MTIsImV4cCI6MjA4MTgyODgxMn0.iXRO_dAHhtVHRLqGTresG_63RD2zIaopNXtXYNfthdg";
+
+// Global variables
+let countdownInterval = null;
+let autoRefreshInterval = null;
 
 function getUrlParams() {
     const params = new URLSearchParams(window.location.search);
@@ -346,10 +352,33 @@ function getSetlistBannerUrl(setlistName) {
     'Pertaruhan Cinta': 'banner/pertaruhan_cinta.jpg',
     'Pajama Drive': 'banner/pajama_drive.jpg',
     'Ramune no Nomikata': 'banner/ramune_no_nomikata.jpg',
+    'Cara Meminum Ramune': 'banner/ramune_no_nomikata.jpg',
   };
   
   const normalizedName = setlistName.trim();
-  return bannerMap[normalizedName] || null;
+  
+  // Coba exact match dulu
+  if (bannerMap[normalizedName]) {
+    return bannerMap[normalizedName];
+  }
+  
+  // Kalau gak ada, coba cari yang mirip (case-insensitive & partial match)
+  const lowerName = normalizedName.toLowerCase();
+  
+  if (lowerName.includes('ramune')) {
+    return 'banner/ramune_no_nomikata.jpg';
+  }
+  if (lowerName.includes('tsunagi')) {
+    return 'banner/te_wo_tsunaginagara.jpg';
+  }
+  if (lowerName.includes('pertaruhan') || lowerName.includes('cinta')) {
+    return 'banner/pertaruhan_cinta.jpg';
+  }
+  if (lowerName.includes('pajama')) {
+    return 'banner/pajama_drive.jpg';
+  }
+  
+  return null;
 }
 
 function getMemberPhotoUrl(memberName) {
@@ -371,8 +400,6 @@ async function loadData() {
     return;
   }
   try {
-    console.log('Loading show:', SETLIST_NAME, SHOW_DATE, SHOW_TIME);
-    
     let query = db
       .from('setlist_performance')
       .select(`
@@ -389,12 +416,7 @@ async function loadData() {
     
     const { data: shows, error: showsError } = await query;
     
-    if (showsError) {
-      console.error('Database error:', showsError);
-      throw showsError;
-    }
-    
-    console.log('Shows loaded:', shows?.length || 0);
+    if (showsError) throw showsError;
     
     if (!shows || shows.length === 0) {
       const retryQuery = db
@@ -419,7 +441,15 @@ async function loadData() {
     }
   } catch (err) {
     console.error('Error:', err);
-    showError('Gagal memuat data show. Silakan coba lagi atau periksa koneksi internet.');
+    
+    // Better error messages
+    if (err.message && err.message.includes('Failed to fetch')) {
+      showError('Koneksi internet terputus. Silakan periksa koneksi Anda dan coba lagi.');
+    } else if (err.code === 'PGRST116') {
+      showError('Data show tidak ditemukan di database.');
+    } else {
+      showError('Gagal memuat data show. Silakan coba lagi atau periksa koneksi internet.');
+    }
   }
 }
 
@@ -442,8 +472,6 @@ async function renderShowData(shows) {
   const uniqueMembers = Array.from(
     new Map(membersData.map(m => [m.id, m])).values()
   );
-  
-  console.log('Members loaded:', uniqueMembers.length);
   
   renderPage(firstShow, showTime, isBirthdayShow, birthdayMember, isGraduationShow, graduationMember, uniqueMembers);
 }
@@ -496,7 +524,11 @@ function renderPage(showData, showTime, isBirthdayShow, birthdayMember, isGradua
   const bannerUrl = getSetlistBannerUrl(SETLIST_NAME);
   const bannerHTML = bannerUrl ? `
     <div class="setlist-banner-container">
-      <img src="${bannerUrl}" alt="${SETLIST_NAME}" class="setlist-banner" onerror="this.style.display='none'">
+      <img src="${bannerUrl}" 
+           alt="Banner ${SETLIST_NAME}" 
+           class="setlist-banner" 
+           onload="this.classList.add('loaded')"
+           onerror="this.parentElement.style.display='none'">
     </div>` : '';
   
   document.getElementById('container').innerHTML = `
@@ -521,6 +553,9 @@ function renderPage(showData, showTime, isBirthdayShow, birthdayMember, isGradua
     const showStart = new Date(`${SHOW_DATE}T${showTime}`);
     startCountdown(showStart);
   }
+  
+  // Setup auto-refresh only for UPCOMING or LIVE shows
+  setupAutoRefresh(status);
 }
 
 function renderMembersGrid(membersData, birthdayMember, graduationMember) {
@@ -543,11 +578,15 @@ function renderMembersGrid(membersData, birthdayMember, graduationMember) {
     
     return `<div class="${cardClass}" onclick="openMemberPage('${member.name}')">
               <div class="member-avatar">
-                <img src="${photoUrl}" alt="${member.name}" loading="lazy" onerror="this.onerror=null; this.style.display='none'; this.parentNode.style.background='linear-gradient(135deg, ${GEN_COLORS[member.gen] || '#6366f1'}, ${adjustColor(GEN_COLORS[member.gen] || '#6366f1', -20)})'; this.parentNode.innerHTML='<div style=width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:white;font-size:24px;font-weight:bold>${member.name.charAt(0)}</div>'">
+                <img src="${photoUrl}" 
+                     alt="Foto ${member.name} - Gen ${member.gen}" 
+                     loading="lazy" 
+                     onload="this.classList.add('loaded')"
+                     onerror="this.onerror=null; this.style.display='none'; this.parentNode.style.background='linear-gradient(135deg, ${GEN_COLORS[member.gen] || '#6366f1'}, ${adjustColor(GEN_COLORS[member.gen] || '#6366f1', -20)})'; this.parentNode.innerHTML='<div style=width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:white;font-size:24px;font-weight:bold>${member.name.charAt(0)}</div>'">
               </div>
               <div class="member-info" style="border-top: 3px solid ${borderColor}">
                 <div class="member-name">${member.name}</div>
-                <div class="member-gen">Gen ${member.gen || '?'} • ${member.team || 'JKT48'}${isGraduationStar ? ' • ' : ''}</div>
+                <div class="member-gen">Gen ${member.gen || '?'} • ${member.team || 'JKT48'}</div>
               </div>
             </div>`;
   }).join('');
@@ -558,11 +597,11 @@ function openMemberPage(memberName) {
 }
 
 function showNoShowsMessage() {
-  document.getElementById('container').innerHTML = `<div class="no-shows-message"><div class="no-shows-icon"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div><div class="no-shows-title">Show Tidak Ditemukan</div><div class="no-shows-desc">Tidak ditemukan show untuk "${SETLIST_NAME}" pada tanggal ${SHOW_DATE}${SHOW_TIME ? ` jam ${SHOW_TIME}` : ''}.<br><br>Pastikan Anda memilih show dari halaman jadwal.</div><button onclick="goBack()" style="background:#e60012;color:#fff;border:none;border-radius:12px;padding:12px 24px;font-size:14px;font-weight:600;cursor:pointer">Kembali ke Jadwal</button></div>`;
+  document.getElementById('container').innerHTML = `<div class="no-shows-message"><div class="no-shows-icon"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div><div class="no-shows-title">Show Tidak Ditemukan</div><div class="no-shows-desc">Tidak ditemukan show untuk "${SETLIST_NAME}" pada tanggal ${SHOW_DATE}${SHOW_TIME ? ` jam ${SHOW_TIME}` : ''}.<br><br>Pastikan Anda memilih show dari halaman jadwal.</div><button onclick="goBack()" style="background:#e60012;color:#fff;border:none;border-radius:12px;padding:12px 24px;font-size:14px;font-weight:600;cursor:pointer;margin-top:20px">Kembali ke Jadwal</button></div>`;
 }
 
 function showError(message) {
-  document.getElementById('container').innerHTML = `<div class="no-shows-message"><div class="no-shows-icon"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div><div class="no-shows-title">Terjadi Kesalahan</div><div class="no-shows-desc">${message}</div><button onclick="goBack()" style="background:#e60012;color:#fff;border:none;border-radius:12px;padding:12px 24px;font-size:14px;font-weight:600;cursor:pointer">Kembali ke Jadwal</button></div>`;
+  document.getElementById('container').innerHTML = `<div class="no-shows-message"><div class="no-shows-icon"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div><div class="no-shows-title">Terjadi Kesalahan</div><div class="no-shows-desc">${message}</div><button onclick="goBack()" style="background:#e60012;color:#fff;border:none;border-radius:12px;padding:12px 24px;font-size:14px;font-weight:600;cursor:pointer;margin-top:20px">Kembali ke Jadwal</button></div>`;
 }
 
 function goBack() {
@@ -574,22 +613,32 @@ function goBack() {
 }
 
 function startCountdown(targetDate) {
-  const countdownInterval = setInterval(() => {
+  // Clear existing countdown
+  if (countdownInterval) {
+    clearInterval(countdownInterval);
+  }
+  
+  countdownInterval = setInterval(() => {
     const now = new Date().getTime();
     const distance = targetDate - now;
+    
     if (distance < 0) {
       clearInterval(countdownInterval);
-      loadData();
+      countdownInterval = null;
+      loadData(); // Reload when countdown ends
       return;
     }
+    
     const days = Math.floor(distance / (1000 * 60 * 60 * 24));
     const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    
     const daysEl = document.getElementById('days');
     const hoursEl = document.getElementById('hours');
     const minutesEl = document.getElementById('minutes');
     const secondsEl = document.getElementById('seconds');
+    
     if (daysEl) daysEl.textContent = days.toString().padStart(2, '0');
     if (hoursEl) hoursEl.textContent = hours.toString().padStart(2, '0');
     if (minutesEl) minutesEl.textContent = minutes.toString().padStart(2, '0');
@@ -597,9 +646,36 @@ function startCountdown(targetDate) {
   }, 1000);
 }
 
+function setupAutoRefresh(status) {
+  // Clear existing auto-refresh
+  if (autoRefreshInterval) {
+    clearInterval(autoRefreshInterval);
+    autoRefreshInterval = null;
+  }
+  
+  // Only auto-refresh for UPCOMING or LIVE shows
+  if (status === 'UPCOMING' || status === 'LIVE') {
+    autoRefreshInterval = setInterval(() => {
+      loadData();
+    }, 30000); // 30 seconds
+  }
+}
+
+// Cleanup on page unload
+window.addEventListener('beforeunload', () => {
+  if (countdownInterval) {
+    clearInterval(countdownInterval);
+    countdownInterval = null;
+  }
+  if (autoRefreshInterval) {
+    clearInterval(autoRefreshInterval);
+    autoRefreshInterval = null;
+  }
+});
+
+// Initialize on page load
 window.addEventListener('DOMContentLoaded', () => {
   loadData();
-  setInterval(() => { loadData(); }, 30000);
 });
 </script>
 </body>
