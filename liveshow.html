@@ -38,6 +38,7 @@ body.dark .container{background:#111827;box-shadow:0 2px 8px rgba(0,0,0,0.4)}
 .setlist-banner{width:100%;max-width:600px;height:auto;margin:0 auto 15px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.3);display:block;opacity:0;transition:opacity 0.3s ease-in-out}
 .setlist-banner.loaded{opacity:1}
 .setlist-banner-container{margin-bottom:15px}
+.banner-fallback{width:100%;max-width:600px;height:200px;margin:0 auto 15px;border-radius:12px;background:linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.8);font-size:18px;font-weight:bold;text-align:center;padding:20px;border:2px dashed rgba(255,255,255,0.3);box-shadow:0 4px 12px rgba(0,0,0,0.2)}
 
 .status-badge-main{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.2);padding:6px 12px;border-radius:15px;font-size:12px;font-weight:bold;margin-bottom:10px;color:#fff}
 .live-dot-main{width:8px;height:8px;background:#fff;border-radius:50%;animation:pulse 2s infinite}
@@ -116,12 +117,14 @@ body.dark .detail-footer{color:#9ca3af;border-top-color:#374151}
 
 @media (max-width:1024px){
     .container{max-width:90%;margin:130px auto 25px}
+    .banner-fallback{height:180px;font-size:16px}
 }
 
 @media (max-width:768px){
     .container{max-width:95%;margin:120px auto 20px;border-radius:16px}
     .live-show-header{padding:20px 15px}
     .setlist-banner{max-width:100%;border-radius:10px;margin-bottom:12px}
+    .banner-fallback{height:160px;font-size:15px;max-width:100%}
     .live-show-header h1{font-size:18px;margin-bottom:10px}
     .live-show-date-time{gap:12px;font-size:12px}
     .live-show-date-time div{gap:5px}
@@ -143,6 +146,7 @@ body.dark .detail-footer{color:#9ca3af;border-top-color:#374151}
     .container{margin:0 auto 15px;border-radius:0;box-shadow:none;width:100%;max-width:100%}
     body.dark .container{box-shadow:none}
     .setlist-banner{max-width:100%;border-radius:8px;margin-bottom:12px}
+    .banner-fallback{height:140px;font-size:14px;border-radius:8px}
     .live-show-header{padding:15px}
     .live-show-header h1{font-size:16px;margin-bottom:8px}
     .status-badge-main{padding:5px 10px;font-size:11px;margin-bottom:8px}
@@ -186,6 +190,7 @@ body.dark .detail-footer{color:#9ca3af;border-top-color:#374151}
     .member-gen{font-size:8px}
     .countdown-value{font-size:18px;padding:3px 5px;min-width:32px}
     .countdown-timer{gap:6px}
+    .banner-fallback{height:120px;font-size:13px}
 }
 
 @media (max-height:600px) and (orientation:landscape){
@@ -195,6 +200,7 @@ body.dark .detail-footer{color:#9ca3af;border-top-color:#374151}
     .live-show-header h1{font-size:18px;margin-bottom:10px}
     .status-badge-main{margin-bottom:8px}
     .members-grid{grid-template-columns:repeat(auto-fill, minmax(100px, 1fr))}
+    .banner-fallback{height:120px}
 }
 
 @media (min-width: 1025px) {
@@ -208,6 +214,7 @@ body.dark .detail-footer{color:#9ca3af;border-top-color:#374151}
     .container{max-width:1000px;margin:0 auto 40px;border-radius:15px}
     .live-show-header{padding:30px}
     .setlist-banner{max-width:650px;border-radius:15px;margin-bottom:20px}
+    .banner-fallback{max-width:650px;height:220px;font-size:20px;border-radius:15px}
     .live-show-header h1{font-size:24px;margin-bottom:15px}
     .status-badge-main{padding:8px 16px;font-size:14px;margin-bottom:15px}
     .live-dot-main,.upcoming-dot-main{width:10px;height:10px}
@@ -293,14 +300,19 @@ const GEN_COLORS = {
 };
 
 const SHOW_DURATION_MINUTES = 155;
+const PRE_SHOW_BUFFER_MINUTES = 15; // Live mulai 15 menit sebelum jam tayang
 
 function getLiveStatus(show_date, show_time) {
     if (!show_date || !show_time) return 'FINISHED';
     const now = new Date();
     const showStart = new Date(`${show_date}T${show_time}`);
+    
+    // Live dimulai 15 menit sebelum jam tayang
+    const liveStart = new Date(showStart.getTime() - PRE_SHOW_BUFFER_MINUTES * 60000);
     const liveEnd = new Date(showStart.getTime() + SHOW_DURATION_MINUTES * 60000);
-    if (now < showStart) return 'UPCOMING';
-    if (now >= showStart && now <= liveEnd) return 'LIVE';
+    
+    if (now < liveStart) return 'UPCOMING';
+    if (now >= liveStart && now <= liveEnd) return 'LIVE';
     return 'FINISHED';
 }
 
@@ -392,6 +404,16 @@ function adjustColor(color, amount) {
   const g = Math.max(0, Math.min(255, ((num >> 8) & 0x00FF) + amount));
   const b = Math.max(0, Math.min(255, (num & 0x0000FF) + amount));
   return '#' + ((r << 16) | (g << 8) | b).toString(16).padStart(6, '0');
+}
+
+function handleBannerError(img) {
+  // Ganti dengan fallback visual yang tetap terlihat bagus
+  const container = img.parentElement;
+  container.innerHTML = `
+    <div class="banner-fallback">
+      ${SETLIST_NAME}
+    </div>
+  `;
 }
 
 async function loadData() {
@@ -491,9 +513,14 @@ function renderPage(showData, showTime, isBirthdayShow, birthdayMember, isGradua
   
   if (status === 'UPCOMING') {
     statusBadge = `<div class="status-badge-main"><span class="upcoming-dot-main"></span>UPCOMING</div>`;
+    
+    // Countdown ke waktu LIVE (15 menit sebelum jam tayang)
+    const showStart = new Date(`${SHOW_DATE}T${showTime}`);
+    const liveStart = new Date(showStart.getTime() - PRE_SHOW_BUFFER_MINUTES * 60000);
+    
     countdownHTML = `
       <div class="countdown-container">
-        <div class="countdown-title">Dimulai dalam:</div>
+        <div class="countdown-title">Live dimulai dalam:</div>
         <div class="countdown-timer" id="countdown">
           <div class="countdown-item"><div class="countdown-value" id="days">0</div><div class="countdown-label">Hari</div></div>
           <div class="countdown-item"><div class="countdown-value" id="hours">0</div><div class="countdown-label">Jam</div></div>
@@ -522,13 +549,15 @@ function renderPage(showData, showTime, isBirthdayShow, birthdayMember, isGradua
   }
   
   const bannerUrl = getSetlistBannerUrl(SETLIST_NAME);
-  const bannerHTML = bannerUrl ? `
+  
+  // Banner hanya muncul untuk UPCOMING dan LIVE, tidak untuk FINISHED
+  const bannerHTML = (bannerUrl && status !== 'FINISHED') ? `
     <div class="setlist-banner-container">
       <img src="${bannerUrl}" 
            alt="Banner ${SETLIST_NAME}" 
            class="setlist-banner" 
            onload="this.classList.add('loaded')"
-           onerror="this.parentElement.style.display='none'">
+           onerror="handleBannerError(this)">
     </div>` : '';
   
   document.getElementById('container').innerHTML = `
@@ -551,7 +580,8 @@ function renderPage(showData, showTime, isBirthdayShow, birthdayMember, isGradua
   
   if (status === 'UPCOMING') {
     const showStart = new Date(`${SHOW_DATE}T${showTime}`);
-    startCountdown(showStart);
+    const liveStart = new Date(showStart.getTime() - PRE_SHOW_BUFFER_MINUTES * 60000);
+    startCountdown(liveStart);
   }
   
   // Setup auto-refresh only for UPCOMING or LIVE shows
