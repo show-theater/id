@@ -78,6 +78,9 @@ body.dark .section-title{color:#e5e7eb}
 .member-card{background:#fff;border-radius:12px;overflow:hidden;cursor:pointer;transition:all 0.3s;box-shadow:0 2px 8px rgba(0,0,0,0.1);border:2px solid transparent}
 body.dark .member-card{background:#1f2937;box-shadow:0 2px 8px rgba(0,0,0,0.3)}
 .member-card:hover{transform:translateY(-4px);box-shadow:0 6px 16px rgba(0,0,0,0.15);border-color:#e60012}
+.member-card.no-click{cursor:default}
+.member-card.no-click:hover{transform:none;box-shadow:0 2px 8px rgba(0,0,0,0.1);border-color:transparent}
+body.dark .member-card.no-click:hover{box-shadow:0 2px 8px rgba(0,0,0,0.3)}
 .member-avatar{width:100%;aspect-ratio:3/4;overflow:hidden;background:linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);position:relative}
 body.dark .member-avatar{background:linear-gradient(135deg, #1f2937 0%, #111827 100%)}
 .member-avatar img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;transition:transform 0.3s,opacity 0.3s;opacity:0}
@@ -291,6 +294,7 @@ function getUrlParams() {
 }
 
 const { setlist: SETLIST_NAME, date: SHOW_DATE, time: SHOW_TIME } = getUrlParams();
+const SOURCE_PAGE = new URLSearchParams(window.location.search).get('source') || '';
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const GEN_COLORS = {
@@ -599,6 +603,7 @@ function renderMembersGrid(membersData, birthdayMember, graduationMember) {
     const photoUrl = getMemberPhotoUrl(member.name);
     
     let cardClass = 'member-card';
+    if (SOURCE_PAGE === 'show') cardClass += ' no-click';
     if (isBirthdayStar) cardClass += ' birthday-member-card';
     if (isGraduationStar) cardClass += ' graduation-member-card';
     
@@ -606,7 +611,10 @@ function renderMembersGrid(membersData, birthdayMember, graduationMember) {
     if (isBirthdayStar) borderColor = '#f59e0b';
     if (isGraduationStar) borderColor = '#1e40af';
     
-    return `<div class="${cardClass}" onclick="openMemberPage('${member.name}')">
+    const clickAttr = SOURCE_PAGE === 'show' ? '' : `onclick="openMemberPage('${member.name}')"`;
+    const cardStyle = SOURCE_PAGE === 'show' ? ' style="cursor:default"' : '';
+    
+    return `<div class="${cardClass}"${clickAttr}${cardStyle}>
               <div class="member-avatar">
                 <img src="${photoUrl}" 
                      alt="Foto ${member.name} - Gen ${member.gen}" 

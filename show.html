@@ -1064,6 +1064,7 @@ function openShowDetail(setlistName, showDate, showTime) {
   if (showTime) {
     params.append('time', showTime);
   }
+  params.append('source', 'show');
   window.location.href = `liveshow.html?${params.toString()}`;
 }
 
