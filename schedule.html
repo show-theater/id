@@ -583,7 +583,8 @@ async function loadSchedule() {
         
         console.log('Shows loaded:', allShows.length);
         
-        currentDate = loadSelectedDate();
+        // Selalu reset ke hari ini saat refresh
+        currentDate = new Date().toISOString().split('T')[0];
         currentMonth = moment(currentDate);
         
         renderCalendar();
@@ -942,6 +943,12 @@ function openShowDetail(element) {
 
 setInterval(() => {
     if (allShows.length > 0) {
+        const todayStr = new Date().toISOString().split('T')[0];
+        // Kalau hari sudah ganti (misal tengah malam), otomatis pindah ke hari baru
+        if (currentDate !== todayStr) {
+            currentDate = todayStr;
+            currentMonth = moment(currentDate);
+        }
         renderCalendar();
         renderShows(currentDate);
     }
