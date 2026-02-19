@@ -331,6 +331,55 @@ body.dark .no-events{color:#6b7280}
 .btn-today{background:#e60012;color:white}
 .btn-close-calendar{background:#6b7280;color:white}
 
+/* Non-Show Activity CSS */
+.non-show-section {
+  margin: 15px 0;
+  padding: 15px;
+  background: #f0fdf4;
+  border-radius: 12px;
+  border: 2px solid #86efac;
+}
+body.dark .non-show-section {
+  background: #052e16;
+  border-color: #166534;
+}
+.non-show-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 14px;
+  margin-bottom: 0;
+  color: #166534;
+}
+body.dark .non-show-checkbox-label {
+  color: #86efac;
+}
+.non-show-checkbox-label input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  margin: 0;
+  accent-color: #22c55e;
+}
+.non-show-info {
+  margin-top: 10px;
+  padding: 8px 10px;
+  background: #dcfce7;
+  border-radius: 8px;
+  font-size: 12px;
+  color: #166534;
+  display: none;
+}
+body.dark .non-show-info {
+  background: #14532d;
+  color: #86efac;
+}
+.non-show-info.show {
+  display: block;
+}
+
 /* Birthday Show CSS */
 .birthday-section {
   margin: 15px 0;
@@ -687,6 +736,17 @@ body.dark .graduation-dropdown {
       </div>
     </div>
     
+    <!-- Non-Show Activity -->
+    <div class="non-show-section">
+      <label class="non-show-checkbox-label">
+        <input type="checkbox" id="bulkIsNonShow" onchange="toggleNonShowActivity()">
+        <span>🎌 Non-Show Activity (Ramadhan, dll)</span>
+      </label>
+      <div class="non-show-info" id="nonShowInfo">
+        ✅ Aktivitas ini <strong>TIDAK</strong> akan menambah jumlah show di data member. Hanya tersimpan sebagai catatan aktivitas.
+      </div>
+    </div>
+
     <label class="input-label">Masukkan Nama Member (pisahkan dengan koma)</label>
     <textarea id="bulkMemberNames" placeholder="Contoh: Cynthia, Danella, Eli, Elin, Ella, Fritzy, Indah, Kimmy"></textarea>
     
@@ -694,7 +754,7 @@ body.dark .graduation-dropdown {
     
     <div class="modal-buttons">
       <button class="btn-cancel" onclick="closeBulkAddModal()">Batal</button>
-      <button class="btn-add" onclick="bulkAddShows()">Tambah Semua</button>
+      <button class="btn-add" id="bulkAddBtn" onclick="bulkAddShows()">Tambah Semua</button>
     </div>
   </div>
 </div>
@@ -1265,6 +1325,39 @@ function toggleGraduationField() {
     }
 }
 
+function toggleNonShowActivity() {
+    var checkbox = document.getElementById('bulkIsNonShow');
+    var info = document.getElementById('nonShowInfo');
+    var btn = document.getElementById('bulkAddBtn');
+    var birthdayCheckbox = document.getElementById('bulkIsBirthdayShow');
+    var graduationCheckbox = document.getElementById('bulkIsGraduationShow');
+
+    if (checkbox.checked) {
+        info.classList.add('show');
+        btn.textContent = 'Tambah Aktivitas';
+        btn.style.background = '#22c55e';
+        // Disable birthday & graduation jika non-show
+        if (birthdayCheckbox.checked) {
+            birthdayCheckbox.checked = false;
+            document.getElementById('bulkBirthdayMemberField').classList.remove('show');
+        }
+        if (graduationCheckbox.checked) {
+            graduationCheckbox.checked = false;
+            document.getElementById('bulkGraduationMemberField').classList.remove('show');
+        }
+        birthdayCheckbox.disabled = true;
+        graduationCheckbox.disabled = true;
+        showNotification('info', 'Non-Show Activity', 'Mode aktif: aktivitas tidak akan menambah show count member');
+    } else {
+        info.classList.remove('show');
+        btn.textContent = 'Tambah Semua';
+        btn.style.background = '';
+        birthdayCheckbox.disabled = false;
+        graduationCheckbox.disabled = false;
+    }
+}
+
+
 function toggleBulkBirthdayField() {
     var checkbox = document.getElementById('bulkIsBirthdayShow');
     var graduationCheckbox = document.getElementById('bulkIsGraduationShow');
@@ -1456,6 +1549,14 @@ function openBulkAddModal(){
     populateMemberDropdown('bulkBirthdayMember');
     populateMemberDropdown('bulkGraduationMember');
     
+    // Reset non-show activity
+    document.getElementById('bulkIsNonShow').checked = false;
+    document.getElementById('nonShowInfo').classList.remove('show');
+    document.getElementById('bulkAddBtn').textContent = 'Tambah Semua';
+    document.getElementById('bulkAddBtn').style.background = '';
+    document.getElementById('bulkIsBirthdayShow').disabled = false;
+    document.getElementById('bulkIsGraduationShow').disabled = false;
+
     document.getElementById('bulkAddModal').style.display='flex';
 }
 
@@ -1579,6 +1680,7 @@ async function bulkAddShows(){
     var birthdayMember=document.getElementById('bulkBirthdayMember').value;
     var isGraduationShow=document.getElementById('bulkIsGraduationShow').checked;
     var graduationMember=document.getElementById('bulkGraduationMember').value;
+    var isNonShow=document.getElementById('bulkIsNonShow').checked;
     
     if(!setlist){
         showNotification('warning', 'Peringatan', 'Pilih setlist terlebih dahulu!');
@@ -1648,6 +1750,7 @@ async function bulkAddShows(){
             birthday_member: isBirthdayShow ? birthdayMember : null,
             is_graduation_show: isThisGraduation,
             graduation_member: isThisGraduation ? graduationMember : null,
+            is_non_show: isNonShow,
             created_at: new Date().toISOString()
         };
         
@@ -1696,11 +1799,17 @@ async function bulkAddShows(){
         var toastBirthdayInfo = isBirthdayShow ? ' (STS ' + birthdayMember + ')' : '';
         var toastGraduationInfo = isGraduationShow ? ' (LAST SHOW - ' + graduationMember + ')' : '';
         
-        var message = '✅ '+successCount+' member berhasil ditambahkan!'+toastBirthdayInfo+toastGraduationInfo+' ('+toastDateInfo+')';
-        if (isGraduationShow) {
+        var message = '';
+        if (isNonShow) {
+            message = '🎌 '+successCount+' member berhasil ditambahkan sebagai Non-Show Activity! ('+toastDateInfo+') — Show count TIDAK bertambah';
+            showNotification('success', 'Non-Show Activity Added', message);
+        } else if (isGraduationShow) {
             message = '✅ '+successCount+' member berhasil! ' + graduationMember + ' telah GRADUATED!'+toastBirthdayInfo+' ('+toastDateInfo+')';
+            showNotification('success', 'Success', message);
+        } else {
+            message = '✅ '+successCount+' member berhasil ditambahkan!'+toastBirthdayInfo+toastGraduationInfo+' ('+toastDateInfo+')';
+            showNotification('success', 'Success', message);
         }
-        showNotification('success', 'Success', message);
         
     } catch(err) {
         console.error('Bulk add exception:', err);
