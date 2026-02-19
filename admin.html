@@ -481,6 +481,15 @@ body.dark .graduation-dropdown {
 #editShowModal .modal-box {
   max-width: 400px;
 }
+
+/* Custom Setlist Field */
+.custom-setlist-field {
+    margin-top: 10px;
+    display: none;
+}
+.custom-setlist-field.show {
+    display: block;
+}
 </style>
 </head>
 <body>
@@ -557,9 +566,17 @@ body.dark .graduation-dropdown {
     <input type="time" id="showTime" placeholder="19:00">
     
     <label class="input-label">Pilih Setlist</label>
-    <select id="setlistSelect">
+    <select id="setlistSelect" onchange="toggleCustomSetlistField()">
       <option value="">Pilih Setlist...</option>
+      <option value="__custom__">✏️ Kustom Setlist (Ketik Manual)</option>
     </select>
+    
+    <!-- Custom Setlist Field -->
+    <div class="custom-setlist-field" id="customSetlistField">
+        <label class="input-label">Nama Setlist Kustom</label>
+        <input type="text" id="customSetlistName" placeholder="Masukkan nama setlist..." maxlength="100">
+        <div class="tip-text">💡 Masukkan nama setlist bebas sesuai keinginan</div>
+    </div>
     
     <div class="setlist-info" id="setlistInfo" style="display:none">
       <span class="setlist-badge">INFO</span>
@@ -622,9 +639,17 @@ body.dark .graduation-dropdown {
     <input type="time" id="bulkShowTime" placeholder="19:00">
     
     <label class="input-label">Pilih Setlist</label>
-    <select id="bulkSetlistSelect">
+    <select id="bulkSetlistSelect" onchange="toggleBulkCustomSetlistField()">
       <option value="">Pilih Setlist...</option>
+      <option value="__custom__">✏️ Kustom Setlist (Ketik Manual)</option>
     </select>
+    
+    <!-- Custom Setlist Field untuk Bulk -->
+    <div class="custom-setlist-field" id="bulkCustomSetlistField">
+        <label class="input-label">Nama Setlist Kustom</label>
+        <input type="text" id="bulkCustomSetlistName" placeholder="Masukkan nama setlist..." maxlength="100">
+        <div class="tip-text">💡 Masukkan nama setlist bebas sesuai keinginan</div>
+    </div>
     
     <div class="birthday-section">
       <label class="birthday-checkbox-label">
@@ -721,9 +746,17 @@ body.dark .graduation-dropdown {
     <input type="time" id="editShowTime">
     
     <label class="input-label">Setlist</label>
-    <select id="editSetlistSelect">
+    <select id="editSetlistSelect" onchange="toggleEditCustomSetlistField()">
       <option value="">Pilih Setlist...</option>
+      <option value="__custom__">✏️ Kustom Setlist (Ketik Manual)</option>
     </select>
+    
+    <!-- Custom Setlist Field untuk Edit -->
+    <div class="custom-setlist-field" id="editCustomSetlistField">
+        <label class="input-label">Nama Setlist Kustom</label>
+        <input type="text" id="editCustomSetlistName" placeholder="Masukkan nama setlist..." maxlength="100">
+        <div class="tip-text">💡 Masukkan nama setlist bebas sesuai keinginan</div>
+    </div>
     
     <div class="birthday-section">
       <label class="birthday-checkbox-label">
@@ -1129,6 +1162,68 @@ function isThisWeek(dateString) {
     return target >= startOfWeek && target <= endOfWeek;
 }
 
+// =================== CUSTOM SETLIST FUNCTIONS ===================
+
+function toggleCustomSetlistField() {
+    var select = document.getElementById('setlistSelect');
+    var customField = document.getElementById('customSetlistField');
+    var setlistInfo = document.getElementById('setlistInfo');
+    
+    if (select.value === '__custom__') {
+        customField.classList.add('show');
+        setlistInfo.style.display = 'none';
+        document.getElementById('customSetlistName').focus();
+    } else {
+        customField.classList.remove('show');
+        if (select.value) {
+            setlistInfo.style.display = 'block';
+            document.getElementById('setlistDescription').textContent = SETLIST_INFO[select.value] || '';
+        } else {
+            setlistInfo.style.display = 'none';
+        }
+    }
+}
+
+function toggleBulkCustomSetlistField() {
+    var select = document.getElementById('bulkSetlistSelect');
+    var customField = document.getElementById('bulkCustomSetlistField');
+    
+    if (select.value === '__custom__') {
+        customField.classList.add('show');
+        document.getElementById('bulkCustomSetlistName').focus();
+    } else {
+        customField.classList.remove('show');
+    }
+}
+
+function toggleEditCustomSetlistField() {
+    var select = document.getElementById('editSetlistSelect');
+    var customField = document.getElementById('editCustomSetlistField');
+    
+    if (select.value === '__custom__') {
+        customField.classList.add('show');
+        document.getElementById('editCustomSetlistName').focus();
+    } else {
+        customField.classList.remove('show');
+    }
+}
+
+function getSelectedSetlist(selectId, customInputId) {
+    var select = document.getElementById(selectId);
+    var customInput = document.getElementById(customInputId);
+    
+    if (select.value === '__custom__') {
+        var customName = customInput.value.trim();
+        if (!customName) {
+            showNotification('warning', 'Validasi', 'Masukkan nama setlist kustom!');
+            return null;
+        }
+        return customName;
+    } else {
+        return select.value;
+    }
+}
+
 // =================== BIRTHDAY & GRADUATION FUNCTIONS ===================
 
 // Fungsi utama untuk toggle
@@ -1290,11 +1385,19 @@ function openSetlistModal(memberId){
     
     var selectEl=document.getElementById('setlistSelect');
     selectEl.innerHTML='<option value="">Pilih Setlist...</option>';
+    
+    // Tambahkan opsi kustom setlist
+    selectEl.innerHTML += '<option value="__custom__">✏️ Kustom Setlist (Ketik Manual)</option>';
+    
     var setlists=member.status==='trainee'?SETLIST_TRAINEE:SETLIST_INTI;
     for(var key in setlists){
         selectEl.innerHTML+='<option value="'+key+'">'+key+'</option>';
     }
     selectEl.value='';
+    
+    // Sembunyikan custom field dan info
+    document.getElementById('customSetlistField').classList.remove('show');
+    document.getElementById('customSetlistName').value = '';
     document.getElementById('setlistInfo').style.display='none';
     
     // Reset semua checkbox
@@ -1326,9 +1429,18 @@ function openBulkAddModal(){
     
     var selectEl=document.getElementById('bulkSetlistSelect');
     selectEl.innerHTML='<option value="">Pilih Setlist...</option>';
+    
+    // Tambahkan opsi kustom setlist
+    selectEl.innerHTML += '<option value="__custom__">✏️ Kustom Setlist (Ketik Manual)</option>';
+    
     for(var key in SETLIST_INFO){
         selectEl.innerHTML+='<option value="'+key+'">'+key+'</option>';
     }
+    
+    // Reset custom field
+    document.getElementById('bulkCustomSetlistField').classList.remove('show');
+    document.getElementById('bulkCustomSetlistName').value = '';
+    
     document.getElementById('bulkMemberNames').value='';
     
     // Reset semua checkbox di bulk modal
@@ -1354,7 +1466,10 @@ function closeBulkAddModal(){
 // =================== SHOW MANAGEMENT FUNCTIONS ===================
 
 async function addShowWithSetlist(){
-    var setlist=document.getElementById('setlistSelect').value;
+    // Dapatkan setlist (bisa dari pilihan atau custom)
+    var setlist = getSelectedSetlist('setlistSelect', 'customSetlistName');
+    if (!setlist) return; // Error sudah ditampilkan di getSelectedSetlist
+    
     var showDate=document.getElementById('showDate').value;
     var showTime=document.getElementById('showTime').value;
     var isBirthdayShow=document.getElementById('isBirthdayShow').checked;
@@ -1453,7 +1568,10 @@ async function addShowWithSetlist(){
 }
 
 async function bulkAddShows(){
-    var setlist=document.getElementById('bulkSetlistSelect').value;
+    // Dapatkan setlist (bisa dari pilihan atau custom)
+    var setlist = getSelectedSetlist('bulkSetlistSelect', 'bulkCustomSetlistName');
+    if (!setlist) return; // Error sudah ditampilkan di getSelectedSetlist
+    
     var namesInput=document.getElementById('bulkMemberNames').value;
     var showDate=document.getElementById('bulkShowDate').value;
     var showTime=document.getElementById('bulkShowTime').value;
@@ -1713,6 +1831,9 @@ async function openEditShow(showId) {
         var setlistSelect = document.getElementById('editSetlistSelect');
         setlistSelect.innerHTML = '<option value="">Pilih Setlist...</option>';
         
+        // Tambahkan opsi kustom setlist
+        setlistSelect.innerHTML += '<option value="__custom__">✏️ Kustom Setlist (Ketik Manual)</option>';
+        
         // Tentukan setlist berdasarkan member yang dipilih (bukan berdasarkan data lama)
         var currentMember = members.find(function(m) { return m.id === currentEditShowData.member_id });
         var setlists = (currentMember && currentMember.status === 'trainee') ? SETLIST_TRAINEE : SETLIST_INTI;
@@ -1720,6 +1841,27 @@ async function openEditShow(showId) {
         for(var key in setlists){
             var selected = (key === currentEditShowData.setlist_name) ? 'selected' : '';
             setlistSelect.innerHTML += '<option value="' + key + '" ' + selected + '>' + key + '</option>';
+        }
+        
+        // Reset custom field
+        document.getElementById('editCustomSetlistField').classList.remove('show');
+        document.getElementById('editCustomSetlistName').value = '';
+        
+        // Jika setlist adalah custom (tidak ada di daftar), maka set ke custom dan isi field
+        var isCustomSetlist = true;
+        for(var key in setlists) {
+            if (key === currentEditShowData.setlist_name) {
+                isCustomSetlist = false;
+                break;
+            }
+        }
+        
+        if (isCustomSetlist && currentEditShowData.setlist_name) {
+            setlistSelect.value = '__custom__';
+            document.getElementById('editCustomSetlistField').classList.add('show');
+            document.getElementById('editCustomSetlistName').value = currentEditShowData.setlist_name;
+        } else {
+            setlistSelect.value = currentEditShowData.setlist_name;
         }
         
         // Set birthday checkbox
@@ -1762,7 +1904,11 @@ async function saveEditShow() {
     var memberId = document.getElementById('editMemberSelect').value;
     var showDate = document.getElementById('editShowDate').value;
     var showTime = document.getElementById('editShowTime').value;
-    var setlist = document.getElementById('editSetlistSelect').value;
+    
+    // Dapatkan setlist (bisa dari pilihan atau custom)
+    var setlist = getSelectedSetlist('editSetlistSelect', 'editCustomSetlistName');
+    if (!setlist) return; // Error sudah ditampilkan di getSelectedSetlist
+    
     var isBirthdayShow = document.getElementById('editIsBirthdayShow').checked;
     var birthdayMember = document.getElementById('editBirthdayMember').value;
     var isGraduationShow = document.getElementById('editIsGraduationShow').checked;
