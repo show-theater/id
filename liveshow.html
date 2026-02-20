@@ -705,7 +705,7 @@ function renderPage(showData, showTime, isBirthdayShow, birthdayMember, isGradua
   document.getElementById('container').innerHTML = `
     <div class="show-content-wrapper">
       <div class="show-left-panel">
-        <div class="live-show-header ${headerClass}" style="background:${status === 'LIVE' ? 'linear-gradient(135deg, #e60012 0%, #a00010 100%)' : (getSetlistGradient(SETLIST_NAME, isNonShow) || (status === 'UPCOMING' ? 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)' : 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)'))}">
+        <div class="live-show-header ${headerClass}" style="background:${status === 'LIVE' ? 'linear-gradient(135deg, #e60012 0%, #a00010 100%)' : status === 'FINISHED' ? 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)' : (getSetlistGradient(SETLIST_NAME, isNonShow) || 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)')}">
           ${statusBadge}
           ${bannerHTML}
           <h1>${displayTitle}</h1>
