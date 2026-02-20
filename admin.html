@@ -862,7 +862,7 @@ var SUPABASE_URL='https://pprxfopqkvpeajeoxzig.supabase.co';
 var SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBwcnhmb3Bxa3ZwZWFqZW94emlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYyNTI4MTIsImV4cCI6MjA4MTgyODgxMn0.iXRO_dAHhtVHRLqGTresG_63RD2zIaopNXtXYNfthdg';
 var ADMIN_ACCOUNTS={'admin@jkt48.com':'jkt48admin','superadmin@jkt48.com':'jkt48super'};
 var GEN_COLORS={3:'#ec4899',6:'#22c55e',7:'#15803d',8:'#1e40af',9:'#06b6d4',10:'#38bdf8',11:'#f97316',12:'#fde68a',13:'#facc15',14:'#e879f9'};
-var SETLIST_INTI={'Cara Meminum Ramune':'Setlist segar seperti minuman ramune','Te wo Tsunaginagara':'Setlist sambil bergandengan tangan','Pertaruhan Cinta':'Setlist tentang taruhan cinta untuk member inti'};
+var SETLIST_INTI={'Cara Meminum Ramune':'Setlist segar seperti minuman ramune','Te Wo Tsunaginagara':'Setlist sambil bergandengan tangan','Pertaruhan Cinta':'Setlist tentang taruhan cinta untuk member inti'};
 var SETLIST_TRAINEE={'Pajama Drive':'Setlist klasik untuk member trainee'};
 var SETLIST_INFO=Object.assign({},SETLIST_INTI,SETLIST_TRAINEE);
 var db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
@@ -1080,6 +1080,21 @@ function addActivity(memberName,change,newValue,setlist,status){
     renderActivityLog();
 }
 
+function addActivityFailed(failedEntry){
+    var activity={
+        member:failedEntry,
+        change:0,
+        newValue:null,
+        setlist:null,
+        status:'failed',
+        time:new Date().toISOString()
+    };
+    activityLog.unshift(activity);
+    if(activityLog.length>50) activityLog=activityLog.slice(0,50);
+    saveActivityLog();
+    renderActivityLog();
+}
+
 function renderActivityLog(){
     var logEl=document.getElementById('activityLog');
     if(activityLog.length===0){
@@ -1089,6 +1104,11 @@ function renderActivityLog(){
     logEl.innerHTML=activityLog.map(function(log){
         var time=new Date(log.time);
         var timeStr=time.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+        
+        if(log.status==='failed'){
+            return'<div class="activity-item" style="--color:#ef4444"><div class="activity-icon">✗</div><div class="activity-content"><div class="activity-text" style="color:#ef4444">Gagal: '+log.member+'</div><div class="activity-time">'+timeStr+' • Bulk Add Gagal</div></div></div>';
+        }
+        
         var icon=log.change>0?'+':'−';
         var color=log.change>0?'#22c55e':'#ef4444';
         var action=log.change>0?'+':'';
@@ -1778,7 +1798,7 @@ async function bulkAddShows(){
         // Reload data members
         await loadData();
         
-        // Add activity logs
+        // Add activity logs untuk yang berhasil
         bulkData.forEach(function(showData) {
             var member = members.find(function(m) { return m.id === showData.member_id });
             if (member) {
@@ -1788,9 +1808,13 @@ async function bulkAddShows(){
                 } else if (showData.is_birthday_show) {
                     activityText += ' (STS ' + showData.birthday_member + ')';
                 }
-                
                 addActivity(member.name, 1, member.show, activityText, member.status);
             }
+        });
+
+        // Add activity logs untuk yang GAGAL
+        failedNames.forEach(function(failedEntry) {
+            addActivityFailed(failedEntry);
         });
         
         closeBulkAddModal();

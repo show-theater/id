@@ -11,22 +11,25 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-/* Semua CSS tetap sama */
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:Arial,sans-serif;background:#f5f5f5;color:#333;min-height:100vh;padding:0;transition:background 0.3s,color 0.3s}
 body.dark{background:#0a0e1a;color:#e5e7eb}
 
 /* Header System */
-.main-header{position:fixed;top:0;left:0;right:0;background:#fff;z-index:1001;border-bottom:1px solid #ddd;transition:background 0.3s,border-color 0.3s}
-body.dark .main-header{background:#111827;border-color:#1f2937}
+.main-header{position:fixed;top:0;left:0;right:0;z-index:1001;}
 
-.detail-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:#fff;border-bottom:1px solid #ddd;transition:background 0.3s,border-color 0.3s}
+/* Baris 1 - Background merah JKT48 SHOW THEATER */
+.header-top-bar{background:#e60012;text-align:center;padding:7px 20px;}
+.header-top-title{font-size:13px;font-weight:bold;color:#fff;letter-spacing:0.5px;}
+
+/* Baris 2 - Navigasi */
+.detail-header{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:#fff;border-bottom:1px solid #ddd;transition:background 0.3s,border-color 0.3s}
 body.dark .detail-header{background:#111827;border-color:#1f2937}
-.back-btn{background:transparent;border:none;color:#333;font-size:16px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;padding:8px 0;transition:all 0.3s}
+.back-btn{background:transparent;border:none;color:#333;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;padding:6px 0;transition:all 0.3s}
 body.dark .back-btn{color:#e5e7eb}
 .back-btn:hover{opacity:0.7}
 .detail-title{
-  font-size:16px;
+  font-size:15px;
   font-weight:bold;
   color:#333;
   text-align:center;
@@ -42,7 +45,7 @@ body.dark .detail-title{color:#e5e7eb}
 .container{
   max-width:480px;
   width:100%;
-  margin:90px auto 20px;
+  margin:110px auto 20px;
   background:transparent;
   border-radius:0;
   overflow:visible;
@@ -52,68 +55,43 @@ body.dark .detail-title{color:#e5e7eb}
 }
 body.dark .container{background:transparent;box-shadow:none}
 
-.header{
-  background:linear-gradient(135deg,var(--gen-color),var(--gen-color-dark));
-  padding:18px;
-  text-align:left;
-  position:relative;
+/* Header dalam container dengan warna generasi */
+.container-header{
+  background:var(--gen-color);
+  padding:12px 18px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
   border-radius:0;
+  margin-bottom:0;
+  position:relative;
 }
-.header h1{font-size:16px;margin:0;color:#fff;font-weight:600}
-
-/* Tombol Share Bulat di Kanan Atas Container */
-.share-circle-btn{
-  position:absolute;
-  top:2px !important;
-  right:60px;
-  background:var(--gen-color);
-  border:none;
-  width:44px;
-  height:44px;
-  border-radius:50%;
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:10px;
-  transition:all 0.3s;
-  z-index:100;
-}
-.share-circle-btn:hover{
-  background:var(--gen-color-dark);
-  transform:scale(1.1);
-}
-.share-circle-btn svg{
-  width:20px;
-  height:20px;
+.container-header .profile-title{
+  font-size:16px;
+  font-weight:bold;
   color:#fff;
+  margin:0;
 }
-
-/* Tombol Show History */
-.show-history-btn{
-  position:absolute;
-  top:2px !important;
-  right:10px;
-  background:var(--gen-color);
+.container-header .show-history-btn{
+  background:rgba(255,255,255,0.2);
   border:none;
-  width:44px;
-  height:44px;
+  width:36px;
+  height:36px;
   border-radius:50%;
   cursor:pointer;
   display:flex;
   align-items:center;
   justify-content:center;
-  padding:10px;
+  padding:8px;
   transition:all 0.3s;
-  z-index:100;
 }
-.show-history-btn:hover{
-  background:var(--gen-color-dark);
+.container-header .show-history-btn:hover{
+  background:rgba(255,255,255,0.3);
   transform:scale(1.1);
 }
-.show-history-btn svg{
-  width:20px;
-  height:20px;
+.container-header .show-history-btn svg{
+  width:18px;
+  height:18px;
   color:#fff;
 }
 
@@ -140,18 +118,19 @@ body.dark .photo{
   color:#6b7280;
   font-weight:600;
   font-size:24px;
+  margin:0 auto;
 }
 body.dark .photo-error{background:#1a1a1a;color:#9ca3af}
 
 .member-name{text-align:center;font-size:20px;font-weight:bold;color:#333;margin:10px 0 20px}
 body.dark .member-name{color:#e5e7eb}
 
-/* ABOUT - TERPISAH DARI PROGRESS */
-.about-section{
+/* PANEL KIRI - FOTO + PROGRES */
+.left-panel{
   margin:0 18px 24px;
   background:transparent;
 }
-.about-title{
+.left-panel .panel-title{
   font-size:16px;
   font-weight:bold;
   color:#333;
@@ -159,57 +138,9 @@ body.dark .member-name{color:#e5e7eb}
   padding-bottom:8px;
   border-bottom:2px solid #e60012;
 }
-body.dark .about-title{color:#e5e7eb;border-color:#ff3366}
+body.dark .left-panel .panel-title{color:#e5e7eb;border-color:#ff3366}
 
-.info-row{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:8px 0;
-  border-bottom:1px solid #e5e7eb;
-}
-.info-row:last-child{border-bottom:none}
-body.dark .info-row{border-bottom-color:#374151}
-
-.info-label{
-  color:#6b7280;
-  font-size:12px;
-  font-weight:600;
-  flex-shrink:0;
-  width:90px;
-}
-body.dark .info-label{color:#9ca3af}
-.info-value{
-  color:#333;
-  font-size:12px;
-  font-weight:600;
-  text-align:right;
-  flex:1;
-}
-body.dark .info-value{color:#e5e7eb}
-
-.content{padding:0 0 18px}
-
-/* PROGRESS SECTION - JUDUL SEPERTI ABOUT */
-.progress-section{
-  margin:0 18px 24px;
-  border-top:1px solid #e5e7eb;
-  padding-top:16px;
-  background:transparent;
-}
-
-body.dark .progress-section{border-color:#374151}
-.progress-title{
-  font-size:16px;
-  font-weight:bold;
-  color:#333;
-  margin-bottom:12px;
-  padding-bottom:8px;
-  border-bottom:2px solid #e60012;
-}
-body.dark .progress-title{color:#e5e7eb;border-color:#ff3366}
-
-/* PROGRESS MILESTONE: TERPISAH DARI ABOUT */
+/* PROGRESS MILESTONE */
 .milestone-card{
   background:transparent;
   border:none;
@@ -268,14 +199,53 @@ body.dark .progress-text{color:#9ca3af}
 }
 body.dark .progress-info{color:#9ca3af}
 
-/* SOCIAL MEDIA: Tanpa card */
-.social-section{
-  margin:0 18px 12px;
-  border-top:1px solid #e5e7eb;
-  padding-top:16px;
+/* PANEL KANAN - ABOUT + SOCIAL */
+.right-panel{
+  margin:0 18px 24px;
   background:transparent;
 }
-body.dark .social-section{border-color:#374151}
+.right-panel .panel-title{
+  font-size:16px;
+  font-weight:bold;
+  color:#333;
+  margin-bottom:12px;
+  padding-bottom:8px;
+  border-bottom:2px solid #e60012;
+}
+body.dark .right-panel .panel-title{color:#e5e7eb;border-color:#ff3366}
+
+.info-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:8px 0;
+  border-bottom:1px solid #e5e7eb;
+}
+.info-row:last-child{border-bottom:none}
+body.dark .info-row{border-bottom-color:#374151}
+
+.info-label{
+  color:#6b7280;
+  font-size:12px;
+  font-weight:600;
+  flex-shrink:0;
+  width:90px;
+}
+body.dark .info-label{color:#9ca3af}
+.info-value{
+  color:#333;
+  font-size:12px;
+  font-weight:600;
+  text-align:right;
+  flex:1;
+}
+body.dark .info-value{color:#e5e7eb}
+
+/* SOCIAL MEDIA - Tanpa card */
+.social-section{
+  margin-top:16px;
+  background:transparent;
+}
 .social-title{
   font-size:16px;
   font-weight:bold;
@@ -349,16 +319,20 @@ body.dark .social-arrow{color:#e5e7eb}
 }
 body.dark .empty-social{background:transparent;color:#9ca3af;border-color:#374151}
 
-/* Footer */
+/* Footer - Menyatu dengan konten */
 .detail-footer{
   text-align:center;
   padding:12px;
   color:#6b7280;
   font-size:10px;
   border-top:1px solid #e5e7eb;
-  margin-top:12px;
+  margin-top:0;
+  width:100%;
 }
-body.dark .detail-footer{color:#9ca3af;border-top-color:#374151}
+body.dark .detail-footer{
+  color:#9ca3af;
+  border-top-color:#374151;
+}
 
 /* Skeleton Loading */
 .skeleton-loading{padding:20px;animation:skeleton-pulse 1.5s ease-in-out infinite}
@@ -393,7 +367,6 @@ body.dark .spinner{border-color:rgba(255,255,255,0.1);border-top-color:#9ca3af}
 @media (hover: none) and (pointer: coarse) {
   .back-btn:active,
   .theme-toggle-detail:active,
-  .share-circle-btn:active,
   .show-history-btn:active,
   .social-link:active {
     opacity: 0.7;
@@ -410,45 +383,33 @@ body.dark .spinner{border-color:rgba(255,255,255,0.1);border-top-color:#9ca3af}
   }
   .container{
     max-width:100%;
-    margin:70px 0 15px;
+    margin:95px 0 0;
     border-radius:0;
   }
-  .share-circle-btn{
-    width:38px;
-    height:38px;
-    top:2px;
-    right:52px;
+  .container-header{
+    padding:10px 14px;
   }
-  .share-circle-btn svg{
-    width:18px;
-    height:18px;
+  .container-header .profile-title{
+    font-size:14px;
   }
-  .show-history-btn{
-    width:38px;
-    height:38px;
-    top:2px;
-    right:8px;
+  .container-header .show-history-btn{
+    width:32px;
+    height:32px;
   }
-  .show-history-btn svg{
-    width:18px;
-    height:18px;
+  .container-header .show-history-btn svg{
+    width:16px;
+    height:16px;
   }
-  .header{
-    padding:14px;
-    border-radius:0;
-  }
-  .header h1{font-size:15px}
   .photo,.photo-error{
     width:120px;
     height:170px;
     border-radius:0;
   }
   .member-name{font-size:18px;margin:8px 0 15px}
-  .about-section,.progress-section,.social-section{
+  .left-panel, .right-panel{
     margin:0 14px 20px;
-    padding-top:12px;
   }
-  .about-title,.progress-title,.social-title{
+  .left-panel .panel-title, .right-panel .panel-title, .social-title{
     font-size:15px;
     margin-bottom:10px;
     padding-bottom:6px;
@@ -476,267 +437,217 @@ body.dark .spinner{border-color:rgba(255,255,255,0.1);border-top-color:#9ca3af}
   .skeleton-info.small{height:28px}
 }
 
-/* ============= DESKTOP LAYOUT ============= */
+/* ============= DESKTOP LAYOUT - FULL ONE SIZE ============= */
 @media (min-width: 1025px) {
+    /* Header dua baris desktop */
     .main-header {
-        position: relative;
-        background: #e60012;
-        border: none;
-        padding: 0;
+        position: fixed !important;
+        top: 0; left: 0; right: 0;
+        z-index: 1001;
     }
-    
-    .detail-header {
-        background: #e60012;
-        border: none;
-    }
-    
-    .back-btn {
-        color: #fff;
-    }
-    
-    .detail-title {
-        color: #fff;
-        font-size: 20px;
-    }
-    
-    body.dark .detail-header {
-        background: #e60012;
-    }
-    
-    body.dark .back-btn {
-        color: #fff;
-    }
-    
-    body.dark .detail-title {
-        color: #fff;
-    }
-    
+    .header-top-bar { background: #e60012 !important; padding: 8px 40px; }
+    .header-top-title { font-size: 15px; }
+    .detail-header { background: #fff; border-bottom: 1px solid #ddd; padding: 14px 40px; }
+    body.dark .detail-header { background: #111827 !important; border-color: #1f2937 !important; }
+    .back-btn { color: #333 !important; font-size: 16px; }
+    body.dark .back-btn { color: #e5e7eb !important; }
+    .detail-title { color: #333 !important; font-size: 20px; }
+    body.dark .detail-title { color: #e5e7eb !important; }
+
+    /* Container full width tanpa card, tanpa scroll */
     .container {
-        max-width: 1200px;
-        margin: 30px auto;
-        display: flex;
-        border-radius: 0;
-        overflow: visible;
-        min-height: 600px;
-        background: transparent;
-        box-shadow: none;
-    }
-    
-    .header {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        border-radius: 0;
-        z-index: 1;
-    }
-    
-    /* Left Side - Photo & About */
-    .photo-container {
-        margin-top: 80px;
-        margin-bottom: 30px;
-    }
-    
-    .photo, .photo-error {
-        width: 200px;
-        height: 280px;
-    }
-    
-    .member-name {
-        font-size: 26px;
-        margin: 20px 0 30px 0;
-    }
-    
-    .about-section {
-        flex: 0 0 350px;
-        border-right: 1px solid #e5e7eb;
-        padding: 30px;
-        margin: 0;
-        padding-top: 80px;
+        max-width: 100%;
+        width: 100%;
+        margin: 95px 0 0; /* 2-row header */
+        padding: 0;
         display: flex;
         flex-direction: column;
+        min-height: calc(100vh - 95px);
+        background: #fff;
+        box-shadow: none;
+        border-radius: 0;
     }
-    
-    body.dark .about-section {
+    body.dark .container {
+        background: #111827;
+    }
+
+    /* Header dalam container untuk desktop - tanpa border radius */
+    .container-header {
+        width: 100%;
+        padding: 16px 40px;
+        background: var(--gen-color);
+        border-bottom: 1px solid rgba(255,255,255,0.2);
+        position: relative;
+        top: 0;
+    }
+    .container-header .profile-title {
+        font-size: 20px;
+        font-weight: 600;
+    }
+    .container-header .show-history-btn {
+        width: 44px;
+        height: 44px;
+    }
+    .container-header .show-history-btn svg {
+        width: 22px;
+        height: 22px;
+    }
+
+    /* Main content - flex row, full width, tanpa card */
+    .main-content {
+        display: flex;
+        flex: 1;
+        width: 100%;
+    }
+
+    /* ===== PANEL KIRI: Foto + Progres - tanpa border radius, full height ===== */
+    .left-panel {
+        width: 320px;
+        padding: 40px 30px;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: #fff;
+        border-right: 1px solid #e5e7eb;
+    }
+    body.dark .left-panel {
+        background: #111827;
         border-right-color: #374151;
     }
-    
-    .about-title {
-        font-size: 18px;
-        margin-bottom: 20px;
-        padding-bottom: 10px;
+
+    .photo-container { margin: 0 0 15px 0; }
+    .photo, .photo-error { width: 160px; height: 220px; }
+    .member-name { font-size: 22px; margin: 10px 0 25px 0; text-align: center; }
+
+    .left-panel .panel-title { 
+        font-size: 18px; 
+        margin-bottom: 15px; 
+        padding-bottom: 10px; 
+        width: 100%;
+        border-bottom-width: 2px;
     }
-    
-    .info-row {
-        padding: 12px 0;
-    }
-    
-    .info-label {
-        font-size: 14px;
-        width: 120px;
-    }
-    
-    .info-value {
-        font-size: 14px;
-    }
-    
-    /* Right Side - Progress & Social Media */
-    .content {
+
+    .milestone-card { width: 100%; }
+    .milestone-header { margin-bottom: 12px; }
+    .milestone-title { font-size: 13px; }
+    .milestone-target { font-size: 16px; }
+    .progress-bar-container { height: 18px; border-radius: 9px; margin-bottom: 8px; }
+    .progress-text { font-size: 11px; }
+    .progress-info { font-size: 11px; }
+
+    /* ===== PANEL KANAN: About + Social Media - tanpa card, full height ===== */
+    .right-panel {
         flex: 1;
-        padding: 80px 30px 30px 30px;
+        padding: 40px 50px;
+        background: #fff;
         display: flex;
         flex-direction: column;
     }
-    
-    .share-circle-btn {
-        top: 10px;
-        right: 70px;
-        width: 50px;
-        height: 50px;
+    body.dark .right-panel { background: #111827; }
+
+    .right-panel .panel-title { 
+        font-size: 20px; 
+        margin-bottom: 20px; 
+        padding-bottom: 12px; 
+        border-bottom-width: 2px;
     }
-    
-    .share-circle-btn svg {
-        width: 24px;
-        height: 24px;
-    }
-    
-    .show-history-btn {
-        top: 10px;
-        right: 10px;
-        width: 50px;
-        height: 50px;
-    }
-    
-    .show-history-btn svg {
-        width: 24px;
-        height: 24px;
-    }
-    
-    .progress-section {
-        margin: 0 0 30px 0;
-        border-top: none;
-        padding-top: 0;
-        border-bottom: 1px solid #e5e7eb;
-        padding-bottom: 30px;
-    }
-    
-    body.dark .progress-section {
-        border-bottom-color: #374151;
-    }
-    
-    .progress-title {
-        font-size: 18px;
-        margin-bottom: 20px;
-        padding-bottom: 10px;
-    }
-    
-    .milestone-header {
-        margin-bottom: 15px;
-    }
-    
-    .milestone-title {
-        font-size: 12px;
-    }
-    
-    .milestone-target {
-        font-size: 16px;
-    }
-    
-    .progress-bar-container {
-        height: 20px;
-        border-radius: 10px;
-        margin-bottom: 10px;
-    }
-    
-    .progress-text {
-        font-size: 11px;
-    }
-    
-    .progress-info {
-        font-size: 11px;
-    }
-    
+    .info-row { padding: 14px 0; }
+    .info-label { font-size: 15px; width: 140px; }
+    .info-value { font-size: 15px; }
+
+    /* Social Media - tanpa card */
     .social-section {
-        margin: 0;
-        padding-top: 30px;
-        border-top: none;
-        flex: 1;
+        width: 100%;
+        margin-top: 25px;
+        padding-top: 0;
+        background: transparent;
     }
-    
-    .social-title {
-        font-size: 18px;
-        margin-bottom: 15px;
-        padding-bottom: 10px;
+    .social-title { 
+        font-size: 20px; 
+        margin-bottom: 15px; 
+        padding-bottom: 12px; 
+        border-bottom-width: 2px;
     }
-    
-    .social-link {
-        padding: 12px 0;
-    }
-    
-    .social-icon {
-        width: 42px;
-        height: 42px;
-        border-radius: 10px;
-    }
-    
-    .social-icon svg {
-        width: 20px;
-        height: 20px;
-    }
-    
-    .social-name {
-        font-size: 13px;
-    }
-    
-    .social-handle {
-        font-size: 11px;
-    }
-    
-    .social-arrow {
-        font-size: 15px;
-    }
-    
+    .social-link { padding: 12px 0; }
+    .social-icon { width: 44px; height: 44px; border-radius: 12px; }
+    .social-icon svg { width: 20px; height: 20px; }
+    .social-name { font-size: 15px; }
+    .social-handle { font-size: 13px; }
+    .social-arrow { font-size: 16px; }
+
+    /* Footer - full width, tanpa border radius */
     .detail-footer {
-        padding: 20px;
-        font-size: 12px;
-        max-width: 1200px;
-        margin: 0 auto;
+        width: 100%;
+        padding: 18px 40px;
+        font-size: 13px;
         border: none;
         border-top: 1px solid #e5e7eb;
-        margin-top: 40px;
+        background: #fff;
+        margin: 0;
+        text-align: center;
     }
-    
     body.dark .detail-footer {
+        background: #111827;
         border-top-color: #374151;
     }
-    
-    /* Skeleton Loading for Desktop */
+
+    /* Skeleton loading full one size */
     .skeleton-loading {
         display: flex;
-        gap: 30px;
-        padding: 30px;
+        flex-direction: column;
+        padding: 0;
+        min-height: calc(100vh - 95px);
+        width: 100%;
     }
-    
-    .skeleton-photo {
-        width: 200px;
-        height: 280px;
-        margin: 80px 0 0 0;
+    .skeleton-header {
+        height: 77px;
+        background: #e5e7eb;
+        width: 100%;
     }
-    
-    .skeleton-name {
-        width: 200px;
-        height: 30px;
-        margin: 20px 0;
-    }
-    
-    .skeleton-info {
-        flex: 0 0 300px;
-        height: 400px;
-    }
-    
-    .skeleton-info.small {
+    .skeleton-main {
+        display: flex;
         flex: 1;
-        height: 150px;
+        width: 100%;
+    }
+    .skeleton-left {
+        width: 320px;
+        padding: 40px 30px;
+        border-right: 1px solid #e5e7eb;
+    }
+    .skeleton-right {
+        flex: 1;
+        padding: 40px 50px;
+    }
+    .skeleton-photo {
+        width: 160px;
+        height: 220px;
+        margin: 0 auto 20px;
+    }
+    .skeleton-name {
+        width: 160px;
+        height: 26px;
+        margin: 0 auto 25px;
+    }
+    .skeleton-info {
+        width: 100%;
+        height: 45px;
+        margin-bottom: 12px;
+    }
+    .skeleton-footer {
+        height: 67px;
+        background: #e5e7eb;
+        width: 100%;
+        border-top: 1px solid #e5e7eb;
+    }
+    body.dark .skeleton-header,
+    body.dark .skeleton-footer,
+    body.dark .skeleton-photo,
+    body.dark .skeleton-name,
+    body.dark .skeleton-info,
+    body.dark .skeleton-left {
+        background: #1f2937;
+        border-color: #374151;
     }
 }
 </style>
@@ -745,6 +656,11 @@ body.dark .spinner{border-color:rgba(255,255,255,0.1);border-top-color:#9ca3af}
 
 <!-- Header System -->
 <header class="main-header">
+  <!-- Baris 1: Background merah -->
+  <div class="header-top-bar">
+    <span class="header-top-title">JKT48 SHOW THEATER</span>
+  </div>
+  <!-- Baris 2: Navigasi -->
   <div class="detail-header">
     <button onclick="goBack()" class="back-btn" aria-label="Kembali ke halaman utama">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -752,7 +668,7 @@ body.dark .spinner{border-color:rgba(255,255,255,0.1);border-top-color:#9ca3af}
       </svg>
       Kembali
     </button>
-    <div class="detail-title">JKT48 SHOW THEATER</div>
+    <div class="detail-title">Anggota JKT48</div>
     <div class="header-controls">
       <button class="theme-toggle-detail" onclick="toggleTheme()" title="Toggle Dark Mode" aria-label="Ubah tema gelap/terang">
         <svg id="themeIconDetail" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
@@ -767,17 +683,28 @@ body.dark .spinner{border-color:rgba(255,255,255,0.1);border-top-color:#9ca3af}
 <div id="toast" class="toast"></div>
 
 <div class="container" id="container">
-  <!-- Skeleton Loading -->
+  <!-- Skeleton Loading akan diganti oleh JavaScript -->
   <div class="skeleton-loading">
-    <div class="skeleton-info"></div>
-    <div class="skeleton-info small"></div>
+    <div class="skeleton-header"></div>
+    <div class="skeleton-main">
+      <div class="skeleton-left">
+        <div class="skeleton-photo"></div>
+        <div class="skeleton-name"></div>
+        <div class="skeleton-info"></div>
+        <div class="skeleton-info"></div>
+      </div>
+      <div class="skeleton-right">
+        <div class="skeleton-info"></div>
+        <div class="skeleton-info"></div>
+        <div class="skeleton-info"></div>
+        <div class="skeleton-info"></div>
+        <div class="skeleton-info"></div>
+        <div class="skeleton-info"></div>
+      </div>
+    </div>
+    <div class="skeleton-footer"></div>
   </div>
 </div>
-
-<!-- Footer -->
-<footer class="detail-footer">
-  <p>JKT48 Show Theater • Data diperbarui secara real-time</p>
-</footer>
 
 <script>
 const SUPABASE_URL = "https://pprxfopqkvpeajeoxzig.supabase.co";
@@ -908,68 +835,26 @@ function renderMember(member) {
   }
   
   document.getElementById('container').innerHTML = `
-    <div class="header">
-      <h1>Profile Member</h1>
+    <!-- Header dengan warna generasi dan teks Profile Member + tombol show history -->
+    <div class="container-header">
+      <div class="profile-title">Profile Member</div>
+      <button class="show-history-btn" onclick="window.location.href='show.html?member=${encodeURIComponent(member.name)}'" title="Riwayat Show" aria-label="Riwayat Show">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+      </button>
     </div>
     
-    <button class="share-circle-btn" onclick="shareProfile('${member.name}', ${currentShow})" title="Share Profile" aria-label="Share Profile">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
-        <polyline points="16 6 12 2 8 6"></polyline>
-        <line x1="12" y1="2" x2="12" y2="15"></line>
-      </svg>
-    </button>
-    
-    <button class="show-history-btn" onclick="window.location.href='show.html?member=${encodeURIComponent(member.name)}'" title="Riwayat Show" aria-label="Riwayat Show">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-        <line x1="16" y1="2" x2="16" y2="6"></line>
-        <line x1="8" y1="2" x2="8" y2="6"></line>
-        <line x1="3" y1="10" x2="21" y2="10"></line>
-      </svg>
-    </button>
-    
-    <div class="about-section">
-      ${photoHtml}
-      <div class="member-name">${member.name}</div>
-      
-      <div class="about-title">About</div>
-      <div class="info-row">
-        <div class="info-label">Nama</div>
-        <div class="info-value">${member.full_name || member.name}</div>
-      </div>
-      <div class="info-row">
-        <div class="info-label">Tanggal Lahir</div>
-        <div class="info-value">${member.birth_date || '-'}</div>
-      </div>
-      <div class="info-row">
-        <div class="info-label">Golongan Darah</div>
-        <div class="info-value">${member.blood_type || '-'}</div>
-      </div>
-      <div class="info-row">
-        <div class="info-label">Horoskop</div>
-        <div class="info-value">${member.zodiac || '-'}</div>
-      </div>
-      <div class="info-row">
-        <div class="info-label">Tinggi Badan</div>
-        <div class="info-value">${member.height ? member.height + ' cm' : '-'}</div>
-      </div>
-      <div class="info-row">
-        <div class="info-label">Generasi</div>
-        <div class="info-value">${member.gen}</div>
-      </div>
-      ${member.status !== 'trainee' ? `
-      <div class="info-row">
-        <div class="info-label">Team</div>
-        <div class="info-value">${member.team || '-'}</div>
-      </div>
-      ` : ''}
-    </div>
-    
-    <div class="content">
-      <div class="progress-section">
-        <div class="progress-title">Progres</div>
-        
+    <!-- Main Content - Flex container untuk kiri dan kanan -->
+    <div class="main-content">
+      <!-- PANEL KIRI: Foto + Progres -->
+      <div class="left-panel">
+        ${photoHtml}
+        <div class="member-name">${member.name}</div>
+        <div class="panel-title">Progres</div>
         <div class="milestone-card">
           <div class="milestone-header">
             <div class="milestone-title">Progres Milestone</div>
@@ -984,63 +869,102 @@ function renderMember(member) {
           </div>
         </div>
       </div>
-      
-      <div class="social-section">
-        <div class="social-title">Social Media</div>
-        ${member.twitter || member.instagram || member.tiktok ? `
-          ${member.twitter ? `
-          <a href="https://twitter.com/${member.twitter}" target="_blank" class="social-link">
-            <div class="social-icon twitter">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="18" height="18" fill="currentColor">
-                <path d="M357.2 48L427.8 48 273.6 224.2 455 464 313 464 201.7 318.6 74.5 464 3.8 464 168.7 275.5-5.2 48 140.4 48 240.9 180.9 357.2 48z"/>
-              </svg>
+
+      <!-- PANEL KANAN: About + Social Media -->
+      <div class="right-panel">
+        <div class="panel-title">About</div>
+        <div class="info-row">
+          <div class="info-label">Nama</div>
+          <div class="info-value">${member.full_name || member.name}</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Tanggal Lahir</div>
+          <div class="info-value">${member.birth_date || '-'}</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Golongan Darah</div>
+          <div class="info-value">${member.blood_type || '-'}</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Horoskop</div>
+          <div class="info-value">${member.zodiac || '-'}</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Tinggi Badan</div>
+          <div class="info-value">${member.height ? member.height + ' cm' : '-'}</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Generasi</div>
+          <div class="info-value">${member.gen}</div>
+        </div>
+        ${member.status !== 'trainee' ? `
+        <div class="info-row">
+          <div class="info-label">Team</div>
+          <div class="info-value">${member.team || '-'}</div>
+        </div>
+        ` : ''}
+        
+        <!-- SOCIAL MEDIA - Tanpa card -->
+        <div class="social-section">
+          <div class="social-title">Social Media</div>
+          ${member.twitter || member.instagram || member.tiktok ? `
+            ${member.twitter ? `
+            <a href="https://twitter.com/${member.twitter}" target="_blank" class="social-link">
+              <div class="social-icon twitter">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="18" height="18" fill="currentColor">
+                  <path d="M357.2 48L427.8 48 273.6 224.2 455 464 313 464 201.7 318.6 74.5 464 3.8 464 168.7 275.5-5.2 48 140.4 48 240.9 180.9 357.2 48z"/>
+                </svg>
+              </div>
+              <div class="social-info">
+                <div class="social-name">Twitter</div>
+                <div class="social-handle">@${member.twitter}</div>
+              </div>
+              <div class="social-arrow">→</div>
+            </a>
+            ` : ''}
+            ${member.instagram ? `
+            <a href="https://instagram.com/${member.instagram}" target="_blank" class="social-link">
+              <div class="social-icon instagram">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                </svg>
+              </div>
+              <div class="social-info">
+                <div class="social-name">Instagram</div>
+                <div class="social-handle">@${member.instagram}</div>
+              </div>
+              <div class="social-arrow">→</div>
+            </a>
+            ` : ''}
+            ${member.tiktok ? `
+            <a href="https://tiktok.com/@${member.tiktok}" target="_blank" class="social-link">
+              <div class="social-icon tiktok">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>
+                </svg>
+              </div>
+              <div class="social-info">
+                <div class="social-name">TikTok</div>
+                <div class="social-handle">@${member.tiktok}</div>
+              </div>
+              <div class="social-arrow">→</div>
+            </a>
+            ` : ''}
+          ` : `
+            <div class="empty-social">
+              <p>Social media tidak tersedia untuk member ini</p>
             </div>
-            <div class="social-info">
-              <div class="social-name">Twitter</div>
-              <div class="social-handle">@${member.twitter}</div>
-            </div>
-            <div class="social-arrow">→</div>
-          </a>
-          ` : ''}
-          
-          ${member.instagram ? `
-          <a href="https://instagram.com/${member.instagram}" target="_blank" class="social-link">
-            <div class="social-icon instagram">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-              </svg>
-            </div>
-            <div class="social-info">
-              <div class="social-name">Instagram</div>
-              <div class="social-handle">@${member.instagram}</div>
-            </div>
-            <div class="social-arrow">→</div>
-          </a>
-          ` : ''}
-          
-          ${member.tiktok ? `
-          <a href="https://tiktok.com/@${member.tiktok}" target="_blank" class="social-link">
-            <div class="social-icon tiktok">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>
-              </svg>
-            </div>
-            <div class="social-info">
-              <div class="social-name">TikTok</div>
-              <div class="social-handle">@${member.tiktok}</div>
-            </div>
-            <div class="social-arrow">→</div>
-          </a>
-          ` : ''}
-        ` : `
-          <div class="empty-social">
-            <p>Social media tidak tersedia untuk member ini</p>
-          </div>
-        `}
+          `}
+        </div>
       </div>
     </div>
+
+    <!-- Footer - Menyatu dengan konten -->
+    <footer class="detail-footer">
+      <p>JKT48 Show Theater • Data diperbarui secara real-time</p>
+    </footer>
   `;
 }
 
@@ -1060,39 +984,6 @@ function goBack() {
   } else {
     window.location.href = 'index.html';
   }
-}
-
-async function shareProfile(memberName, showCount) {
-  const shareText = `Lihat profil ${memberName} di JKT48 Show Theater! Total ${showCount} penampilan.`;
-  const shareUrl = window.location.href;
-  
-  if (!navigator.share) {
-    copyToClipboard(shareUrl);
-    return;
-  }
-  
-  try {
-    await navigator.share({
-      title: `${memberName} - JKT48 Show Theater`,
-      text: shareText,
-      url: shareUrl
-    });
-    showToast('Profile berhasil dibagikan!', 'success');
-  } catch (err) {
-    if (err.name !== 'AbortError') {
-      console.log('Error sharing:', err);
-      copyToClipboard(shareUrl);
-    }
-  }
-}
-
-function copyToClipboard(text) {
-  navigator.clipboard.writeText(text).then(() => {
-    showToast('Link telah disalin ke clipboard!', 'success');
-  }).catch(err => {
-    console.error('Copy failed:', err);
-    showToast('Gagal menyalin link', 'error');
-  });
 }
 
 function showToast(message, type = 'success') {

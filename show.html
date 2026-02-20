@@ -17,8 +17,8 @@ body.dark{background:#0a0e1a;color:#e5e7eb}
 .main-header{position:fixed;top:0;left:0;right:0;background:#fff;z-index:1001;border-bottom:1px solid #ddd;transition:background 0.3s,border-color 0.3s}
 body.dark .main-header{background:#111827;border-color:#1f2937}
 
-.theater-header{text-align:center;padding:10px 20px;font-size:14px;font-weight:bold;color:#333;letter-spacing:1px}
-body.dark .theater-header{color:#e5e7eb}
+.theater-header{text-align:center;padding:8px 20px;font-size:14px;font-weight:bold;color:#fff;letter-spacing:1px;background:#e60012;}
+body.dark .theater-header{color:#fff;background:#e60012;}
 
 .detail-header{
     display:flex;
@@ -26,7 +26,6 @@ body.dark .theater-header{color:#e5e7eb}
     justify-content:space-between;
     padding:12px 20px;
     background:#fff;
-    border-top:1px solid #eee;
     border-bottom:1px solid #ddd;
     transition:background 0.3s,border-color 0.3s;
 }
@@ -104,6 +103,7 @@ body.dark .detail-title{color:#e5e7eb}
     padding:20px;
     text-align:center;
     border-bottom:1px solid #e5e7eb;
+    overflow:visible;
 }
 body.dark .member-info{
     border-bottom-color:#374151;
@@ -137,6 +137,7 @@ body.dark .photo{
     color:#6b7280;
     font-weight:600;
     font-size:24px;
+    margin:0 auto;
 }
 body.dark .photo-error{
     background:#1a1a1a;
@@ -189,26 +190,26 @@ body.dark .stat-label{color:#9ca3af}
 }
 
 .filter-section{
-    padding:15px 20px;
+    padding:10px 14px;
     background:#f9fafb;
     border-bottom:1px solid #e5e7eb;
     display:flex;
-    gap:10px;
-    overflow-x:auto;
+    flex-wrap:wrap;
+    gap:6px;
+    margin-top:8px;
 }
 body.dark .filter-section{
     background:#1f2937;
     border-bottom-color:#374151;
 }
-.filter-section::-webkit-scrollbar{display:none}
 
 .filter-btn{
-    padding:10px 18px;
+    padding:7px 14px;
     border-radius:20px;
     border:2px solid #e5e7eb;
     background:#fff;
     color:#6b7280;
-    font-size:13px;
+    font-size:12px;
     font-weight:600;
     cursor:pointer;
     white-space:nowrap;
@@ -499,188 +500,169 @@ body.dark .skeleton-card{background:#374151}
 }
 
 @media (min-width: 1025px) {
+    /* Header fixed */
     .main-header {
-        position: relative;
-        background: #fff;
-        border-bottom: 1px solid #ddd;
-        margin-bottom: 30px;
+        position: fixed !important;
+        top: 0; left: 0; right: 0;
+        background: #fff !important;
+        border-bottom: 1px solid #ddd !important;
+        margin-bottom: 0 !important;
+        z-index: 1001;
     }
-    
-    .theater-header {
-        color: #333;
-        font-size: 16px;
-        padding: 12px 20px;
-        letter-spacing: 1px;
-    }
-    
-    .detail-header {
-        background: #fff;
-        border-top: none;
-        border-bottom: 1px solid #ddd;
-    }
-    
-    body.dark .main-header {
-        background: #111827;
-        border-color: #1f2937;
-    }
-    
-    body.dark .theater-header {
-        color: #e5e7eb;
-    }
-    
-    body.dark .detail-header {
-        background: #111827;
-        border-color: #1f2937;
-    }
-    
+    body.dark .main-header { background: #111827 !important; border-color: #1f2937 !important; }
+    .theater-header { color: #fff !important; background: #e60012 !important; font-size: 15px; padding: 10px 20px; letter-spacing: 1px; }
+    .detail-header { background: #fff !important; border-top: none; border-bottom: 1px solid #ddd; }
+    body.dark .theater-header { color: #fff !important; background: #e60012 !important; }
+    body.dark .detail-header { background: #111827 !important; border-color: #1f2937; }
+
+    .header { display: none; }
+
+    /* Container block biasa */
     .container {
-        max-width: 1200px;
-        margin: 0 auto 40px;
-        display: flex;
-        border-radius: 0;
+        max-width: none;
+        width: 100%;
+        margin: 0;
+        padding-top: 0;
+        display: block;
         background: transparent;
         box-shadow: none;
-        min-height: 600px;
+        min-height: 100vh;
     }
-    
-    .header {
-        display: none;
-    }
-    
-    /* Left Side - Member Info */
+
+    /* ===== PANEL KIRI: Foto + Filter — FIXED tidak bisa scroll ===== */
     .member-info {
-        flex: 0 0 300px;
+        position: fixed;
+        top: 90px;
+        left: 0;
+        width: 280px;
+        height: calc(100vh - 90px);
+        overflow-y: auto;
         border-bottom: none;
         border-right: 1px solid #e5e7eb;
-        padding: 30px;
+        padding: 28px 20px 0;
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: flex-start;
+        background: #fff;
+        box-shadow: 2px 0 8px rgba(0,0,0,0.04);
+        z-index: 100;
     }
-    
     body.dark .member-info {
+        background: #111827;
         border-right-color: #374151;
+        box-shadow: 2px 0 8px rgba(0,0,0,0.2);
     }
-    
-    .photo-container {
-        margin: 0 0 25px 0;
-    }
-    
-    .photo, .photo-error {
-        width: 200px;
-        height: 280px;
-    }
-    
-    .member-name {
-        font-size: 26px;
-        margin-bottom: 25px;
-    }
-    
-    .member-stats {
-        gap: 50px;
+
+    /* Foto diberi margin-top agar turun */
+    .member-info .photo-container {
         margin-top: 20px;
+        margin-bottom: 12px;
+        flex-shrink: 0;
     }
-    
-    .stat-number {
-        font-size: 32px;
-    }
-    
-    .stat-label {
-        font-size: 14px;
-    }
-    
-    .content {
-        padding: 30px;
-        overflow-y: auto;
-    }
-    
-    .filter-section {
-        padding: 20px 0;
-        border-bottom: 1px solid #e5e7eb;
-        margin-bottom: 25px;
-        background: transparent;
-        position: sticky;
-        top: 0;
-        z-index: 10;
-    }
-    
-    body.dark .filter-section {
-        border-bottom-color: #374151;
-        background: transparent;
-    }
-    
-    .filter-btn {
-        padding: 12px 20px;
-        font-size: 14px;
-    }
-    
-    .show-list {
-        gap: 20px;
-    }
-    
-    .show-card {
-        padding: 22px;
-    }
-    
-    .show-date {
-        font-size: 17px;
-    }
-    
-    .show-time {
-        font-size: 14px;
-    }
-    
-    .show-time svg {
-        width: 16px;
-        height: 16px;
-    }
-    
-    .show-setlist {
-        font-size: 16px;
-    }
-    
-    .show-badge {
-        font-size: 12px;
-        padding: 6px 14px;
-    }
-    
-    .live-badge {
-        font-size: 12px;
-        padding: 8px 14px;
-    }
-    
-    .sts-badge,
-    .lastshow-badge {
-        font-size: 12px;
-        padding: 8px 14px;
-    }
-    
-    .live-dot {
-        width: 8px;
-        height: 8px;
-    }
-    
-    .detail-footer {
-        padding: 20px;
-        font-size: 12px;
-        max-width: 1200px;
-        margin: 0 auto;
-        border: none;
+    .photo, .photo-error { width: 150px; height: 210px; }
+    .member-name { font-size: 20px; margin-bottom: 10px; flex-shrink: 0; }
+    .member-stats { gap: 30px; margin-top: 8px; flex-shrink: 0; }
+    .stat-number { font-size: 26px; }
+    .stat-label { font-size: 12px; }
+
+    /* Filter di panel kiri — di bawah foto, no scroll */
+    .member-info .filter-section {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 5px;
+        overflow: visible;
+        padding: 10px 0 0;
+        margin-top: 20px;
         border-top: 1px solid #e5e7eb;
-        margin-top: 40px;
+        width: 100%;
+        background: transparent;
+        border-bottom: none;
     }
-    
-    body.dark .detail-footer {
+    body.dark .member-info .filter-section {
         border-top-color: #374151;
     }
-    
-    .skeleton-loading {
-        padding: 30px;
+    .member-info .filter-btn {
+        padding: 7px 12px;
+        font-size: 11px;
+        border-radius: 8px;
+        text-align: left;
+        width: 100%;
+        white-space: normal;
+        border: 1px solid #e5e7eb;
     }
-    
-    .skeleton-card {
-        height: 120px;
+    body.dark .member-info .filter-btn {
+        border-color: #374151;
+    }
+
+    /* ===== PANEL KANAN: Show list — bisa scroll, tanpa filter ===== */
+    .content {
+        margin-left: 280px;
+        padding: 110px 30px 50px;
+        min-height: 100vh;
+        background: #fff;
+        overflow-y: auto;
+        position: relative;
+    }
+    body.dark .content { background: #111827; }
+
+    /* Sembunyikan filter di panel kanan */
+    .content .filter-section {
+        display: none;
+    }
+
+    .content .filter-section .filter-btn {
+        padding: 10px 18px;
+        font-size: 13px;
+        border-radius: 30px;
+    }
+
+    .show-list { gap: 20px; }
+    .show-card { padding: 22px; border-radius: 14px; }
+    .show-date { font-size: 17px; }
+    .show-time { font-size: 14px; }
+    .show-time svg { width: 16px; height: 16px; }
+    .show-setlist { font-size: 16px; }
+    .show-badge { font-size: 12px; padding: 6px 14px; }
+    .live-badge { font-size: 12px; padding: 8px 14px; }
+    .sts-badge, .lastshow-badge { font-size: 12px; padding: 8px 14px; }
+    .live-dot { width: 8px; height: 8px; }
+
+    .detail-footer {
+        margin-left: 280px;
+        padding: 20px 30px;
+        font-size: 12px;
+        border: none;
+        border-top: 1px solid #e5e7eb;
+    }
+    body.dark .detail-footer { border-top-color: #374151; }
+
+    .skeleton-loading { padding: 110px 30px 30px 310px; }
+    .skeleton-card { height: 120px; }
+}
+
+/* Pada mobile (<1025px) sembunyikan filter di panel kanan */
+@media (max-width: 1024px) {
+    .content .filter-section {
+        display: none;
+    }
+    .member-info .filter-section {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        overflow-y: hidden;
+        justify-content: flex-start;
+        padding: 12px 16px;
+        gap: 8px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+    .member-info .filter-section::-webkit-scrollbar {
+        display: none;
+    }
+    .member-info .filter-btn {
+        flex-shrink: 0;
+        white-space: nowrap;
     }
 }
 </style>
@@ -802,6 +784,21 @@ let memberData = null;
 let showsData = [];
 let currentFilter = 'all';
 
+function getFilterButtonsHTML() {
+  const realShows = showsData.filter(s => !s.is_non_show);
+  const eventShows = showsData.filter(s => s.is_non_show);
+  const setlists = [...new Set(realShows.map(s => s.setlist_name))];
+  let html = `<button class="filter-btn ${currentFilter === 'all' ? 'active' : ''}" onclick="filterShows('all')" data-filter="all">Semua (${showsData.length})</button>`;
+  setlists.forEach(setlist => {
+    const count = realShows.filter(s => s.setlist_name === setlist).length;
+    html += `<button class="filter-btn ${currentFilter === setlist ? 'active' : ''}" onclick="filterShows('${setlist}')" data-filter="${setlist}">${setlist} (${count})</button>`;
+  });
+  if (eventShows.length > 0) {
+    html += `<button class="filter-btn ${currentFilter === 'event' ? 'active' : ''}" onclick="filterShows('event')" data-filter="event">Event (${eventShows.length})</button>`;
+  }
+  return html;
+}
+
 async function loadData() {
   if (!MEMBER_NAME) {
     showError('Parameter member tidak ditemukan');
@@ -852,7 +849,9 @@ function renderPage() {
   document.documentElement.style.setProperty('--gen-color', color);
   document.documentElement.style.setProperty('--gen-color-dark', colorDark);
   
-  const setlists = [...new Set(showsData.map(s => s.setlist_name))];
+  const realShows = showsData.filter(s => !s.is_non_show);
+  const setlists = [...new Set(realShows.map(s => s.setlist_name))];
+  const filterButtons = getFilterButtonsHTML();
   
   const graduationInfo = memberData.status === 'graduated' ? 
     `<div style="margin-top: 10px; padding: 8px 16px; background: #1e40af; color: white; border-radius: 12px; font-size: 12px; display: inline-flex; align-items: center; gap: 6px;">
@@ -876,7 +875,7 @@ function renderPage() {
       ${graduationInfo}
       <div class="member-stats">
         <div class="stat-item">
-          <div class="stat-number">${showsData.length}</div>
+          <div class="stat-number">${realShows.length}</div>
           <div class="stat-label">TOTAL SHOW</div>
         </div>
         <div class="stat-item">
@@ -884,19 +883,17 @@ function renderPage() {
           <div class="stat-label">JENIS SETLIST</div>
         </div>
       </div>
+      <!-- Filter untuk mobile (akan disembunyikan di desktop lewat CSS) -->
+      <div class="filter-section">
+        ${filterButtons}
+      </div>
     </div>
     
     <div class="content">
+      <!-- Filter untuk desktop (NON-SCROLL / diam saja) -->
       <div class="filter-section">
-        <button class="filter-btn ${currentFilter === 'all' ? 'active' : ''}" onclick="filterShows('all')">
-          Semua (${showsData.length})
-        </button>
-        ${setlists.map(setlist => {
-          const count = showsData.filter(s => s.setlist_name === setlist).length;
-          return `<button class="filter-btn ${currentFilter === setlist ? 'active' : ''}" onclick="filterShows('${setlist}')">${setlist} (${count})</button>`;
-        }).join('')}
+        ${filterButtons}
       </div>
-      
       <div id="showListContainer">
         ${renderShowList()}
       </div>
@@ -907,7 +904,9 @@ function renderPage() {
 function renderShowList() {
   let filtered = showsData;
   
-  if (currentFilter !== 'all') {
+  if (currentFilter === 'event') {
+    filtered = showsData.filter(s => s.is_non_show);
+  } else if (currentFilter !== 'all') {
     filtered = showsData.filter(s => s.setlist_name === currentFilter);
   }
   
@@ -1016,12 +1015,17 @@ function renderShowList() {
 
 function filterShows(filter) {
   currentFilter = filter;
-  
+
+  // Hapus class active dari semua tombol filter
   document.querySelectorAll('.filter-btn').forEach(btn => {
     btn.classList.remove('active');
   });
-  event.target.classList.add('active');
-  
+
+  // Aktifkan tombol yang sesuai dengan filter
+  const activeBtn = document.querySelector(`.filter-btn[data-filter="${filter}"]`);
+  if (activeBtn) activeBtn.classList.add('active');
+
+  // Render ulang daftar show
   document.getElementById('showListContainer').innerHTML = renderShowList();
 }
 

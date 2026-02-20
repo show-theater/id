@@ -17,9 +17,9 @@ body.dark{background:#0a0e1a;color:#e5e7eb}
 /* ============= HEADER SAMA DENGAN LIVESHOW ============= */
 .main-header{position:fixed;top:0;left:0;right:0;background:#fff;z-index:1001;border-bottom:1px solid #ddd;transition:background 0.3s,border-color 0.3s}
 body.dark .main-header{background:#111827;border-color:#1f2937}
-.theater-header{text-align:center;padding:10px 20px;font-size:14px;font-weight:bold;color:#333;letter-spacing:1px}
-body.dark .theater-header{color:#e5e7eb}
-.detail-header{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:#fff;border-top:1px solid #eee;border-bottom:1px solid #ddd;transition:background 0.3s,border-color 0.3s}
+.theater-header{text-align:center;padding:8px 20px;font-size:14px;font-weight:bold;color:#fff;letter-spacing:1px;background:#e60012;}
+body.dark .theater-header{color:#fff;background:#e60012;}
+.detail-header{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:#fff;border-bottom:1px solid #ddd;transition:background 0.3s,border-color 0.3s}
 body.dark .detail-header{background:#111827;border-color:#1f2937}
 .back-btn{background:transparent;border:none;color:#333;font-size:16px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;padding:8px 0;transition:all 0.3s}
 body.dark .back-btn{color:#e5e7eb}
@@ -941,21 +941,60 @@ function openShowDetail(element) {
     window.location.href = url;
 }
 
+// Auto-update status show setiap 30 detik
 setInterval(() => {
     if (allShows.length > 0) {
-        const todayStr = new Date().toISOString().split('T')[0];
-        // Kalau hari sudah ganti (misal tengah malam), otomatis pindah ke hari baru
-        if (currentDate !== todayStr) {
-            currentDate = todayStr;
-            currentMonth = moment(currentDate);
-        }
-        renderCalendar();
         renderShows(currentDate);
     }
 }, 30000);
 
+// Cek pergantian hari setiap 1 menit
+let lastCheckedDate = new Date().toISOString().split('T')[0];
+
+function checkDayChange() {
+    const todayStr = new Date().toISOString().split('T')[0];
+    
+    // Jika hari berubah (sudah lewat tengah malam)
+    if (lastCheckedDate !== todayStr) {
+        console.log('Hari berganti dari', lastCheckedDate, 'ke', todayStr);
+        lastCheckedDate = todayStr;
+        currentDate = todayStr;
+        currentMonth = moment(currentDate);
+        
+        // Reload data dan update tampilan
+        renderCalendar();
+        renderShows(currentDate);
+    }
+}
+
+setInterval(checkDayChange, 60000); // Cek setiap 1 menit
+
+// Fungsi untuk schedule exact midnight update
+function scheduleMidnightUpdate() {
+    const now = new Date();
+    const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
+    const msUntilMidnight = tomorrow - now;
+    
+    console.log('Next midnight update in', Math.round(msUntilMidnight / 1000 / 60), 'minutes');
+    
+    setTimeout(() => {
+        console.log('Midnight reached! Updating to new day...');
+        const todayStr = new Date().toISOString().split('T')[0];
+        lastCheckedDate = todayStr;
+        currentDate = todayStr;
+        currentMonth = moment(currentDate);
+        
+        renderCalendar();
+        renderShows(currentDate);
+        
+        // Schedule next midnight
+        scheduleMidnightUpdate();
+    }, msUntilMidnight);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     loadSchedule();
+    scheduleMidnightUpdate(); // Start midnight scheduler
 });
 </script>
 </body>
