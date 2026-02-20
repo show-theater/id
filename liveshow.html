@@ -393,6 +393,32 @@ const GEN_COLORS = {
   13: '#facc15', 14: '#e879f9'
 };
 
+const SETLIST_COLORS = {
+  'Te Wo Tsunaginagara':     { from: '#FF69B4', to: '#c0407a' },
+  'Te wo Tsunaginagara':     { from: '#FF69B4', to: '#c0407a' },
+  'Cara Meminum Ramune':     { from: '#00CED1', to: '#008b8d' },
+  'Ramune no Nomikata':      { from: '#00CED1', to: '#008b8d' },
+  'Pertaruhan Cinta':        { from: '#D30000', to: '#900603' },
+  'Pajama Drive':            { from: '#00006d', to: '#000045' },
+  "Andai 'Ku Bukan Idola":   { from: '#f59e0b', to: '#b45309' },
+  'JKT48 Fight Love Dream Passion': { from: '#e60012', to: '#9f0000' },
+  'JKT48 School':            { from: '#22c55e', to: '#15803d' },
+  'Seleksi PDMK':            { from: '#6366f1', to: '#4338ca' },
+  'Z vs Alpha':              { from: '#64748b', to: '#334155' },
+  // Non-Show Activity
+  'non_show':                { from: '#3b82f6', to: '#1d4ed8' },
+};
+
+function getSetlistGradient(setlistName, isNonShow) {
+  if (isNonShow) {
+    const col = SETLIST_COLORS['non_show'];
+    return `linear-gradient(135deg, ${col.from} 0%, ${col.to} 100%)`;
+  }
+  const col = SETLIST_COLORS[setlistName];
+  if (col) return `linear-gradient(135deg, ${col.from} 0%, ${col.to} 100%)`;
+  return null;
+}
+
 const SHOW_DURATION_MINUTES = 155;
 const PRE_SHOW_BUFFER_MINUTES = 15; // Live mulai 15 menit sebelum jam tayang
 
@@ -603,6 +629,7 @@ async function renderShowData(shows) {
   const birthdayMember = firstShow.birthday_member || null;
   const isGraduationShow = firstShow.is_graduation_show || false;
   const graduationMember = firstShow.graduation_member || null;
+  const isNonShow = firstShow.is_non_show || false;
   const showTime = firstShow.show_time || '';
   
   const membersData = showData.map(show => show.members).filter(Boolean);
@@ -610,10 +637,10 @@ async function renderShowData(shows) {
     new Map(membersData.map(m => [m.id, m])).values()
   );
   
-  renderPage(firstShow, showTime, isBirthdayShow, birthdayMember, isGraduationShow, graduationMember, uniqueMembers);
+  renderPage(firstShow, showTime, isBirthdayShow, birthdayMember, isGraduationShow, graduationMember, uniqueMembers, isNonShow);
 }
 
-function renderPage(showData, showTime, isBirthdayShow, birthdayMember, isGraduationShow, graduationMember, membersData) {
+function renderPage(showData, showTime, isBirthdayShow, birthdayMember, isGraduationShow, graduationMember, membersData, isNonShow = false) {
   const date = new Date(SHOW_DATE);
   const dayNames = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
   const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
@@ -678,7 +705,7 @@ function renderPage(showData, showTime, isBirthdayShow, birthdayMember, isGradua
   document.getElementById('container').innerHTML = `
     <div class="show-content-wrapper">
       <div class="show-left-panel">
-        <div class="live-show-header ${headerClass}">
+        <div class="live-show-header ${headerClass}" style="background:${status === 'LIVE' ? 'linear-gradient(135deg, #e60012 0%, #a00010 100%)' : (getSetlistGradient(SETLIST_NAME, isNonShow) || (status === 'UPCOMING' ? 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)' : 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)'))}">
           ${statusBadge}
           ${bannerHTML}
           <h1>${displayTitle}</h1>

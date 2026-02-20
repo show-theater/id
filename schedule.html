@@ -608,6 +608,38 @@ async function loadSchedule() {
     }
 }
 
+const SETLIST_COLORS = {
+  'Te Wo Tsunaginagara':     { from: '#FF69B4', to: '#c0407a' },
+  'Te wo Tsunaginagara':     { from: '#FF69B4', to: '#c0407a' },
+  'Cara Meminum Ramune':     { from: '#00CED1', to: '#008b8d' },
+  'Ramune no Nomikata':      { from: '#00CED1', to: '#008b8d' },
+  'Pertaruhan Cinta':        { from: '#D30000', to: '#900603' },
+  'Pajama Drive':            { from: '#00006d', to: '#000045' },
+  "Andai 'Ku Bukan Idola":   { from: '#f59e0b', to: '#b45309' },
+  'JKT48 Fight Love Dream Passion': { from: '#e60012', to: '#9f0000' },
+  'JKT48 School':            { from: '#22c55e', to: '#15803d' },
+  'Seleksi PDMK':            { from: '#6366f1', to: '#4338ca' },
+  'Z vs Alpha':              { from: '#64748b', to: '#334155' },
+  'non_show':                { from: '#3b82f6', to: '#1d4ed8' },
+};
+
+function getSetlistGradient(setlistName, isNonShow) {
+  if (isNonShow) {
+    const col = SETLIST_COLORS['non_show'];
+    return `linear-gradient(135deg, ${col.from} 0%, ${col.to} 100%)`;
+  }
+  // Exact match
+  const col = SETLIST_COLORS[setlistName];
+  if (col) return `linear-gradient(135deg, ${col.from} 0%, ${col.to} 100%)`;
+  // Fallback partial match
+  const lower = (setlistName || '').toLowerCase();
+  if (lower.includes('tsunaginagara') || lower.includes('tewo')) return `linear-gradient(135deg, #FF69B4 0%, #c0407a 100%)`;
+  if (lower.includes('ramune')) return `linear-gradient(135deg, #00CED1 0%, #008b8d 100%)`;
+  if (lower.includes('pertaruhan')) return `linear-gradient(135deg, #D30000 0%, #900603 100%)`;
+  if (lower.includes('pajama')) return `linear-gradient(135deg, #00006d 0%, #000045 100%)`;
+  return null;
+}
+
 function getSetlistColor(setlistName) {
     if (!setlistName) return '#e60012';
     const setlistLower = setlistName.toLowerCase().trim();
@@ -892,7 +924,7 @@ function renderShows(date) {
         
         showsHTML += `
             <div class="show-card" data-setlist="${setlistParam}" data-date="${dateParam}" data-time="${timeParam}" onclick="openShowDetail(this)">
-                <div class="show-card-header ${headerClass}">
+                <div class="show-card-header ${headerClass}" style="background:${status === 'LIVE' ? 'linear-gradient(135deg, #e60012 0%, #a00010 100%)' : status === 'FINISHED' ? 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)' : (getSetlistGradient(show.setlist, show.isNonShow) || 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)')};">
                     ${statusBadge}
                     <div class="show-card-title">
                         <span>${show.setlist}</span>
