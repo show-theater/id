@@ -9,7 +9,6 @@
 <meta http-equiv="Expires" content="0">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-/* [CSS SAMA PERSIS DENGAN SEBELUMNYA - TIDAK PERLU DIUBAH] */
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:Arial,sans-serif;background:#f5f5f5;color:#333;min-height:100vh;padding-bottom:60px;transition:background 0.3s,color 0.3s}
 body.dark{background:#0a0e1a;color:#e5e7eb}
@@ -40,10 +39,42 @@ body.dark .schedule-button,body.dark .theme-toggle{background:rgba(0,0,0,0.2)}
 .top{padding:15px 20px;background:#fff;border-bottom:1px solid #ddd;text-align:center;transition:background 0.3s,border-color 0.3s}
 body.dark .top{background:#1b1f3a;border-bottom:1px solid #2d3548}
 .search-box{display:inline-block;width:100%;max-width:400px;position:relative}
-.search-box input{width:100%;padding:12px 20px;border-radius:25px;border:2px solid #D3D3D3;background:#fff;font-size:14px;outline:none;color:#333;transition:all 0.3s}
+
+/* ===== SEARCH ICON ===== */
+.search-icon{
+    position:absolute;
+    right:14px;
+    top:50%;
+    transform:translateY(-50%);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    pointer-events:none;
+    z-index:2;
+    color:#9ca3af;
+    transition:color 0.3s;
+}
+.search-icon svg{width:16px;height:16px;display:block}
+body.dark .search-icon{color:#6b7280}
+.search-box:focus-within .search-icon{color:#e60012}
+body.dark .search-box:focus-within .search-icon{color:#f87171}
+.search-icon.hidden{display:none}
+/* ======================== */
+
+.search-box input{width:100%;padding:12px 44px 12px 20px;border-radius:25px;border:2px solid #D3D3D3;background:#fff;font-size:14px;outline:none;color:#333;transition:all 0.3s}
+.search-box input::placeholder{color:#aaaaaa;opacity:1}
 .search-box input:focus{border-color:#e60012}
 body.dark .search-box input{background:#0a0e1a;color:#e5e7eb;border-color:#2d3548}
+body.dark .search-box input::placeholder{color:#3d4558;opacity:1}
 body.dark .search-box input:focus{border-color:#f87171}
+.search-clear-btn{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:transparent;border:none;width:22px;height:22px;display:none;align-items:center;justify-content:center;cursor:pointer;padding:0;transition:transform 0.2s,opacity 0.2s;flex-shrink:0;z-index:3;opacity:0.5}
+.search-clear-btn:hover{transform:translateY(-50%) scale(1.2);opacity:1}
+.search-clear-btn:active{transform:translateY(-50%) scale(0.9)}
+.search-clear-btn svg{width:14px;height:14px;display:block;stroke:#666}
+.search-clear-btn:hover svg{stroke:#e60012}
+.search-clear-btn.visible{display:flex}
+body.dark .search-clear-btn svg{stroke:#9ca3af}
+body.dark .search-clear-btn:hover svg{stroke:#f87171}
 .last-update{text-align:center;padding:8px;font-size:11px;color:#9ca3af;background:#fff;transition:background 0.3s;display:flex;align-items:center;justify-content:center;gap:6px}
 body.dark .last-update{background:#0a0e1a;color:#6b7280}
 .last-update .spinner{width:12px;height:12px;border-width:2px}
@@ -160,7 +191,7 @@ body.dark .gen-option.active{border-color:#f87171}
 .detail-footer{text-align:center;padding:12px;color:#6b7280;font-size:10px;border-top:1px solid #e5e7eb;margin-top:20px;background:#fff;transition:background 0.3s,color 0.3s,border-color 0.3s}
 body.dark .detail-footer{background:#0a0e1a;color:#9ca3af;border-top-color:#374151}
 
-/* Graduation Badge (seperti STS di live banner) */
+/* Graduation Badge */
 .graduation-badge {
     position: absolute;
     top: 8px;
@@ -180,30 +211,22 @@ body.dark .detail-footer{background:#0a0e1a;color:#9ca3af;border-top-color:#3741
     align-items: center;
     gap: 4px;
 }
-
 .graduation-badge::before {
     content: '🎓';
     font-size: 10px;
 }
-
-/* Styling khusus untuk card yang memiliki graduation badge */
 .card.setlist-card .graduation-badge {
     top: 6px;
     left: 6px;
     font-size: 8px;
     padding: 3px 8px;
 }
-
-/* Efek redup ringan untuk member graduated */
 .card.graduated-member {
     opacity: 0.9;
 }
-
 .card.graduated-member:hover {
     opacity: 1;
 }
-
-/* Warna background khusus untuk graduated member */
 .card-footer.graduated-bg {
     background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%) !important;
 }
@@ -241,7 +264,19 @@ body.dark .detail-footer{background:#0a0e1a;color:#9ca3af;border-top-color:#3741
 </div>
 <div class="top">
     <div class="search-box">
-        <input type="text" id="searchInput" placeholder="Cari member..." oninput="searchMember()">
+        <!-- Search icon (kaca pembesar) -->
+        <span class="search-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+        </span>
+        <input type="text" id="searchInput" placeholder="Search Member JKT48" oninput="searchMember(); toggleClearBtn()">
+        <button class="search-clear-btn" id="searchClearBtn" onclick="clearSearch()" title="Hapus pencarian">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
+                <path d="M18 6L6 18M6 6l12 12"/>
+            </svg>
+        </button>
     </div>
 </div>
 <div class="last-update" id="lastUpdate">
@@ -341,21 +376,35 @@ let members = [],
     currentLiveShowData = null, 
     liveShowRefreshInterval = null,
     latestUpdateTime = null,
-    allShowsData = []; // NEW: Store semua show data
+    allShowsData = [];
 
 // ============= FUNGSI LIVE STATUS =============
 function getLiveStatus(showDate, showTime) {
     if (!showDate || !showTime) return 'FINISHED';
-    
     const now = new Date();
     const showDateTime = new Date(`${showDate}T${showTime}`);
-    
     const liveStart = new Date(showDateTime.getTime() - (TIME_CONFIG.LIVE_BEFORE * 60 * 1000));
     const liveEnd = new Date(showDateTime.getTime() + (TIME_CONFIG.LIVE_DURATION * 60 * 1000));
-    
     if (now < liveStart) return 'UPCOMING';
     if (now >= liveStart && now <= liveEnd) return 'LIVE';
     return 'FINISHED';
+}
+
+// ============= SEARCH CLEAR BUTTON =============
+function toggleClearBtn() {
+    const btn = document.getElementById('searchClearBtn');
+    const icon = document.querySelector('.search-icon');
+    const input = document.getElementById('searchInput');
+    const hasValue = input.value.length > 0;
+    if (btn) btn.classList.toggle('visible', hasValue);
+    if (icon) icon.style.display = hasValue ? 'none' : 'flex';
+}
+
+function clearSearch() {
+    document.getElementById('searchInput').value = '';
+    toggleClearBtn();
+    searchMember();
+    document.getElementById('searchInput').focus();
 }
 
 // ============= FUNGSI THEME =============
@@ -363,7 +412,6 @@ function getLiveStatus(showDate, showTime) {
     const savedTheme = localStorage.getItem('jkt48_theme') || 'light';
     const html = document.documentElement;
     const body = document.body;
-    
     if (savedTheme === 'dark') {
         html.classList.add('dark');
         body.classList.add('dark');
@@ -378,7 +426,6 @@ function getLiveStatus(showDate, showTime) {
 function updateThemeIcon(theme) {
     const icon = document.getElementById('themeIcon');
     if (!icon) return;
-    
     if (theme === 'dark') {
         icon.innerHTML = '<path d="M12,17a5,5,0,1,1,5-5A5,5,0,0,1,12,17Zm0-8a3,3,0,1,0,3,3A3,3,0,0,0,12,9Zm0-4a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41L6.34,5A1,1,0,0,0,4.93,6.34ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm.64,5.66a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71a1,1,0,0,0-1.41-1.41ZM12,19a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19Zm6.36-2.34a1,1,0,0,0-1.41,1.41l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-3.64-3.95a1,1,0,0,0,.7.29,1,1,0,0,0,.71-1.7l-.71-.71a1,1,0,0,0-1.41,1.41Z"/>';
     } else {
@@ -390,7 +437,6 @@ function toggleTheme() {
     const html = document.documentElement;
     const body = document.body;
     const isDark = body.classList.contains('dark');
-    
     if (isDark) {
         html.classList.remove('dark');
         body.classList.remove('dark');
@@ -413,58 +459,20 @@ async function checkLiveShows() {
     try {
         const now = new Date();
         const today = now.toISOString().split('T')[0];
-        
-        console.log('Checking live shows for:', today);
-        console.log('Total shows in database:', allShowsData.length);
-        
-        // Filter dari allShowsData yang sudah dimuat
         const todayShows = allShowsData.filter(show => show.show_date === today);
-        
-        console.log('Shows found today:', todayShows.length);
-        
-        if (todayShows.length === 0) {
-            console.log('No shows scheduled for today');
-            return null;
-        }
-        
-        console.log('First show today:', todayShows[0]);
-        
+        if (todayShows.length === 0) return null;
         const liveShows = [];
-        
-        todayShows.forEach((show, index) => {
-            console.log('Processing Show', index + 1);
-            
+        todayShows.forEach(show => {
             const status = getLiveStatus(show.show_date, show.show_time);
-            console.log('Status:', status);
-            
             if (status === 'LIVE') {
                 const member = membersMap[show.member_id];
-                
-                console.log('Looking for member_id:', show.member_id);
-                console.log('Member found:', member ? member.name : 'NOT FOUND');
-                
                 if (member) {
-                    liveShows.push({
-                        ...show,
-                        memberName: member.name,
-                        status
-                    });
-                    console.log('Added to live shows:', member.name);
-                } else {
-                    console.error('Member NOT FOUND for member_id:', show.member_id);
+                    liveShows.push({ ...show, memberName: member.name, status });
                 }
             }
         });
-        
-        console.log('Total live shows found:', liveShows.length);
-        
-        if (liveShows.length > 0) {
-            console.log('Live shows:', liveShows.map(s => s.memberName));
-            return prepareShowData(liveShows);
-        }
-        
+        if (liveShows.length > 0) return prepareShowData(liveShows);
         return null;
-        
     } catch (err) {
         console.error('Error in checkLiveShows:', err);
         return null;
@@ -472,13 +480,9 @@ async function checkLiveShows() {
 }
 
 function prepareShowData(shows) {
-    console.log('Preparing show data from', shows.length, 'shows');
-    
     const groupedShows = {};
-    
     shows.forEach(show => {
         const key = `${show.setlist_name}|${show.show_date}|${show.show_time}`;
-        
         if (!groupedShows[key]) {
             groupedShows[key] = {
                 setlistName: show.setlist_name,
@@ -492,38 +496,21 @@ function prepareShowData(shows) {
                 status: show.status
             };
         }
-        
         if (show.memberName && !groupedShows[key].members.includes(show.memberName)) {
             groupedShows[key].members.push(show.memberName);
         }
     });
-    
     const sortedKeys = Object.keys(groupedShows).sort((a, b) => {
         const timeA = a.split('|')[2];
         const timeB = b.split('|')[2];
         return timeA.localeCompare(timeB);
     });
-    
-    if (sortedKeys.length === 0) {
-        console.log('No grouped shows available');
-        return null;
-    }
-    
-    const firstShowKey = sortedKeys[0];
-    const firstShow = groupedShows[firstShowKey];
-    
-    const uniqueMemberCount = firstShow.members.length;
-    
-    console.log('Prepared show data:', {
-        name: firstShow.setlistName,
-        memberCount: uniqueMemberCount,
-        members: firstShow.members
-    });
-    
+    if (sortedKeys.length === 0) return null;
+    const firstShow = groupedShows[sortedKeys[0]];
     return {
         name: firstShow.setlistName,
         shows: firstShow.members,
-        memberCount: uniqueMemberCount,
+        memberCount: firstShow.members.length,
         earliestTime: firstShow.showTime,
         isBirthdayShow: firstShow.isBirthdayShow,
         birthdayMember: firstShow.birthdayMember,
@@ -538,37 +525,20 @@ async function updateLiveShowBanner() {
     const title = document.getElementById('liveShowTitle');
     const timeElement = document.getElementById('liveShowTime');
     const badge = document.getElementById('liveStatusBadge');
-    
     try {
-        console.log('Updating live show banner...');
-        
         const showData = await checkLiveShows();
         currentLiveShowData = showData;
-        
         if (!showData) {
-            console.log('No live show data, hiding banner');
             banner.style.display = 'none';
             return;
         }
-        
-        console.log('Displaying live show banner');
         banner.style.display = 'block';
-        
         let displayTitle = showData.name;
-        
-        if (showData.isBirthdayShow && showData.birthdayMember) {
-            displayTitle += ` (STS ${showData.birthdayMember})`;
-        }
-        
-        if (showData.isGraduationShow && showData.graduationMember) {
-            displayTitle += ` (Graduation ${showData.graduationMember})`;
-        }
-        
+        if (showData.isBirthdayShow && showData.birthdayMember) displayTitle += ` (STS ${showData.birthdayMember})`;
+        if (showData.isGraduationShow && showData.graduationMember) displayTitle += ` (Graduation ${showData.graduationMember})`;
         title.textContent = displayTitle;
-        
         banner.className = 'live-show-banner';
         badge.className = 'live-badge';
-        
         if (showData.status === 'LIVE') {
             banner.classList.add('live-now');
             badge.innerHTML = '<span class="live-dot"></span><span>LIVE</span>';
@@ -576,16 +546,12 @@ async function updateLiveShowBanner() {
             banner.classList.add('finished');
             badge.innerHTML = '<span>SHOW ENDED</span>';
         }
-        
         if (showData.earliestTime) {
             const timeStr = showData.earliestTime.slice(0, 5);
             timeElement.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> ${timeStr} WIB • ${showData.memberCount} member`;
         } else {
             timeElement.textContent = `Hari ini • ${showData.memberCount} member`;
         }
-        
-        console.log('Banner updated successfully');
-        
     } catch (err) {
         console.error('Error updating banner:', err);
         banner.style.display = 'none';
@@ -594,52 +560,31 @@ async function updateLiveShowBanner() {
 
 function openLiveShowDetail() {
     if (!currentLiveShowData) return;
-    
     const setlistParam = encodeURIComponent(currentLiveShowData.name);
     const dateParam = encodeURIComponent(new Date().toISOString().split('T')[0]);
     const timeParam = encodeURIComponent(currentLiveShowData.earliestTime);
-    
     localStorage.setItem('jkt48_selected_setlist', currentLiveShowData.name);
     localStorage.setItem('jkt48_selected_date', dateParam);
     localStorage.setItem('jkt48_selected_time', currentLiveShowData.earliestTime);
-    
     window.location.href = `liveshow.html?setlist=${setlistParam}&date=${dateParam}&time=${timeParam}`;
 }
 
 // ============= LOAD DATA =============
 async function loadData() {
     try {
-        console.log('Loading members...');
-        
         const { data: membersData, error: membersError } = await db
             .from('members')
             .select('id, name, gen, team, show, status')
             .order('show', { ascending: false });
-        
-        if (membersError) {
-            console.error('Members error:', membersError);
-            throw membersError;
-        }
-        
-        console.log('Members loaded:', membersData?.length || 0);
-        
+        if (membersError) throw membersError;
         members = membersData || [];
         allMembersData = [...members];
-        
         membersMap = {};
-        members.forEach(member => {
-            membersMap[member.id] = member;
-        });
-        
-        console.log('Members map created with', Object.keys(membersMap).length, 'entries');
-        
-        // LOAD SEMUA SHOWS - SAMA SEPERTI show.html
+        members.forEach(member => { membersMap[member.id] = member; });
         await loadAllShows();
-        
         await updateLiveShowBanner();
         await updateFooterWithLatestUpdate();
         restoreState();
-        
         if (members.length === 0) {
             document.getElementById('list').innerHTML = '<div class="msg">Tidak ada data</div>';
             document.getElementById('lastUpdate').innerHTML = 'Tidak ada data';
@@ -650,7 +595,6 @@ async function loadData() {
             isDataLoaded = true;
             setTimeout(() => restoreScrollPosition(), 100);
         }
-        
     } catch (err) {
         console.error('Error:', err);
         document.getElementById('list').innerHTML = '<div class="msg" style="color:#ef4444">Error: ' + err.message + '</div>';
@@ -658,97 +602,51 @@ async function loadData() {
     }
 }
 
-// NEW: Load semua shows seperti di show.html
 async function loadAllShows() {
     try {
-        console.log('Loading all shows...');
-        
-        // Query SEMUA show records - SAMA SEPERTI show.html
         const { data: showsData, error: showsError } = await db
             .from('setlist_performance')
             .select('*')
             .order('show_date', { ascending: false })
             .order('show_time', { ascending: false });
-        
-        if (showsError) {
-            console.error('Shows error:', showsError);
-            throw showsError;
-        }
-        
+        if (showsError) throw showsError;
         allShowsData = showsData || [];
-        console.log('All shows loaded:', allShowsData.length);
-        
-        if (allShowsData.length > 0) {
-            console.log('Sample show:', allShowsData[0]);
-        }
-        
-        // Process setlist counts dari allShowsData
         processSetlistCounts();
-        
     } catch (err) {
         console.error('Error loading shows:', err);
     }
 }
 
-// NEW: Process setlist counts dari allShowsData
 function processSetlistCounts() {
     try {
-        console.log('Processing setlist counts...');
-        
-        // Reset
-        Object.keys(SETLIST_DATA).forEach(key => {
-            SETLIST_DATA[key].members = {};
-        });
-        
-        // Initialize
+        Object.keys(SETLIST_DATA).forEach(key => { SETLIST_DATA[key].members = {}; });
         members.forEach(member => {
-            Object.keys(SETLIST_DATA).forEach(key => {
-                SETLIST_DATA[key].members[member.name] = 0;
-            });
+            Object.keys(SETLIST_DATA).forEach(key => { SETLIST_DATA[key].members[member.name] = 0; });
         });
-        
-        // Count shows per member per setlist
         const showCountMap = {};
-        
         allShowsData.forEach(show => {
             const member = membersMap[show.member_id];
-            
             if (!member || !show.setlist_name) return;
-            
             const memberName = member.name;
             const setlistName = show.setlist_name.toLowerCase().trim();
-            
             let key = null;
             if (setlistName.includes('ramune')) key = 'ramune';
             else if (setlistName.includes('tsunaginagara') || setlistName.includes('tte') || setlistName.includes('te wo')) key = 'tte';
             else if (setlistName.includes('pertaruhan')) key = 'pertaruhan';
             else if (setlistName.includes('pajama')) key = 'pajama';
-            
             if (key) {
                 const mapKey = `${memberName}_${key}`;
                 showCountMap[mapKey] = (showCountMap[mapKey] || 0) + 1;
             }
         });
-        
-        // Apply counts
         Object.keys(showCountMap).forEach(mapKey => {
             const parts = mapKey.split('_');
             const key = parts.pop();
             const memberName = parts.join('_');
-            
             if (SETLIST_DATA[key] && memberName) {
                 SETLIST_DATA[key].members[memberName] = showCountMap[mapKey];
             }
         });
-        
-        console.log('Setlist counts processed');
-        console.log('Sample counts:', {
-            ramune: Object.values(SETLIST_DATA.ramune.members).filter(v => v > 0).length,
-            tte: Object.values(SETLIST_DATA.tte.members).filter(v => v > 0).length,
-            pertaruhan: Object.values(SETLIST_DATA.pertaruhan.members).filter(v => v > 0).length,
-            pajama: Object.values(SETLIST_DATA.pajama.members).filter(v => v > 0).length
-        });
-        
     } catch (err) {
         console.error('Error processing setlist counts:', err);
     }
@@ -761,14 +659,10 @@ async function updateFooterWithLatestUpdate() {
             .select('updated_at')
             .order('updated_at', { ascending: false })
             .limit(1);
-        
-        if (!error && data && data.length > 0) {
-            const record = data[0];
-            if (record.updated_at) {
-                latestUpdateTime = new Date(record.updated_at);
-                updateFooter();
-                return true;
-            }
+        if (!error && data && data.length > 0 && data[0].updated_at) {
+            latestUpdateTime = new Date(data[0].updated_at);
+            updateFooter();
+            return true;
         }
         return false;
     } catch (err) {
@@ -779,47 +673,31 @@ async function updateFooterWithLatestUpdate() {
 
 function updateFooter() {
     if (!latestUpdateTime) return;
-    
     const day = latestUpdateTime.getDate();
-    const month = latestUpdateTime.getMonth();
-    const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
-                       'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-    
-    const formatted = `${day} ${monthNames[month]}`;
-    
+    const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+                        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+    const formatted = `${day} ${monthNames[latestUpdateTime.getMonth()]}`;
     const footer = document.getElementById('mainFooter');
-    if (footer) {
-        footer.innerHTML = `<p>JKT48 Show Theater • Update ${formatted}</p>`;
-    }
+    if (footer) footer.innerHTML = `<p>JKT48 Show Theater • Update ${formatted}</p>`;
 }
 
 async function updateLastUpdate() {
     if (members.length === 0) return;
-    
     try {
         const { data, error } = await db
             .from('setlist_performance')
             .select('updated_at')
             .order('updated_at', { ascending: false })
             .limit(1);
-        
-        if (!error && data && data.length > 0) {
-            const record = data[0];
-            if (record.updated_at) {
-                const date = new Date(record.updated_at);
-                const day = date.getDate();
-                const month = date.getMonth();
-                const year = date.getFullYear();
-                const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Oct', 'Nov', 'Des'];
-                const formatted = `${day} ${monthNames[month]} ${year}`;
-                document.getElementById('lastUpdate').innerHTML = `Update: ${formatted}`;
-                return;
-            }
+        if (!error && data && data.length > 0 && data[0].updated_at) {
+            const date = new Date(data[0].updated_at);
+            const monthNames = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Oct','Nov','Des'];
+            document.getElementById('lastUpdate').innerHTML = `Update: ${date.getDate()} ${monthNames[date.getMonth()]} ${date.getFullYear()}`;
+            return;
         }
     } catch (err) {
         console.error('Error update time:', err);
     }
-    
     document.getElementById('lastUpdate').innerHTML = 'Data tersedia';
 }
 
@@ -832,50 +710,36 @@ function openMemberPage(name) {
 function renderMembers() {
     const list = document.getElementById('list');
     searchQuery = document.getElementById('searchInput').value.trim();
-    
     if (currentSetlistView) {
         renderSetlistMembers();
         return;
     }
-    
     let filtered = members.filter(m => {
         const matchGen = currentGen === 'all' || m.gen === currentGen;
         const matchTeam = currentTeam === 'all' || m.team === currentTeam;
         const matchSearch = !searchQuery || m.name.toLowerCase().includes(searchQuery.toLowerCase());
         return matchGen && matchTeam && matchSearch;
     });
-    
     if (filtered.length === 0) {
         let msg = '';
         if (searchQuery) msg = `Tidak ada "${searchQuery}"`;
         else if (currentTeam !== 'all') msg = `Belum Tersedia ${currentTeam}`;
         else if (currentGen !== 'all') msg = `Belum ada Gen ${currentGen}`;
         else msg = 'Belum ada data';
-        
         list.innerHTML = `<div class="simple-message">${msg}</div>`;
         return;
     }
-    
     list.innerHTML = '';
-    
     filtered.sort((a, b) => b.show - a.show).forEach(m => {
         const percent = Math.min(100, (m.show / MILESTONE) * 100);
         const color = GEN_COLORS[m.gen] || '#6366f1';
         const isGraduated = m.status === 'graduated';
         const card = document.createElement('div');
-        
-        if (isGraduated) {
-            card.className = 'card graduated-member';
-        } else {
-            card.className = 'card';
-        }
-        
+        card.className = isGraduated ? 'card graduated-member' : 'card';
         card.addEventListener('click', () => openMemberPage(m.name));
-        
         const genText = m.gen ? `Gen ${m.gen}` : 'Gen ?';
         const graduationBadge = isGraduated ? '<div class="graduation-badge">GRADUATED</div>' : '';
         const footerColor = isGraduated ? '#6b7280' : color;
-        
         card.innerHTML = `
             <div class="avatar-container">
                 <img class="avatar" src="img/${m.name.toLowerCase()}.jpg" alt="${m.name}" loading="lazy" onerror="this.onerror=null;this.style.display='none';this.parentNode.innerHTML='<div class=&quot;avatar-placeholder&quot;>${m.name.charAt(0)}</div>'">
@@ -888,9 +752,7 @@ function renderMembers() {
                 </div>
                 <div class="show-info">${m.show} show</div>
                 <div class="bar-container">
-                    <div class="bar">
-                        <span style="width:${percent}%"></span>
-                    </div>
+                    <div class="bar"><span style="width:${percent}%"></span></div>
                 </div>
             </div>
         `;
@@ -901,30 +763,23 @@ function renderMembers() {
 function renderSetlistMembers() {
     const list = document.getElementById('list');
     const setlistData = SETLIST_DATA[currentSetlistView];
-    
     if (!setlistData) {
         list.innerHTML = '<div class="simple-message">Data tidak tersedia</div>';
         return;
     }
-    
     list.innerHTML = '';
     const arr = members.map(m => ({
         name: m.name,
         shows: setlistData.members[m.name] || 0,
         memberData: m
     })).sort((a, b) => b.shows !== a.shows ? b.shows - a.shows : a.name.localeCompare(b.name));
-    
     const active = arr.filter(m => m.shows > 0);
-    
     document.getElementById('setlistStats').innerHTML = setlistData.title;
     document.getElementById('setlistStats').style.display = 'block';
-    
     const badges = { ramune: 'CMR', tte: 'TWT', pertaruhan: 'PC', pajama: 'PD' };
     const badge = badges[currentSetlistView] || '';
-    
     let maxShows = active.length > 0 ? Math.max(...active.map(m => m.shows)) : 0;
     let scale = 15;
-    
     if (maxShows > 0) {
         if (maxShows <= 10) scale = 15;
         else if (maxShows <= 50) scale = maxShows + 10;
@@ -932,25 +787,19 @@ function renderSetlistMembers() {
         else if (maxShows <= 200) scale = maxShows + 30;
         else scale = maxShows + 40;
     }
-    
     active.forEach((m, i) => {
         const rank = i + 1;
         const percent = Math.min(100, (m.shows / scale) * 100);
         const color = GEN_COLORS[m.memberData.gen] || '#6366f1';
         const isGraduated = m.memberData.status === 'graduated';
-        
         const card = document.createElement('div');
         card.className = `card setlist-card ${rank <= 3 ? 'rank-' + rank : ''}`;
-        if (isGraduated) {
-            card.classList.add('graduated-member');
-        }
+        if (isGraduated) card.classList.add('graduated-member');
         card.addEventListener('click', () => openMemberPage(m.name));
-        
         const rankBadge = rank <= 10 ? `<div class="rank-badge rank-${rank}">${rank}</div>` : '';
         const graduationBadge = isGraduated ? '<div class="graduation-badge">GRADUATED</div>' : '';
         const genText = m.memberData.gen ? `Gen ${m.memberData.gen}` : 'Gen ?';
         const footerColor = isGraduated ? '#6b7280' : color;
-        
         card.innerHTML = `
             <div class="avatar-container">
                 <img class="avatar" src="img/${m.name.toLowerCase()}.jpg" alt="${m.name}" loading="lazy" onerror="this.onerror=null;this.style.display='none';this.parentNode.innerHTML='<div class=&quot;avatar-placeholder&quot;>${m.name.charAt(0)}</div>'">
@@ -971,7 +820,6 @@ function renderSetlistMembers() {
         `;
         list.appendChild(card);
     });
-    
     if (active.length === 0) {
         list.innerHTML = '<div class="simple-message">Belum ada member</div>';
     }
@@ -984,21 +832,13 @@ function updateStats() {
         const matchSearch = !searchQuery || m.name.toLowerCase().includes(searchQuery.toLowerCase());
         return matchGen && matchTeam && matchSearch;
     });
-    
-    const total = 
- filtered.length;
+    const total = filtered.length;
     const totalShows = filtered.reduce((sum, m) => sum + m.show, 0);
     const graduatedCount = filtered.filter(m => m.status === 'graduated').length;
-    
     let txt = `${total} members • ${totalShows.toLocaleString()} total shows`;
-    
-    if (graduatedCount > 0) {
-        txt += ` • ${graduatedCount} Graduated`;
-    }
-    
+    if (graduatedCount > 0) txt += ` • ${graduatedCount} Graduated`;
     if (currentGen !== 'all') txt += ' • Gen ' + currentGen;
     if (currentTeam !== 'all') txt += ' • ' + currentTeam;
-    
     document.getElementById('stats').innerHTML = txt;
 }
 
@@ -1008,13 +848,10 @@ function searchMember() {
     currentSetlistView = null;
     currentGen = 'all';
     currentTeam = 'all';
-    
     document.querySelectorAll('.top-member-filter').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('.team-filter').forEach(btn => btn.classList.remove('active'));
-    
     document.getElementById('stats').style.display = 'block';
     document.getElementById('setlistStats').style.display = 'none';
-    
     renderMembers();
     updateStats();
     saveCurrentState();
@@ -1026,13 +863,11 @@ function filterTeam(team) {
     currentSetlistView = null;
     searchQuery = '';
     document.getElementById('searchInput').value = '';
-    
+    toggleClearBtn();
     document.querySelectorAll('.filter').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('.top-member-filter').forEach(btn => btn.classList.remove('active'));
-    
     document.getElementById('stats').style.display = 'block';
     document.getElementById('setlistStats').style.display = 'none';
-    
     event.target.classList.add('active');
     renderMembers();
     updateStats();
@@ -1045,15 +880,13 @@ function showSetlist(type) {
     currentTeam = 'all';
     searchQuery = '';
     document.getElementById('searchInput').value = '';
-    
+    toggleClearBtn();
     document.querySelectorAll('.filter').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('.team-filter').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('.top-member-filter').forEach(btn => btn.classList.remove('active'));
-    
     event.target.classList.add('active');
     document.getElementById('stats').style.display = 'none';
     document.getElementById('setlistStats').style.display = 'block';
-    
     renderSetlistMembers();
     saveCurrentState();
 }
@@ -1072,20 +905,18 @@ function restoreState() {
     const savedTeam = sessionStorage.getItem('jkt48_current_team');
     const savedSearch = sessionStorage.getItem('jkt48_search_query');
     const savedSetlist = sessionStorage.getItem('jkt48_setlist_view');
-    
     if (savedGen && savedGen !== 'null') currentGen = savedGen === 'all' ? 'all' : parseInt(savedGen);
     if (savedTeam && savedTeam !== 'null') currentTeam = savedTeam;
     if (savedSearch && savedSearch !== 'null') {
         searchQuery = savedSearch;
         document.getElementById('searchInput').value = searchQuery;
+        toggleClearBtn();
     }
-    
     if (savedSetlist && savedSetlist !== 'null' && savedSetlist !== '') {
         currentSetlistView = savedSetlist;
         if (currentSetlistView) {
             document.getElementById('stats').style.display = 'none';
             document.getElementById('setlistStats').style.display = 'block';
-            
             document.querySelectorAll('.top-member-filter').forEach(btn => {
                 btn.classList.remove('active');
                 const txt = btn.textContent.toLowerCase();
@@ -1100,7 +931,6 @@ function restoreState() {
     } else {
         currentSetlistView = null;
     }
-    
     if (currentTeam !== 'all') {
         document.querySelectorAll('.team-filter').forEach(btn => {
             btn.classList.remove('active');
@@ -1129,7 +959,6 @@ window.addEventListener('beforeunload', () => saveCurrentState());
 function openGenModal() {
     document.getElementById('genModal').classList.add('active');
     document.body.style.overflow = 'hidden';
-    
     setTimeout(() => {
         document.querySelectorAll('.gen-option').forEach(option => {
             option.classList.remove('active');
@@ -1158,13 +987,11 @@ function selectGen(gen) {
     currentSetlistView = null;
     searchQuery = '';
     document.getElementById('searchInput').value = '';
-    
+    toggleClearBtn();
     document.querySelectorAll('.team-filter').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('.top-member-filter').forEach(btn => btn.classList.remove('active'));
-    
     document.getElementById('stats').style.display = 'block';
     document.getElementById('setlistStats').style.display = 'none';
-    
     closeGenModal();
     renderMembers();
     updateStats();
@@ -1173,24 +1000,16 @@ function selectGen(gen) {
 
 // ============= INITIALIZATION =============
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('Initializing JKT48 Show Theater...');
-    console.log('Current date:', new Date().toISOString().split('T')[0]);
-    
     loadData();
-    
     if (liveShowRefreshInterval) clearInterval(liveShowRefreshInterval);
     liveShowRefreshInterval = setInterval(() => {
-        console.log('Auto-refreshing live show banner...');
         updateLiveShowBanner();
     }, 30000);
 });
 
 window.addEventListener('unload', () => {
-    if (liveShowRefreshInterval) {
-        clearInterval(liveShowRefreshInterval);
-    }
+    if (liveShowRefreshInterval) clearInterval(liveShowRefreshInterval);
 });
-
 </script>
 </body>
 </html>
