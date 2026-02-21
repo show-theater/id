@@ -54,8 +54,10 @@ body.dark .stats{background:#0a0e1a;color:#9ca3af}
 .card{background:#fff;border-radius:12px;padding:0;text-align:center;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.1);position:relative}
 .card.trainee{border:2px solid #f59e0b}
 body.dark .card{background:#111827}
-.avatar{width:100%;aspect-ratio:3/4;object-fit:cover;background:#f0f0f0;display:block}
-body.dark .avatar{background:#0a0e1a}
+.avatar-wrap{width:100%;aspect-ratio:3/4;position:relative;overflow:hidden;background:#1e1e2e;display:block}
+.avatar{width:100%;height:100%;object-fit:cover;display:block;position:absolute;top:0;left:0}
+body.dark .avatar-wrap{background:#1e1e2e}
+.avatar-placeholder{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#1e1e2e;color:#5a5a7a;font-size:32px;font-weight:bold}
 .card-footer{padding:8px 6px;background:var(--gen-color)}
 .status-badge{position:absolute;top:6px;right:6px;background:rgba(34,197,94,0.95);color:#fff;font-size:7px;font-weight:bold;padding:3px 8px;border-radius:10px;text-transform:uppercase;z-index:10}
 .status-badge.trainee{background:rgba(245,158,11,0.95)}
@@ -284,52 +286,7 @@ body.dark .setlist-info{background:#1f2937;border-color:#374151;color:#9ca3af}
 .tip-text{font-size:11px;color:#666;margin-bottom:10px;padding:8px;background:#f9fafb;border-radius:8px}
 body.dark .tip-text{background:#1f2937;color:#9ca3af}
 
-/* Calendar CSS */
-.calendar-container{width:100%;max-width:500px;margin:0 auto}
-.calendar-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
-.calendar-nav{background:#e60012;color:white;border:none;width:36px;height:36px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.calendar-nav:hover{background:#d5000f}
-.calendar-title{font-size:16px;font-weight:bold}
-.calendar-weekdays{display:grid;grid-template-columns:repeat(7,1fr);text-align:center;font-size:12px;font-weight:bold;color:#666;margin-bottom:8px}
-body.dark .calendar-weekdays{color:#9ca3af}
-.calendar-days{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
-.calendar-day{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;position:relative;padding:2px;background:#f9fafb;border:1px solid transparent}
-body.dark .calendar-day{background:#1f2937}
-.calendar-day.empty{background:transparent;cursor:default}
-.calendar-day.today{background:#e60012;color:white}
-.calendar-day.has-shows{border-color:#22c55e;background:rgba(34,197,94,0.1)}
-body.dark .calendar-day.has-shows{background:rgba(34,197,94,0.2)}
-.calendar-day.selected{border:2px solid #3b82f6;background:rgba(59,130,246,0.1)}
-.calendar-day.has-shows::after {
-    content: '';
-    position: absolute;
-    bottom: 4px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 4px;
-    height: 4px;
-    background-color: #22c55e;
-    border-radius: 50%;
-}
-.calendar-day-detail{margin-top:15px;padding:15px;background:#f9fafb;border-radius:12px;max-height:300px;overflow-y:auto}
-body.dark .calendar-day-detail{background:#1f2937}
-.calendar-day-detail h4{margin:0 0 10px 0;font-size:14px;color:#333}
-body.dark .calendar-day-detail h4{color:#e5e7eb}
-.calendar-event{display:flex;justify-content:space-between;align-items:center;padding:8px;margin-bottom:6px;background:white;border-radius:8px;border-left:3px solid var(--event-color);font-size:12px}
-body.dark .calendar-event{background:#111827}
-.event-member{font-weight:bold;margin-right:8px}
-.event-setlist{color:#666;font-size:11px}
-body.dark .event-setlist{color:#9ca3af}
-.event-status{font-size:10px;padding:2px 6px;border-radius:10px;background:#f59e0b;color:white;margin-left:8px}
-.event-status.inti{background:#22c55e}
-.event-time{font-size:10px;color:#666;margin-left:8px}
-body.dark .event-time{color:#9ca3af}
-.no-events{text-align:center;color:#999;font-size:12px;padding:20px}
-body.dark .no-events{color:#6b7280}
-.calendar-actions{display:flex;gap:10px;margin-top:15px}
-.calendar-actions button{flex:1;padding:10px;border-radius:12px;font-weight:bold;font-size:13px}
-.btn-today{background:#e60012;color:white}
-.btn-close-calendar{background:#6b7280;color:white}
+
 
 /* Non-Show Activity CSS */
 .non-show-section {
@@ -547,7 +504,6 @@ body.dark .graduation-dropdown {
 <div class="top">
     <div class="search-box"><input type="text" id="searchInput" placeholder="Cari member..." oninput="searchMember()"></div>
     <button class="logout-btn" onclick="logout()">Logout</button>
-    <button onclick="showCalendar()" style="background:#8b5cf6;color:#fff">Kalender</button>
     <button class="bulk-btn" onclick="openBulkAddModal()">Bulk Add</button>
 </div>
 
@@ -759,28 +715,7 @@ body.dark .graduation-dropdown {
   </div>
 </div>
 
-<!-- Calendar Modal -->
-<div class="modal" id="calendarModal"><div class="modal-box" style="max-width:550px"><h3>Kalender Show</h3>
-    <div class="calendar-container">
-        <div class="calendar-header">
-            <button class="calendar-nav" onclick="calendarPrevMonth()">‹</button>
-            <div class="calendar-title" id="calendarTitle"></div>
-            <button class="calendar-nav" onclick="calendarNextMonth()">›</button>
-        </div>
-        <div class="calendar-weekdays">
-            <div>M</div><div>S</div><div>S</div><div>R</div><div>K</div><div>J</div><div>S</div>
-        </div>
-        <div class="calendar-days" id="calendarDays"></div>
-        <div class="calendar-day-detail" id="calendarDayDetail">
-            <h4 id="detailDate">Pilih tanggal</h4>
-            <div id="detailEvents" class="no-events">Pilih tanggal untuk melihat detail show</div>
-        </div>
-        <div class="calendar-actions">
-            <button class="btn-today" onclick="calendarGoToday()">Hari Ini</button>
-            <button class="btn-close-calendar" onclick="closeCalendarModal()">Tutup</button>
-        </div>
-    </div>
-</div></div>
+</div>
 
 <!-- Edit Show Modal -->
 <div class="modal" id="editShowModal">
@@ -877,10 +812,7 @@ var currentMemberId=null;
 var memberIdMap = {}; // { memberName: memberId }
 var memberNameMap = {}; // { memberId: memberName }
 
-// Calendar variables
-var calendarDate = new Date();
-var calendarShows = {};
-var selectedCalendarDate = null;
+
 
 // Edit show variables
 var currentEditShowId = null;
@@ -1169,8 +1101,11 @@ function renderMembers(){
             statusBadgeHtml='<div class="status-badge">INTI</div>';
         }
         
+        var firstChar = m.name.charAt(0);
         card.innerHTML=statusBadgeHtml+
-            '<img class="avatar" src="img/'+m.name.toLowerCase()+'.jpg" onerror="this.style.display=\'none\'" alt="'+m.name+'">'+
+            '<div class="avatar-wrap">'+
+                '<img class="avatar" src="img/'+m.name.toLowerCase()+'.jpg" onerror="this.onerror=null;this.style.display=\'none\';var p=document.createElement(\'div\');p.className=\'avatar-placeholder\';p.textContent=\''+firstChar+'\';this.parentNode.appendChild(p);" alt="'+m.name+'">'+
+            '</div>'+
             '<div class="card-footer">'+
                 '<div class="gen-badge">Gen '+m.gen+'</div>'+
                 '<div class="name">'+m.name+'</div>'+
@@ -2237,209 +2172,6 @@ function confirmLogout(){
     showNotification('info', 'Logged Out', 'Logout berhasil. Silakan login kembali untuk mengakses admin panel.');
 }
 
-// =================== CALENDAR FUNCTIONS ===================
-
-async function showCalendar() {
-    document.getElementById('calendarModal').style.display = 'flex';
-    
-    await loadCalendarShows();
-    renderCalendar();
-}
-
-function closeCalendarModal() {
-    document.getElementById('calendarModal').style.display = 'none';
-    selectedCalendarDate = null;
-}
-
-async function loadCalendarShows() {
-    try {
-        // Hitung tanggal awal dan akhir bulan yang ditampilkan
-        var year = calendarDate.getFullYear();
-        var month = calendarDate.getMonth();
-        
-        var startDate = new Date(year, month, 1);
-        var endDate = new Date(year, month + 1, 0);
-        
-        var result = await db.from('setlist_performance')
-            .select('*, members(name, status)')
-            .gte('show_date', startDate.toISOString().split('T')[0])
-            .lte('show_date', endDate.toISOString().split('T')[0])
-            .order('show_time', { ascending: true });
-        
-        if (result.error) throw result.error;
-        
-        calendarShows = {};
-        if (result.data) {
-            result.data.forEach(function(show) {
-                var dateStr = show.show_date;
-                if (!calendarShows[dateStr]) {
-                    calendarShows[dateStr] = [];
-                }
-                calendarShows[dateStr].push(show);
-            });
-        }
-        
-        var monthName = calendarDate.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
-        console.log('📅 Loaded calendar data for ' + monthName + ':', Object.keys(calendarShows).length + ' days with shows');
-    } catch (err) {
-        console.error('Error loading calendar data:', err);
-        showNotification('error', 'Calendar Error', 'Gagal memuat data kalender');
-    }
-}
-
-function renderCalendar() {
-    var year = calendarDate.getFullYear();
-    var month = calendarDate.getMonth();
-    
-    // Update title dengan bulan dan tahun yang benar
-    var monthName = calendarDate.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
-    document.getElementById('calendarTitle').textContent = monthName.charAt(0).toUpperCase() + monthName.slice(1);
-    
-    var firstDay = new Date(year, month, 1);
-    var lastDay = new Date(year, month + 1, 0);
-    var daysInMonth = lastDay.getDate();
-    var startingDay = firstDay.getDay();
-    
-    // Indonesia: Senin = 1, Minggu = 0 -> kita ubah ke Senin = 0, Minggu = 6
-    var startingIndex = startingDay === 0 ? 6 : startingDay - 1;
-    
-    var today = new Date();
-    var todayStr = getTodayDate();
-    var todayYear = today.getFullYear();
-    var todayMonth = today.getMonth();
-    var todayDate = today.getDate();
-    
-    var calendarHTML = '';
-    var dayCount = 0;
-    
-    // Hari kosong di awal bulan
-    for (var i = 0; i < startingIndex; i++) {
-        calendarHTML += '<div class="calendar-day empty"></div>';
-        dayCount++;
-    }
-    
-    // Hari dalam bulan
-    for (var day = 1; day <= daysInMonth; day++) {
-        var dateStr = year + '-' + String(month + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
-        var dayShows = calendarShows[dateStr] || [];
-        var isSelected = selectedCalendarDate === dateStr;
-        var isToday = (year === todayYear && month === todayMonth && day === todayDate);
-        
-        var dayClass = 'calendar-day';
-        if (isToday) dayClass += ' today';
-        if (dayShows.length > 0) dayClass += ' has-shows';
-        if (isSelected) dayClass += ' selected';
-        
-        calendarHTML += '<div class="' + dayClass + '" onclick="selectCalendarDate(\'' + dateStr + '\')">' +
-                        day + '</div>';
-        dayCount++;
-    }
-    
-    // Hari kosong di akhir bulan
-    while (dayCount % 7 !== 0) {
-        calendarHTML += '<div class="calendar-day empty"></div>';
-        dayCount++;
-    }
-    
-    document.getElementById('calendarDays').innerHTML = calendarHTML;
-    
-    if (!selectedCalendarDate) {
-        selectedCalendarDate = getTodayDate();
-        renderCalendarDayDetail(selectedCalendarDate);
-    }
-}
-
-function selectCalendarDate(dateStr) {
-    selectedCalendarDate = dateStr;
-    renderCalendar();
-    renderCalendarDayDetail(dateStr);
-}
-
-function renderCalendarDayDetail(dateStr) {
-    var dayShows = calendarShows[dateStr] || [];
-    var date = new Date(dateStr);
-    var dayNames = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-    var monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
-                     'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-    
-    var dayName = dayNames[date.getDay()];
-    var formattedDate = dayName + ', ' + date.getDate() + ' ' + monthNames[date.getMonth()] + ' ' + date.getFullYear();
-    
-    document.getElementById('detailDate').textContent = formattedDate;
-    
-    var detailHTML = '';
-    if (dayShows.length === 0) {
-        detailHTML = '<div class="no-events">Tidak ada show pada tanggal ini</div>';
-    } else {
-        dayShows.forEach(function(show) {
-            var memberName = show.members ? show.members.name : 'Unknown';
-            var memberStatus = show.members ? show.members.status : 'inti';
-            var color = memberStatus === 'trainee' ? '#f59e0b' : '#22c55e';
-            var timeText = show.show_time ? formatTime(show.show_time) + ' WIB' : '';
-            var birthdayBadge = show.is_birthday_show ? ' 🎂' : '';
-            var graduationBadge = show.is_graduation_show ? ' 🎓' : '';
-            
-            // Cek apakah show sudah lewat
-            var now = new Date();
-            var showDateTime = new Date(show.show_date + 'T' + show.show_time);
-            var isPast = now > showDateTime;
-            
-            detailHTML += '<div class="calendar-event" style="--event-color:' + color + '">' +
-                         '<div><span class="event-member">' + memberName + '</span>' +
-                         '<span class="event-setlist">' + show.setlist_name + birthdayBadge + graduationBadge + (isPast ? ' ⏰' : '') + '</span>' +
-                         (timeText ? '<span class="event-time">' + timeText + '</span>' : '') + '</div>' +
-                         '<div class="event-actions">' +
-                         (!isPast ? '<button class="event-edit-btn" onclick="openEditShow(' + show.id + ')">✏️</button>' : '') +
-                         '</div>' +
-                         '<div class="event-status ' + memberStatus + '">' + 
-                         (memberStatus === 'trainee' ? 'TRAINEE' : memberStatus === 'graduated' ? 'GRADUATED' : 'INTI') + '</div>' +
-                         '</div>';
-        });
-    }
-    
-    document.getElementById('detailEvents').innerHTML = detailHTML;
-    document.getElementById('detailEvents').className = dayShows.length === 0 ? 'no-events' : '';
-}
-
-function calendarPrevMonth() {
-    calendarDate.setMonth(calendarDate.getMonth() - 1);
-    loadCalendarShows().then(function() {
-        renderCalendar();
-        if (selectedCalendarDate) {
-            var selectedDate = new Date(selectedCalendarDate);
-            if (selectedDate.getMonth() !== calendarDate.getMonth() || 
-                selectedDate.getFullYear() !== calendarDate.getFullYear()) {
-                selectedCalendarDate = null;
-            }
-        }
-    });
-}
-
-function calendarNextMonth() {
-    calendarDate.setMonth(calendarDate.getMonth() + 1);
-    loadCalendarShows().then(function() {
-        renderCalendar();
-        if (selectedCalendarDate) {
-            var selectedDate = new Date(selectedCalendarDate);
-            if (selectedDate.getMonth() !== calendarDate.getMonth() || 
-                selectedDate.getFullYear() !== calendarDate.getFullYear()) {
-                selectedCalendarDate = null;
-            }
-        }
-    });
-}
-
-function calendarGoToday() {
-    var today = new Date();
-    calendarDate = new Date(today.getFullYear(), today.getMonth(), 1);
-    selectedCalendarDate = getTodayDate();
-    loadCalendarShows().then(function() {
-        renderCalendar();
-        renderCalendarDayDetail(selectedCalendarDate);
-        showNotification('info', 'Calendar', 'Kembali ke hari ini');
-    });
-}
-
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
     if(savedTheme==='dark'){
@@ -2447,5 +2179,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+<footer style="text-align:center;padding:12px;color:#6b7280;font-size:10px;border-top:1px solid #e5e7eb;margin-top:20px">© 2026 Show Theater. Data diperbarui secara real-time</footer>
 </body>
 </html>
