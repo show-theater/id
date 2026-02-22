@@ -22,7 +22,7 @@ header{background:#e60012;padding:15px 20px;font-size:20px;font-weight:bold;colo
 .header-theme-toggle:active svg{transform:scale(0.9)}
 body.dark .header-theme-toggle{background:rgba(0,0,0,0.2)}
 body.dark .header-theme-toggle:hover{background:rgba(0,0,0,0.35)}
-.top{padding:15px 20px;background:#fff;border-bottom:1px solid #ddd;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;transition:background 0.3s,border-color 0.3s}
+.top{padding:12px 16px;background:#fff;border-bottom:1px solid #ddd;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;transition:background 0.3s,border-color 0.3s}
 body.dark .top{background:#1b1f3a;border-bottom:1px solid #2d3548}
 .search-box{display:inline-block;width:100%;max-width:400px;position:relative;flex:1}
 
@@ -64,6 +64,12 @@ body.dark .search-clear-btn:hover svg{stroke:#f87171}
 
 /* ===== TOP ACTION BUTTONS ===== */
 .top-actions{display:flex;gap:8px;align-items:center;flex-shrink:0}
+@media (max-width:767px){
+  .top{flex-direction:column;align-items:stretch;gap:8px;padding:10px 12px}
+  .search-box{max-width:100%;flex:none}
+  .top-actions{width:100%;display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+  .top-actions button{padding:9px 6px;font-size:12px;border-radius:12px;white-space:nowrap;text-align:center}
+}
 textarea{font-family:Arial,sans-serif;max-height:150px;min-height:100px;resize:vertical}
 body.dark textarea{background:#0a0e1a;color:#e5e7eb;border-color:#374151}
 button{border:none;border-radius:20px;padding:10px 20px;font-weight:bold;cursor:pointer;font-size:14px;transition:opacity 0.15s,transform 0.1s}
@@ -685,9 +691,34 @@ body.dark #bulkAddModal .modal-footer .btn-cancel { background:#374151;color:#e5
 }
 
 /* Edit Show Modal */
-#editShowModal .modal-box {
-  max-width: 400px;
-}
+#editShowModal .modal-box { max-width:460px; max-height:88vh; padding:24px 24px 0 24px; display:flex; flex-direction:column; }
+#editShowModal .modal-body { flex:1; overflow-y:auto; padding-bottom:8px; }
+#editShowModal .modal-header-block h3 { font-size:18px; font-weight:700; margin:0 0 4px; display:flex; align-items:center; gap:8px; }
+#editShowModal .modal-header-block p { font-size:13px; color:#6b7280; margin:0 0 16px; }
+body.dark #editShowModal .modal-header-block p { color:#9ca3af; }
+#editShowModal .form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:4px; }
+#editShowModal .modal-divider { height:1px; background:#e5e7eb; margin:14px 0; }
+body.dark #editShowModal .modal-divider { background:#1f2937; }
+#editShowModal .options-grid { display:flex; flex-direction:column; gap:8px; margin-bottom:14px; }
+#editShowModal .option-card { padding:12px 14px; border-radius:12px; border:1.5px solid; transition:all 0.2s; }
+#editShowModal .option-card-row { display:flex; align-items:center; gap:10px; cursor:pointer; }
+#editShowModal .option-card.birthday-card   { background:#fff5f5; border-color:#fecaca; }
+#editShowModal .option-card.graduation-card { background:#eff6ff; border-color:#bfdbfe; }
+body.dark #editShowModal .option-card.birthday-card   { background:#1f1818; border-color:#7f1d1d; }
+body.dark #editShowModal .option-card.graduation-card { background:#1a1f2e; border-color:#1e3a8a; }
+#editShowModal .option-card input[type="checkbox"] { width:18px; height:18px; cursor:pointer; margin:0; flex-shrink:0; accent-color:#3b82f6; }
+#editShowModal .option-label { font-size:13px; font-weight:600; flex:1; display:flex; align-items:center; gap:7px; }
+#editShowModal .option-card.birthday-card   .option-label { color:#be123c; }
+#editShowModal .option-card.graduation-card .option-label { color:#1e40af; }
+body.dark #editShowModal .option-card.birthday-card   .option-label { color:#fca5a5; }
+body.dark #editShowModal .option-card.graduation-card .option-label { color:#93c5fd; }
+#editShowModal .option-dropdown { margin-top:10px; padding-top:10px; border-top:1px solid rgba(0,0,0,0.08); display:none; }
+body.dark #editShowModal .option-dropdown { border-top-color:rgba(255,255,255,0.06); }
+#editShowModal .option-dropdown.show { display:block; }
+#editShowModal .option-dropdown select { width:100%;padding:10px 12px;border-radius:10px;border:1.5px solid #ddd;background:#fff;color:#333;font-size:13px;outline:none;margin:0; }
+body.dark #editShowModal .option-dropdown select { background:#0a0e1a;color:#e5e7eb;border-color:#374151; }
+#editShowModal .modal-footer { position:sticky; bottom:0; background:#fff; padding:12px 0 20px; border-top:1px solid #e5e7eb; margin-top:6px; }
+body.dark #editShowModal .modal-footer { background:#111827; border-top-color:#1f2937; }
 
 /* Custom Setlist Field */
 .custom-setlist-field {
@@ -1374,26 +1405,75 @@ body.dark #memberShowListModal .modal-footer .btn-cancel { background:#374151; c
 /* Show list items */
 .msl-list { display:flex; flex-direction:column; gap:8px; }
 .msl-item {
-  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
   padding:12px 14px; border:1.5px solid #e5e7eb; border-radius:12px;
   background:#f9fafb; cursor:pointer; transition:all 0.18s;
 }
 body.dark .msl-item { background:#1f2937; border-color:#374151; }
 .msl-item:hover { border-color:#3b82f6; background:#eff6ff; transform:translateX(3px); }
 body.dark .msl-item:hover { background:#1e3a5f; }
-.msl-setlist { font-size:13px; font-weight:700; color:#111827; margin-bottom:3px; }
+.msl-setlist { font-size:13px; font-weight:700; color:#111827; margin-bottom:3px; display:flex; align-items:center; flex-wrap:wrap; gap:4px; }
 body.dark .msl-setlist { color:#f3f4f6; }
 .msl-date { font-size:11px; color:#6b7280; }
 body.dark .msl-date { color:#9ca3af; }
 .msl-arrow { color:#3b82f6; font-size:16px; flex-shrink:0; }
-.msl-actions { display:flex; gap:6px; flex-shrink:0; }
-.msl-btn-del { background:#ef4444; color:#fff; border:none; border-radius:8px; padding:6px 10px; font-size:12px; font-weight:700; cursor:pointer; }
+.msl-actions { display:flex; flex-direction:column; gap:5px; flex-shrink:0; align-items:stretch; }
+.msl-btn-del { background:#ef4444; color:#fff; border:none; border-radius:8px; padding:6px 12px; font-size:12px; font-weight:700; cursor:pointer; white-space:nowrap; }
 .msl-btn-del:hover { opacity:0.85; }
+.msl-btn-edit { background:#3b82f6; color:#fff; border:none; border-radius:8px; padding:6px 12px; font-size:12px; font-weight:700; cursor:pointer; white-space:nowrap; }
+.msl-btn-edit:hover { opacity:0.85; }
 .dsl-member-chip { display:inline-flex; align-items:center; gap:4px; background:#f3f4f6; border-radius:8px; padding:5px 10px; font-size:12px; font-weight:600; color:#374151; }
 body.dark .dsl-member-chip { background:#1f2937; color:#e5e7eb; }
 .msl-empty { text-align:center; padding:32px 16px; color:#9ca3af; font-size:13px; }
 .msl-loading { text-align:center; padding:32px 16px; color:#9ca3af; font-size:13px; display:flex; align-items:center; justify-content:center; gap:8px; }
 /* ===== END MEMBER SHOW LIST MODAL ===== */
+
+/* Edit Show List Modal & Delete Show List Modal - sticky footer */
+#editShowListModal .modal-box,
+#deleteShowListModal .modal-box {
+  max-width: 480px; max-height: 88vh;
+  padding: 24px 24px 0 24px;
+  display: flex; flex-direction: column;
+}
+#editShowListModal .modal-body,
+#deleteShowListModal .modal-body { flex:1; overflow-y:auto; padding-bottom:8px; }
+#editShowListModal .modal-header-block h3,
+#deleteShowListModal .modal-header-block h3 {
+  font-size:18px; font-weight:700; margin:0 0 4px;
+  display:flex; align-items:center; gap:8px;
+}
+#editShowListModal .modal-header-block p,
+#deleteShowListModal .modal-header-block p { font-size:13px; color:#6b7280; margin:0 0 14px; }
+body.dark #editShowListModal .modal-header-block p,
+body.dark #deleteShowListModal .modal-header-block p { color:#9ca3af; }
+#editShowListModal .modal-footer,
+#deleteShowListModal .modal-footer {
+  position:sticky; bottom:0; background:#fff;
+  padding:12px 0 20px; border-top:1px solid #e5e7eb; margin-top:6px;
+}
+body.dark #editShowListModal .modal-footer,
+body.dark #deleteShowListModal .modal-footer { background:#111827; border-top-color:#1f2937; }
+#editShowListModal .modal-footer .btn-cancel,
+#deleteShowListModal .modal-footer .btn-cancel {
+  width:100%; padding:12px; font-size:14px; border-radius:12px;
+  background:#f3f4f6; color:#374151; font-weight:600;
+}
+body.dark #editShowListModal .modal-footer .btn-cancel,
+body.dark #deleteShowListModal .modal-footer .btn-cancel { background:#374151; color:#e5e7eb; }
+
+/* Confirm Edit Modal - flex column sticky footer */
+#confirmEslModal .modal-box {
+  max-width: 420px; max-height: 88vh;
+  padding: 24px 24px 0 24px;
+  display: flex; flex-direction: column;
+}
+#confirmEslModal .modal-body-scroll { flex:1; overflow-y:auto; padding-bottom:8px; }
+#confirmEslModal .modal-footer-sticky {
+  position:sticky; bottom:0; background:#fff;
+  padding:12px 0 20px; border-top:1px solid #e5e7eb; margin-top:6px;
+  display:flex; gap:10px;
+}
+body.dark #confirmEslModal .modal-footer-sticky { background:#111827; border-top-color:#1f2937; }
 </style>
 </head>
 <body>
@@ -1462,6 +1542,7 @@ body.dark .dsl-member-chip { background:#1f2937; color:#e5e7eb; }
     </div>
     <div class="top-actions">
         <button class="bulk-btn" onclick="openBulkAddModal()">Bulk Add</button>
+        <button style="background:#3b82f6;color:#fff;" onclick="openEditShowListModal()">Edit Show</button>
         <button style="background:#ef4444;color:#fff;" onclick="openDeleteShowModal()">Hapus Show</button>
     </div>
 </div>
@@ -1738,7 +1819,7 @@ body.dark .dsl-member-chip { background:#1f2937; color:#e5e7eb; }
       <div class="options-grid">
 
         <!-- Birthday -->
-        <div class="option-card birthday-card">
+        <div class="option-card birthday-card" id="setlist-birthday-card">
           <label class="option-card-row">
             <input type="checkbox" id="isBirthdayShow" onchange="toggleBirthdayField()">
             <span class="option-label" style="display:flex;align-items:center;gap:7px;">
@@ -1754,7 +1835,7 @@ body.dark .dsl-member-chip { background:#1f2937; color:#e5e7eb; }
         </div>
 
         <!-- Graduation -->
-        <div class="option-card graduation-card">
+        <div class="option-card graduation-card" id="setlist-graduation-card">
           <label class="option-card-row">
             <input type="checkbox" id="isGraduationShow" onchange="toggleGraduationField()">
             <span class="option-label" style="display:flex;align-items:center;gap:7px;">
@@ -1947,7 +2028,58 @@ body.dark .dsl-member-chip { background:#1f2937; color:#e5e7eb; }
   </div>
 </div>
 
-<!-- Delete Show List Modal -->
+<!-- Edit Show List Modal -->
+<div class="modal" id="editShowListModal">
+  <div class="modal-box">
+    <div class="modal-body">
+      <div class="modal-header-block">
+        <h3 style="color:#3b82f6;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Edit Show
+        </h3>
+        <p>Pilih show yang ingin diedit</p>
+      </div>
+      <div id="eslList" class="msl-list">
+        <div class="msl-loading"><div class="spinner" style="width:18px;height:18px;border-width:2px;border-top-color:#3b82f6;"></div> Memuat show...</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeEditShowListModal()">Tutup</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm Edit Show Modal -->
+<div class="modal" id="confirmEslModal">
+  <div class="modal-box" style="max-width:420px;">
+    <div class="modal-body-scroll">
+      <div style="text-align:center;margin-bottom:16px;">
+        <div style="width:56px;height:56px;background:#dbeafe;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </div>
+        <h3 style="font-size:16px;font-weight:700;margin-bottom:4px;">Edit Show Ini</h3>
+        <p id="confirmEslDesc" style="font-size:13px;color:#6b7280;margin-bottom:12px;"></p>
+      </div>
+      <div style="margin-bottom:14px;">
+        <div style="font-size:12px;font-weight:700;color:#6b7280;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px;">Member di show ini</div>
+        <div id="confirmEslMembers" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px;"></div>
+      </div>
+      <div>
+        <label class="input-label">Nama Setlist</label>
+        <input type="text" id="eslSetlistName" placeholder="Nama setlist...">
+        <label class="input-label">Tanggal Show</label>
+        <input type="date" id="eslShowDate">
+        <label class="input-label">Waktu Show</label>
+        <input type="time" id="eslShowTime">
+      </div>
+    </div>
+    <div class="modal-footer-sticky">
+      <button class="btn-cancel" onclick="document.getElementById('confirmEslModal').style.display='none'" style="flex:1;padding:12px;font-size:14px;border-radius:12px;">Batal</button>
+      <button onclick="doEditEslShow()" style="flex:2;padding:12px;font-size:14px;border-radius:12px;background:#3b82f6;color:#fff;font-weight:700;">Simpan Perubahan</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal" id="deleteShowListModal">
   <div class="modal-box">
     <div class="modal-body">
@@ -2000,74 +2132,97 @@ body.dark .dsl-member-chip { background:#1f2937; color:#e5e7eb; }
 <!-- Edit Show Modal -->
 <div class="modal" id="editShowModal">
   <div class="modal-box">
-    <button class="modal-theme-toggle" onclick="toggleTheme()">
-      <svg id="editModalThemeIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/>
-      </svg>
-    </button>
-    <h3>Edit Show</h3>
-    <p id="editShowOriginalInfo">Mengedit show...</p>
-    
-    <label class="input-label">Member</label>
-    <select id="editMemberSelect">
-      <option value="">-- Pilih Member --</option>
-    </select>
-    
-    <label class="input-label">Tanggal Show</label>
-    <input type="date" id="editShowDate">
-    
-    <label class="input-label">Jam Show (HH:MM)</label>
-    <input type="time" id="editShowTime">
-    
-    <label class="input-label">Setlist</label>
-    <select id="editSetlistSelect" onchange="toggleEditCustomSetlistField()">
-      <option value="">Pilih Setlist...</option>
-      <option value="__custom__">Kustom Setlist (Ketik Manual)</option>
-    </select>
-    
-    <!-- Custom Setlist Field untuk Edit -->
-    <div class="custom-setlist-field" id="editCustomSetlistField">
+
+    <!-- Scrollable body -->
+    <div class="modal-body">
+      <div class="modal-header-block">
+        <h3 style="display:flex;align-items:center;gap:8px;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;color:#3b82f6"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Edit Show
+        </h3>
+        <p id="editShowOriginalInfo">Mengedit show...</p>
+      </div>
+
+      <!-- Tanggal & Jam — 2 kolom -->
+      <div class="form-row">
+        <div class="form-group">
+          <label class="input-label">Tanggal Show</label>
+          <input type="date" id="editShowDate">
+        </div>
+        <div class="form-group">
+          <label class="input-label">Jam Show</label>
+          <input type="time" id="editShowTime">
+        </div>
+      </div>
+
+      <!-- Member -->
+      <label class="input-label">Member</label>
+      <select id="editMemberSelect">
+        <option value="">-- Pilih Member --</option>
+      </select>
+
+      <!-- Setlist -->
+      <label class="input-label">Setlist</label>
+      <select id="editSetlistSelect" onchange="toggleEditCustomSetlistField()">
+        <option value="">Pilih Setlist...</option>
+        <option value="__custom__">Kustom Setlist (Ketik Manual)</option>
+      </select>
+      <div class="custom-setlist-field" id="editCustomSetlistField">
         <label class="input-label">Nama Setlist Kustom</label>
         <input type="text" id="editCustomSetlistName" placeholder="Masukkan nama setlist..." maxlength="100">
         <div class="tip-text"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;vertical-align:middle;margin-right:5px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>Masukkan nama setlist bebas sesuai keinginan</div>
-    </div>
-    
-    <div class="birthday-section">
-      <label class="birthday-checkbox-label">
-        <input type="checkbox" id="editIsBirthdayShow" onchange="toggleEditBirthdayField()">
-        <span>Birthday Show (STS)</span>
-      </label>
-      
-      <div class="birthday-dropdown" id="editBirthdayMemberField">
-        <label class="input-label">Member yang Ulang Tahun</label>
-        <select id="editBirthdayMember">
-          <option value="">-- Pilih Member --</option>
-        </select>
       </div>
-    </div>
-    
-    <div class="graduation-section">
-      <label class="graduation-checkbox-label">
-        <input type="checkbox" id="editIsGraduationShow" onchange="toggleEditGraduationField()">
-        <span style="color: #1e40af;">Graduation Show (Last Show)</span>
-      </label>
-      
-      <div class="graduation-dropdown" id="editGraduationMemberField">
-        <div class="tip-text" style="background: #dbeafe; color: #1e40af; border-radius: 8px; padding: 8px; margin-bottom: 10px;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;vertical-align:middle;margin-right:5px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><strong>PERHATIAN:</strong> Centang jika ini adalah show terakhir untuk member!
+
+      <div class="modal-divider"></div>
+
+      <!-- Options: Birthday / Graduation -->
+      <div class="options-grid">
+
+        <!-- Birthday -->
+        <div class="option-card birthday-card" id="edit-birthday-card">
+          <label class="option-card-row">
+            <input type="checkbox" id="editIsBirthdayShow" onchange="toggleEditBirthdayField()">
+            <span class="option-label" style="display:flex;align-items:center;gap:7px;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8"/><path d="M4 16s.5-1 2-1 2.5 2 4 2 2.5-2 4-2 2.5 2 4 2 2-1 2-1"/><path d="M2 21h20"/><path d="M7 8v3"/><path d="M12 8v3"/><path d="M17 8v3"/><path d="M7 4h0.01"/><path d="M12 4h0.01"/><path d="M17 4h0.01"/></svg>
+              Birthday Show (STS)
+            </span>
+          </label>
+          <div class="option-dropdown" id="editBirthdayMemberField">
+            <select id="editBirthdayMember">
+              <option value="">-- Pilih Member --</option>
+            </select>
+          </div>
         </div>
-        
-        <label class="input-label">Member yang Graduate</label>
-        <select id="editGraduationMember">
-          <option value="">-- Pilih Member --</option>
-        </select>
+
+        <!-- Graduation -->
+        <div class="option-card graduation-card" id="edit-graduation-card">
+          <label class="option-card-row">
+            <input type="checkbox" id="editIsGraduationShow" onchange="toggleEditGraduationField()">
+            <span class="option-label" style="display:flex;align-items:center;gap:7px;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+              Graduation Show (Last Show)
+            </span>
+          </label>
+          <div class="option-dropdown" id="editGraduationMemberField">
+            <div class="option-warning" style="background:#dbeafe;color:#1e40af;display:flex;align-items:flex-start;gap:6px;border-radius:8px;padding:7px 10px;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              <span><strong>PERHATIAN:</strong> Centang jika ini adalah show terakhir untuk member!</span>
+            </div>
+            <select id="editGraduationMember">
+              <option value="">-- Pilih Member --</option>
+            </select>
+          </div>
+        </div>
+
       </div>
     </div>
-    
-    <div class="modal-buttons">
-      <button class="btn-cancel" onclick="closeEditShowModal()">Batal</button>
-      <button class="btn-confirm" onclick="saveEditShow()" style="background:#3b82f6;color:#fff">Simpan Perubahan</button>
+
+    <!-- Sticky footer -->
+    <div class="modal-footer" style="display:flex;gap:10px;">
+      <button class="btn-cancel" onclick="closeEditShowModal()" style="flex:1;padding:12px;font-size:14px;border-radius:12px;">Batal</button>
+      <button onclick="saveEditShow()" style="flex:2;padding:12px;font-size:14px;border-radius:12px;background:#3b82f6;color:#fff;font-weight:700;">Simpan Perubahan</button>
     </div>
+
   </div>
 </div>
 
@@ -2839,6 +2994,11 @@ function openSetlistModal(memberId){
     // Pre-populate dropdowns
     populateMemberDropdown('birthdayMember');
     populateMemberDropdown('graduationMember');
+
+    // Trainee: sembunyikan Birthday & Graduation, hanya tampilkan Non-Show
+    var isTrainee = member.status === 'trainee';
+    document.getElementById('setlist-birthday-card').style.display = isTrainee ? 'none' : 'block';
+    document.getElementById('setlist-graduation-card').style.display = isTrainee ? 'none' : 'block';
     
     document.getElementById('setlistModal').style.display='flex';
 }
@@ -3471,6 +3631,26 @@ async function openEditShow(showId) {
         } else {
             document.getElementById('editGraduationMemberField').classList.remove('show');
         }
+
+        // Sembunyikan opsi Birthday & Graduation jika ini Non-Show atau member Trainee
+        var isNonShow = currentEditShowData.is_non_show;
+        var editMember = members.find(function(m){ return m.id === currentEditShowData.member_id; });
+        var isTrainee = editMember && editMember.status === 'trainee';
+        var showBirthdayGrad = !isNonShow && !isTrainee;
+
+        document.getElementById('edit-birthday-card').style.display = showBirthdayGrad ? 'block' : 'none';
+        document.getElementById('edit-graduation-card').style.display = showBirthdayGrad ? 'block' : 'none';
+
+        var divider = document.querySelector('#editShowModal .modal-divider');
+        if (divider) divider.style.display = showBirthdayGrad ? 'block' : 'none';
+
+        // Reset checkbox jika tersembunyi
+        if (!showBirthdayGrad) {
+            document.getElementById('editIsBirthdayShow').checked = false;
+            document.getElementById('editBirthdayMemberField').classList.remove('show');
+            document.getElementById('editIsGraduationShow').checked = false;
+            document.getElementById('editGraduationMemberField').classList.remove('show');
+        }
         
         document.getElementById('editShowModal').style.display = 'flex';
         
@@ -3852,7 +4032,7 @@ async function openDeleteShowModal() {
             var dateStr = formatDate(g.show_date);
             var timeStr = g.show_time ? formatTime(g.show_time) : '';
             var meta = dateStr + (timeStr ? ' · ' + timeStr : '');
-            var nonShowLabel = g.is_non_show ? '<span style="font-size:10px;background:#6b7280;color:#fff;border-radius:4px;padding:1px 5px;margin-left:4px;">Non-Show</span>' : '';
+            var nonShowLabel = g.is_non_show ? '<span style="font-size:10px;background:#6b7280;color:#fff;border-radius:4px;padding:2px 7px;white-space:nowrap;">Non-Show</span>' : '';
             var memberNames = g.members.map(function(m){ return m.name; }).join(', ');
 
             var item = document.createElement('div');
@@ -3949,6 +4129,139 @@ async function doDeleteDslShow() {
 }
 
 // =================== END DELETE SHOW FUNCTIONS ===================
+
+// =================== EDIT SHOW FUNCTIONS ===================
+
+async function openEditShowListModal() {
+    document.getElementById('eslList').innerHTML = '<div class="msl-loading"><div class="spinner" style="width:18px;height:18px;border-width:2px;border-top-color:#3b82f6;"></div> Memuat show...</div>';
+    document.getElementById('editShowListModal').style.display = 'flex';
+
+    try {
+        var now = new Date();
+        var todayStr = now.toISOString().split('T')[0];
+
+        var result = await db.from('setlist_performance')
+            .select('id, setlist_name, show_date, show_time, is_non_show, member_id, members(name)')
+            .gte('show_date', todayStr)
+            .order('show_date', { ascending: true })
+            .order('show_time', { ascending: true });
+
+        if (result.error) throw result.error;
+
+        var shows = (result.data || []).filter(function(s) {
+            var time = s.show_time || '23:59:59';
+            return new Date(s.show_date + 'T' + time) > now;
+        });
+
+        if (shows.length === 0) {
+            document.getElementById('eslList').innerHTML = '<div class="msl-empty">Tidak ada show mendatang.</div>';
+            return;
+        }
+
+        // Group by setlist + date + time
+        var groupMap = {};
+        shows.forEach(function(s) {
+            var key = (s.setlist_name || '') + '|' + s.show_date + '|' + (s.show_time || '');
+            if (!groupMap[key]) {
+                groupMap[key] = { setlist_name: s.setlist_name, show_date: s.show_date, show_time: s.show_time, is_non_show: s.is_non_show, members: [], ids: [] };
+            }
+            groupMap[key].members.push({ id: s.member_id, name: s.members ? s.members.name : '?', rowId: s.id });
+            groupMap[key].ids.push(s.id);
+        });
+
+        var listEl = document.getElementById('eslList');
+        listEl.innerHTML = '';
+
+        Object.values(groupMap).forEach(function(g) {
+            var dateStr = formatDate(g.show_date);
+            var timeStr = g.show_time ? formatTime(g.show_time) : '';
+            var meta = dateStr + (timeStr ? ' · ' + timeStr : '');
+            var nonShowLabel = g.is_non_show ? '<span style="font-size:10px;background:#6b7280;color:#fff;border-radius:4px;padding:2px 7px;white-space:nowrap;">Non-Show</span>' : '';
+            var memberNames = g.members.map(function(m){ return m.name; }).join(', ');
+
+            var item = document.createElement('div');
+            item.className = 'msl-item';
+            item.style.cursor = 'default';
+            item.innerHTML =
+                '<div style="flex:1;min-width:0;">' +
+                  '<div class="msl-setlist">' + (g.setlist_name || '—') + nonShowLabel + '</div>' +
+                  '<div class="msl-date">' + meta + '</div>' +
+                  '<div style="font-size:11px;color:#9ca3af;margin-top:2px;">' + memberNames + '</div>' +
+                '</div>' +
+                '<div class="msl-actions">' +
+                  '<button class="msl-btn-edit">✎ Edit</button>' +
+                '</div>';
+
+            item.querySelector('button').addEventListener('click', function() {
+                confirmEslEdit(g);
+            });
+
+            listEl.appendChild(item);
+        });
+
+    } catch(err) {
+        document.getElementById('eslList').innerHTML = '<div class="msl-empty" style="color:#ef4444;">Gagal memuat: ' + err.message + '</div>';
+    }
+}
+
+function closeEditShowListModal() {
+    document.getElementById('editShowListModal').style.display = 'none';
+}
+
+function confirmEslEdit(group) {
+    var dateStr = formatDate(group.show_date);
+    var timeStr = group.show_time ? formatTime(group.show_time) : '';
+    document.getElementById('confirmEslDesc').textContent = (group.setlist_name || '—') + ' · ' + dateStr + (timeStr ? ' · ' + timeStr : '');
+
+    var chipsHtml = group.members.map(function(m){
+        return '<div class="dsl-member-chip">' + m.name + '</div>';
+    }).join('');
+    document.getElementById('confirmEslMembers').innerHTML = chipsHtml;
+
+    // Pre-fill form dengan data saat ini
+    document.getElementById('eslSetlistName').value = group.setlist_name || '';
+    document.getElementById('eslShowDate').value = group.show_date || '';
+    document.getElementById('eslShowTime').value = group.show_time ? group.show_time.substring(0,5) : '';
+
+    window._eslCurrentGroup = group;
+    document.getElementById('confirmEslModal').style.display = 'flex';
+}
+
+async function doEditEslShow() {
+    var group = window._eslCurrentGroup;
+    if (!group) return;
+
+    var newSetlist = document.getElementById('eslSetlistName').value.trim();
+    var newDate = document.getElementById('eslShowDate').value;
+    var newTime = document.getElementById('eslShowTime').value;
+
+    if (!newSetlist) { showNotification('warning', 'Validasi', 'Nama setlist tidak boleh kosong'); return; }
+    if (!newDate) { showNotification('warning', 'Validasi', 'Tanggal tidak boleh kosong'); return; }
+
+    document.getElementById('confirmEslModal').style.display = 'none';
+
+    try {
+        var updateData = {
+            setlist_name: newSetlist,
+            show_date: newDate,
+            show_time: newTime ? newTime + ':00' : null
+        };
+
+        for (var i = 0; i < group.ids.length; i++) {
+            var res = await db.from('setlist_performance').update(updateData).eq('id', group.ids[i]);
+            if (res.error) throw res.error;
+        }
+
+        showNotification('success', 'Berhasil', 'Show berhasil diperbarui');
+        await loadData();
+        await openEditShowListModal();
+
+    } catch(err) {
+        showNotification('error', 'Error', 'Gagal edit: ' + err.message);
+    }
+}
+
+// =================== END EDIT SHOW FUNCTIONS ===================
 
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
