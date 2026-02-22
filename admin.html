@@ -97,7 +97,7 @@ body.dark .filter{background:#1f2937;color:#e5e7eb}
 .stats{text-align:center;padding:8px 15px;font-size:12px;color:#666;background:#fff;border-bottom:1px solid #ddd;transition:background 0.3s}
 body.dark .stats{background:#0a0e1a;color:#9ca3af}
 .container{padding:20px;display:grid;gap:14px;max-width:1400px;margin:0 auto;width:100%}
-@media (max-width:767px){.container{grid-template-columns:repeat(4,1fr);gap:8px;padding:10px}}
+@media (max-width:767px){.container{grid-template-columns:repeat(3,1fr);gap:8px;padding:10px}}
 @media (min-width:768px) and (max-width:1023px){.container{grid-template-columns:repeat(5,1fr);gap:12px;padding:16px}}
 @media (min-width:1024px){.container{grid-template-columns:repeat(7,1fr);gap:14px;padding:20px}}
 @media (min-width:1280px){.container{grid-template-columns:repeat(9,1fr);gap:15px;padding:24px}}
@@ -1345,6 +1345,50 @@ body.dark .login-right-panel input:focus {
   .login-hero-icon-wrap { width: 72px; height: 72px; }
 }
 /* ===== END DESKTOP LOGIN ===== */
+
+
+
+/* ===== MEMBER SHOW LIST MODAL ===== */
+#memberShowListModal .modal-box {
+  max-width: 480px; max-height: 88vh;
+  padding: 24px 24px 0 24px;
+  display: flex; flex-direction: column;
+}
+#memberShowListModal .modal-body { flex:1; overflow-y:auto; padding-bottom:8px; }
+#memberShowListModal .modal-header-block h3 {
+  font-size:18px; font-weight:700; margin:0 0 4px;
+  display:flex; align-items:center; gap:8px;
+}
+#memberShowListModal .modal-header-block p { font-size:13px; color:#6b7280; margin:0 0 14px; }
+body.dark #memberShowListModal .modal-header-block p { color:#9ca3af; }
+#memberShowListModal .modal-footer {
+  position:sticky; bottom:0; background:#fff;
+  padding:12px 0 20px; border-top:1px solid #e5e7eb; margin-top:6px;
+}
+body.dark #memberShowListModal .modal-footer { background:#111827; border-top-color:#1f2937; }
+#memberShowListModal .modal-footer .btn-cancel {
+  width:100%; padding:12px; font-size:14px; border-radius:12px;
+  background:#f3f4f6; color:#374151; font-weight:600;
+}
+body.dark #memberShowListModal .modal-footer .btn-cancel { background:#374151; color:#e5e7eb; }
+/* Show list items */
+.msl-list { display:flex; flex-direction:column; gap:8px; }
+.msl-item {
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  padding:12px 14px; border:1.5px solid #e5e7eb; border-radius:12px;
+  background:#f9fafb; cursor:pointer; transition:all 0.18s;
+}
+body.dark .msl-item { background:#1f2937; border-color:#374151; }
+.msl-item:hover { border-color:#3b82f6; background:#eff6ff; transform:translateX(3px); }
+body.dark .msl-item:hover { background:#1e3a5f; }
+.msl-setlist { font-size:13px; font-weight:700; color:#111827; margin-bottom:3px; }
+body.dark .msl-setlist { color:#f3f4f6; }
+.msl-date { font-size:11px; color:#6b7280; }
+body.dark .msl-date { color:#9ca3af; }
+.msl-arrow { color:#3b82f6; font-size:16px; flex-shrink:0; }
+.msl-empty { text-align:center; padding:32px 16px; color:#9ca3af; font-size:13px; }
+.msl-loading { text-align:center; padding:32px 16px; color:#9ca3af; font-size:13px; display:flex; align-items:center; justify-content:center; gap:8px; }
+/* ===== END MEMBER SHOW LIST MODAL ===== */
 </style>
 </head>
 <body>
@@ -1876,6 +1920,27 @@ body.dark .login-right-panel input:focus {
 
 </div>
 
+<!-- Member Show List Modal -->
+<div class="modal" id="memberShowListModal">
+  <div class="modal-box">
+    <div class="modal-body">
+      <div class="modal-header-block">
+        <h3>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Edit Show
+        </h3>
+        <p id="mslSubtitle">Pilih show yang ingin diedit</p>
+      </div>
+      <div id="mslList" class="msl-list">
+        <div class="msl-loading"><div class="spinner" style="width:18px;height:18px;border-width:2px;"></div> Memuat...</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeMemberShowList()">Tutup</button>
+    </div>
+  </div>
+</div>
+
 <!-- Edit Show Modal -->
 <div class="modal" id="editShowModal">
   <div class="modal-box">
@@ -2306,6 +2371,7 @@ function renderMembers(){
                 '<div class="admin-controls">'+
                     '<button onclick="updateShow('+m.id+',-1)" title="Kurang show" '+(m.status==='graduated'?'disabled': '')+'>−</button>'+
                     '<button onclick="openSetlistModal('+m.id+')" title="Tambah show" '+(m.status==='graduated'?'disabled': '')+' style="background:rgba(255,255,255,0.25);">+</button>'+
+                    '<button onclick="openMemberShowList('+m.id+')" title="Edit show" style="background:rgba(59,130,246,0.45);">✎</button>'+
                 '</div>'+
             '</div>';
         list.appendChild(card);
@@ -3215,7 +3281,15 @@ async function doRemoveShow(member, lastSetlist) {
                 .delete()
                 .eq('id', lastSetlist.id);
             console.log('🗑️ Record dihapus (ID: '+lastSetlist.id+')');
-            
+
+            // Kurangi -1 show di tabel members (kalau bukan non-show)
+            if (!lastSetlist.is_non_show) {
+                var currentMember = members.find(function(m){ return m.id === member.id; }) || member;
+                await db.from('members')
+                    .update({ show: Math.max((currentMember.show || 0) - 1, 0) })
+                    .eq('id', member.id);
+            }
+
             await loadData();
             var updatedMember = members.find(function(m){ return m.id === member.id; }) || member;
             var activityText = lastSetlist.setlist_name;
@@ -3430,6 +3504,11 @@ async function saveEditShow() {
             updated_at: new Date().toISOString()
         };
         
+        var oldMemberId = currentEditShowData.member_id;
+        var newMemberId = memberId;
+        var memberChanged = String(oldMemberId) !== String(newMemberId);
+        var isNonShowRow = currentEditShowData.is_non_show;
+
         var updateResult = await db.from('setlist_performance')
             .update(updateData)
             .eq('id', currentEditShowId)
@@ -3437,6 +3516,22 @@ async function saveEditShow() {
         
         if (updateResult.error) {
             throw updateResult.error;
+        }
+
+        // Kalau member berubah dan bukan non-show, +1 member baru, -1 member lama
+        if (memberChanged && !isNonShowRow) {
+            var oldMemberData = members.find(function(m){ return m.id == oldMemberId; });
+            var newMemberData = members.find(function(m){ return m.id == newMemberId; });
+
+            // Kurangi -1 member lama
+            await db.from('members')
+                .update({ show: Math.max(((oldMemberData && oldMemberData.show) || 0) - 1, 0) })
+                .eq('id', oldMemberId);
+
+            // Tambah +1 member baru
+            await db.from('members')
+                .update({ show: ((newMemberData && newMemberData.show) || 0) + 1 })
+                .eq('id', newMemberId);
         }
         
         // Reload semua data
@@ -3446,8 +3541,9 @@ async function saveEditShow() {
         var oldMemberName = currentEditShowData.members ? currentEditShowData.members.name : 'Unknown';
         var newMemberName = selectedMember ? selectedMember.name : 'Unknown';
         
-        var message = 'Show berhasil diupdate: ' + oldMemberName + ' → ' + newMemberName + 
-                     ' (' + setlist + ' - ' + formatDate(showDate) + ' ' + formatTime(showTime) + ')';
+        var message = memberChanged
+            ? 'Show berhasil dipindah: ' + oldMemberName + ' → ' + newMemberName + ' (' + setlist + ' - ' + formatDate(showDate) + ' ' + formatTime(showTime) + ')'
+            : 'Show berhasil diupdate: ' + newMemberName + ' (' + setlist + ' - ' + formatDate(showDate) + ' ' + formatTime(showTime) + ')';
         
         if (isGraduationShow) {
             message = '' + newMemberName + ' graduation show berhasil diupdate!';
@@ -3577,6 +3673,74 @@ function confirmLogout(){
     document.getElementById('loginModal').style.display='flex';
     showNotification('info', 'Logout', 'Berhasil keluar');
 }
+
+
+
+// =================== MEMBER SHOW LIST FUNCTIONS ===================
+
+async function openMemberShowList(memberId) {
+    var member = members.find(function(m){ return m.id === memberId; });
+    if (!member) return;
+
+    document.getElementById('mslSubtitle').textContent = member.name + ' — pilih show yang ingin diedit';
+    document.getElementById('mslList').innerHTML = '<div class="msl-loading"><div class="spinner" style="width:18px;height:18px;border-width:2px;border-top-color:#3b82f6;"></div> Memuat show...</div>';
+    document.getElementById('memberShowListModal').style.display = 'flex';
+
+    try {
+        var now = new Date();
+        var todayStr = now.toISOString().split('T')[0];
+
+        var result = await db.from('setlist_performance')
+            .select('id, setlist_name, show_date, show_time')
+            .eq('member_id', memberId)
+            .gte('show_date', todayStr)
+            .order('show_date', { ascending: true })
+            .order('show_time', { ascending: true });
+
+        if (result.error) throw result.error;
+
+        // Filter lebih ketat: buang show yang jamnya sudah lewat hari ini
+        var shows = (result.data || []).filter(function(s) {
+            var time = s.show_time || '23:59:59';
+            var dt = new Date(s.show_date + 'T' + time);
+            return dt > now;
+        });
+
+        if (shows.length === 0) {
+            document.getElementById('mslList').innerHTML = '<div class="msl-empty">Belum ada show untuk member ini.</div>';
+            return;
+        }
+
+        var html = shows.map(function(s) {
+            var dateStr = formatDate(s.show_date);
+            var timeStr = s.show_time ? formatTime(s.show_time) : '';
+            var meta = dateStr + (timeStr ? ' · ' + timeStr : '');
+            return '<div class="msl-item" onclick="pickShowToEdit(' + s.id + ')">' +
+                '<div>' +
+                  '<div class="msl-setlist">' + (s.setlist_name || '—') + '</div>' +
+                  '<div class="msl-date">' + meta + '</div>' +
+                '</div>' +
+                '<div class="msl-arrow">›</div>' +
+            '</div>';
+        }).join('');
+
+        document.getElementById('mslList').innerHTML = html;
+
+    } catch(err) {
+        document.getElementById('mslList').innerHTML = '<div class="msl-empty" style="color:#ef4444;">Gagal memuat: ' + err.message + '</div>';
+    }
+}
+
+function closeMemberShowList() {
+    document.getElementById('memberShowListModal').style.display = 'none';
+}
+
+function pickShowToEdit(showId) {
+    closeMemberShowList();
+    openEditShow(showId);
+}
+
+// =================== END MEMBER SHOW LIST FUNCTIONS ===================
 
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
