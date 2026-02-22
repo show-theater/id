@@ -1386,6 +1386,11 @@ body.dark .msl-setlist { color:#f3f4f6; }
 .msl-date { font-size:11px; color:#6b7280; }
 body.dark .msl-date { color:#9ca3af; }
 .msl-arrow { color:#3b82f6; font-size:16px; flex-shrink:0; }
+.msl-actions { display:flex; gap:6px; flex-shrink:0; }
+.msl-btn-del { background:#ef4444; color:#fff; border:none; border-radius:8px; padding:6px 10px; font-size:12px; font-weight:700; cursor:pointer; }
+.msl-btn-del:hover { opacity:0.85; }
+.dsl-member-chip { display:inline-flex; align-items:center; gap:4px; background:#f3f4f6; border-radius:8px; padding:5px 10px; font-size:12px; font-weight:600; color:#374151; }
+body.dark .dsl-member-chip { background:#1f2937; color:#e5e7eb; }
 .msl-empty { text-align:center; padding:32px 16px; color:#9ca3af; font-size:13px; }
 .msl-loading { text-align:center; padding:32px 16px; color:#9ca3af; font-size:13px; display:flex; align-items:center; justify-content:center; gap:8px; }
 /* ===== END MEMBER SHOW LIST MODAL ===== */
@@ -1457,6 +1462,7 @@ body.dark .msl-date { color:#9ca3af; }
     </div>
     <div class="top-actions">
         <button class="bulk-btn" onclick="openBulkAddModal()">Bulk Add</button>
+        <button style="background:#ef4444;color:#fff;" onclick="openDeleteShowModal()">Hapus Show</button>
     </div>
 </div>
 
@@ -1941,6 +1947,56 @@ body.dark .msl-date { color:#9ca3af; }
   </div>
 </div>
 
+<!-- Delete Show List Modal -->
+<div class="modal" id="deleteShowListModal">
+  <div class="modal-box">
+    <div class="modal-body">
+      <div class="modal-header-block">
+        <h3 style="color:#ef4444;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+          Hapus Show
+        </h3>
+        <p id="dslSubtitle">Pilih show yang ingin dihapus</p>
+      </div>
+      <div id="dslList" class="msl-list">
+        <div class="msl-loading"><div class="spinner" style="width:18px;height:18px;border-width:2px;border-top-color:#ef4444;"></div> Memuat...</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeDeleteShowModal()">Tutup</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm Delete Show Modal -->
+<div class="modal" id="confirmDslModal">
+  <div class="modal-box" style="max-width:380px;">
+    <div style="text-align:center;margin-bottom:16px;">
+      <div style="width:56px;height:56px;background:#fee2e2;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+          <path d="M10 11v6"/><path d="M14 11v6"/>
+          <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+        </svg>
+      </div>
+      <h3 style="font-size:16px;font-weight:700;margin-bottom:4px;">Hapus Show Ini?</h3>
+      <p id="confirmDslDesc" style="font-size:13px;color:#6b7280;margin-bottom:12px;"></p>
+    </div>
+    <div style="margin-bottom:14px;">
+      <div style="font-size:12px;font-weight:700;color:#6b7280;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px;">Member di show ini</div>
+      <div id="confirmDslMembers" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+    </div>
+    <div style="margin-bottom:14px;">
+      <div style="font-size:12px;font-weight:700;color:#6b7280;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px;">Hapus untuk member</div>
+      <select id="dslMemberSelect" style="width:100%;padding:10px;border-radius:10px;border:2px solid #ddd;font-size:14px;outline:none;background:inherit;color:inherit;"></select>
+    </div>
+    <div class="modal-buttons" style="gap:10px;">
+      <button class="btn-cancel" onclick="document.getElementById('confirmDslModal').style.display='none'" style="flex:1;padding:12px;font-size:14px;border-radius:12px;">Batal</button>
+      <button onclick="doDeleteDslShow()" style="flex:1;padding:12px;font-size:14px;border-radius:12px;background:#ef4444;color:#fff;font-weight:700;">Hapus</button>
+    </div>
+  </div>
+</div>
+
 <!-- Edit Show Modal -->
 <div class="modal" id="editShowModal">
   <div class="modal-box">
@@ -2146,7 +2202,7 @@ if(!adminEmail||!loginTime){
 async function loadData(){
     try{
         console.log('Memuat data dari Supabase...');
-        showNotification('info', 'Loading', 'Memuat data...', 2000);
+
         
         var result=await db.from('members').select('*').order('name');
         
@@ -3741,6 +3797,158 @@ function pickShowToEdit(showId) {
 }
 
 // =================== END MEMBER SHOW LIST FUNCTIONS ===================
+
+// =================== DELETE SHOW FUNCTIONS ===================
+
+var dslCurrentShowId = null;
+var dslShowCache = {};
+
+async function openDeleteShowModal() {
+    document.getElementById('dslSubtitle').textContent = 'Pilih show yang ingin dihapus';
+    document.getElementById('dslList').innerHTML = '<div class="msl-loading"><div class="spinner" style="width:18px;height:18px;border-width:2px;border-top-color:#ef4444;"></div> Memuat show...</div>';
+    document.getElementById('deleteShowListModal').style.display = 'flex';
+    dslShowCache = {};
+
+    try {
+        // Ambil semua show mendatang dari semua member
+        var now = new Date();
+        var todayStr = now.toISOString().split('T')[0];
+
+        var result = await db.from('setlist_performance')
+            .select('id, setlist_name, show_date, show_time, is_non_show, member_id, members(name)')
+            .gte('show_date', todayStr)
+            .order('show_date', { ascending: true })
+            .order('show_time', { ascending: true });
+
+        if (result.error) throw result.error;
+
+        // Filter jam yang sudah lewat hari ini
+        var shows = (result.data || []).filter(function(s) {
+            var time = s.show_time || '23:59:59';
+            return new Date(s.show_date + 'T' + time) > now;
+        });
+
+        if (shows.length === 0) {
+            document.getElementById('dslList').innerHTML = '<div class="msl-empty">Tidak ada show mendatang.</div>';
+            return;
+        }
+
+        // Group by setlist + date + time
+        var groupMap = {};
+        shows.forEach(function(s) {
+            var key = (s.setlist_name || '') + '|' + s.show_date + '|' + (s.show_time || '');
+            if (!groupMap[key]) {
+                groupMap[key] = { setlist_name: s.setlist_name, show_date: s.show_date, show_time: s.show_time, is_non_show: s.is_non_show, members: [], ids: [] };
+            }
+            groupMap[key].members.push({ id: s.member_id, name: s.members ? s.members.name : '?', rowId: s.id });
+            groupMap[key].ids.push(s.id);
+            dslShowCache[s.id] = s;
+        });
+
+        var listEl = document.getElementById('dslList');
+        listEl.innerHTML = '';
+
+        Object.values(groupMap).forEach(function(g) {
+            var dateStr = formatDate(g.show_date);
+            var timeStr = g.show_time ? formatTime(g.show_time) : '';
+            var meta = dateStr + (timeStr ? ' · ' + timeStr : '');
+            var nonShowLabel = g.is_non_show ? '<span style="font-size:10px;background:#6b7280;color:#fff;border-radius:4px;padding:1px 5px;margin-left:4px;">Non-Show</span>' : '';
+            var memberNames = g.members.map(function(m){ return m.name; }).join(', ');
+
+            var item = document.createElement('div');
+            item.className = 'msl-item';
+            item.style.cursor = 'default';
+            item.innerHTML =
+                '<div style="flex:1;min-width:0;">' +
+                  '<div class="msl-setlist">' + (g.setlist_name || '—') + nonShowLabel + '</div>' +
+                  '<div class="msl-date">' + meta + '</div>' +
+                  '<div style="font-size:11px;color:#9ca3af;margin-top:2px;">' + memberNames + '</div>' +
+                '</div>' +
+                '<div class="msl-actions">' +
+                  '<button class="msl-btn-del">✕ Hapus</button>' +
+                '</div>';
+
+            item.querySelector('button').addEventListener('click', function() {
+                confirmDslDelete(g);
+            });
+
+            listEl.appendChild(item);
+        });
+
+    } catch(err) {
+        document.getElementById('dslList').innerHTML = '<div class="msl-empty" style="color:#ef4444;">Gagal memuat: ' + err.message + '</div>';
+    }
+}
+
+function closeDeleteShowModal() {
+    document.getElementById('deleteShowListModal').style.display = 'none';
+    dslCurrentShowId = null;
+    dslShowCache = {};
+}
+
+function confirmDslDelete(group) {
+    var dateStr = formatDate(group.show_date);
+    var timeStr = group.show_time ? formatTime(group.show_time) : '';
+    document.getElementById('confirmDslDesc').textContent = (group.setlist_name || '—') + ' · ' + dateStr + (timeStr ? ' · ' + timeStr : '');
+
+    // Isi chips member
+    var chipsHtml = group.members.map(function(m){
+        return '<div class="dsl-member-chip">' + m.name + '</div>';
+    }).join('');
+    document.getElementById('confirmDslMembers').innerHTML = chipsHtml;
+
+    // Isi dropdown member (pilih hapus untuk member mana saja atau semua)
+    var select = document.getElementById('dslMemberSelect');
+    select.innerHTML = '<option value="all">Semua Member (' + group.members.length + ')</option>';
+    group.members.forEach(function(m){
+        var opt = document.createElement('option');
+        opt.value = m.rowId;
+        opt.textContent = m.name + ' saja';
+        select.appendChild(opt);
+    });
+
+    // Simpan group ke variabel
+    window._dslCurrentGroup = group;
+    document.getElementById('confirmDslModal').style.display = 'flex';
+}
+
+async function doDeleteDslShow() {
+    var group = window._dslCurrentGroup;
+    if (!group) return;
+    var select = document.getElementById('dslMemberSelect');
+    var val = select.value;
+    document.getElementById('confirmDslModal').style.display = 'none';
+
+    try {
+        var idsToDelete = val === 'all' ? group.ids : [parseInt(val)];
+
+        for (var i = 0; i < idsToDelete.length; i++) {
+            await db.from('setlist_performance').delete().eq('id', idsToDelete[i]);
+
+            if (!group.is_non_show) {
+                // Cari member yang row-nya dihapus
+                var m = group.members.find(function(x){ return x.rowId === idsToDelete[i]; });
+                if (m) {
+                    var memberObj = members.find(function(x){ return String(x.id) === String(m.id); });
+                    if (memberObj) {
+                        await db.from('members')
+                            .update({ show: Math.max((memberObj.show || 0) - 1, 0) })
+                            .eq('id', memberObj.id);
+                    }
+                }
+            }
+        }
+
+        showNotification('success', 'Dihapus', idsToDelete.length + ' show berhasil dihapus');
+        await loadData();
+        await openDeleteShowModal();
+
+    } catch(err) {
+        showNotification('error', 'Error', 'Gagal hapus: ' + err.message);
+    }
+}
+
+// =================== END DELETE SHOW FUNCTIONS ===================
 
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
