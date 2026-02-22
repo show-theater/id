@@ -236,7 +236,7 @@ body.dark .spinner{border-color:rgba(255,255,255,0.1);border-top-color:#f59e0b}
 /* Notification System - minimal toast */
 .notification {
     position: fixed;
-    bottom: 24px;
+    top: 70px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 9999;
@@ -245,30 +245,35 @@ body.dark .spinner{border-color:rgba(255,255,255,0.1);border-top-color:#f59e0b}
     align-items: center;
     gap: 8px;
     pointer-events: none;
+    width: calc(100vw - 32px);
+    max-width: 420px;
 }
 .notification-item {
     pointer-events: auto;
     display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 16px;
-    border-radius: 24px;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 18px;
+    border-radius: 16px;
     font-size: 13px;
     font-weight: 600;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25);
     animation: toastIn 0.25s cubic-bezier(0.34,1.56,0.64,1);
-    white-space: nowrap;
-    max-width: 90vw;
+    white-space: normal;
+    word-break: break-word;
+    width: 100%;
     backdrop-filter: blur(8px);
+    line-height: 1.5;
 }
 .notification-item.hiding {
     animation: toastOut 0.2s ease-in forwards;
 }
 /* Dot indicator */
 .notification-dot {
-    width: 7px; height: 7px;
+    width: 8px; height: 8px;
     border-radius: 50%;
     flex-shrink: 0;
+    margin-top: 4px;
 }
 .notification-success  { background: rgba(20,30,20,0.88);  color: #4ade80; border: 1px solid rgba(74,222,128,0.25); }
 .notification-error    { background: rgba(30,10,10,0.88);  color: #f87171; border: 1px solid rgba(248,113,113,0.25); }
@@ -280,16 +285,70 @@ body.dark .spinner{border-color:rgba(255,255,255,0.1);border-top-color:#f59e0b}
 .notification-info .notification-dot     { background: #60a5fa; }
 
 @keyframes toastIn {
-    from { opacity:0; transform:translateY(12px) scale(0.95); }
+    from { opacity:0; transform:translateY(-12px) scale(0.95); }
     to   { opacity:1; transform:translateY(0) scale(1); }
 }
 @keyframes toastOut {
     from { opacity:1; transform:translateY(0) scale(1); }
-    to   { opacity:0; transform:translateY(8px) scale(0.95); }
+    to   { opacity:0; transform:translateY(-8px) scale(0.95); }
 }
 
 /* Toast replacement */
 .toast{display:none}
+
+/* ===== MAIN PAGE ANIMATIONS ===== */
+
+@keyframes cardEntrance {
+    from { opacity:0; transform:translateY(24px) scale(0.95); }
+    to   { opacity:1; transform:translateY(0) scale(1); }
+}
+.card {
+    animation: cardEntrance 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+
+.filter { position: relative; overflow: hidden; }
+.filter::after {
+    content: '';position: absolute;inset: 0;
+    background: rgba(255,255,255,0.3);border-radius: inherit;
+    opacity: 0;transform: scale(0);transition: transform 0.3s, opacity 0.3s;
+}
+.filter:active::after { transform: scale(2);opacity: 0;transition: 0s; }
+
+@keyframes headerShimmer {
+    0%   { background-position: -200% center; }
+    100% { background-position: 200% center; }
+}
+header::after {
+    content: '';position: absolute;inset: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 50%, transparent 100%);
+    background-size: 200% 100%;
+    animation: headerShimmer 3s ease-in-out infinite;
+    pointer-events: none;
+}
+header { position: sticky; top: 0; z-index: 100; overflow: hidden; }
+
+@keyframes activitySlide {
+    from { opacity:0; transform: translateX(-16px); }
+    to   { opacity:1; transform: translateX(0); }
+}
+.activity-item { animation: activitySlide 0.3s ease both; }
+
+@keyframes fadeInUp {
+    from { opacity:0; transform:translateY(10px); }
+    to   { opacity:1; transform:translateY(0); }
+}
+.stats { animation: fadeInUp 0.5s ease 0.2s both; }
+.filters { animation: fadeInUp 0.5s ease 0.1s both; }
+.activity-section { animation: fadeInUp 0.4s ease both; }
+
+.admin-controls button:active { background: rgba(255,255,255,0.5) !important; }
+
+.card { transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s ease, border-color 0.2s; }
+
+@keyframes barFill { from { width: 0 !important; } }
+.bar span { animation: barFill 0.8s cubic-bezier(0.4,0,0.2,1) both; }
+
+/* ===== END MAIN PAGE ANIMATIONS ===== */
 
 
 
@@ -717,10 +776,10 @@ body.dark #bulkAddModal .modal-footer .btn-cancel { background:#374151;color:#e5
 
 /* Top bar responsif untuk small screens */
 @media (max-width:540px) {
-  .top{flex-wrap:wrap;padding:12px 14px;gap:10px}
-  .search-box{max-width:100%;width:100%}
-  .top-actions{width:100%;justify-content:flex-end}
-  .logout-btn,.bulk-btn{flex:1;text-align:center;padding:9px 12px;font-size:13px}
+  .top{flex-wrap:nowrap;padding:10px 12px;gap:8px}
+  .search-box{flex:1;min-width:0}
+  .top-actions{flex-shrink:0}
+  .logout-btn,.bulk-btn{padding:9px 14px;font-size:13px;white-space:nowrap}
 }
 
 /* ===== END RESPONSIVE ===== */
@@ -2082,13 +2141,18 @@ function saveActivityLog(){
     localStorage.setItem('jkt48_activity_log',JSON.stringify(activityLog));
 }
 
-function addActivity(memberName,change,newValue,setlist,status){
+function addActivity(memberName,change,newValue,setlist,status,showDate,showTime,isNonShow,isBirthday,isGraduation){
     var activity={
         member:memberName,
         change:change,
         newValue:newValue,
         setlist:setlist||null,
         status:status||'inti',
+        showDate:showDate||null,
+        showTime:showTime||null,
+        isNonShow:isNonShow||false,
+        isBirthday:isBirthday||false,
+        isGraduation:isGraduation||false,
         time:new Date().toISOString()
     };
     activityLog.unshift(activity);
@@ -2121,17 +2185,48 @@ function renderActivityLog(){
     logEl.innerHTML=activityLog.map(function(log){
         var time=new Date(log.time);
         var timeStr=time.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
-        
+
         if(log.status==='failed'){
-            return'<div class="activity-item" style="--color:#ef4444"><div class="activity-icon">✗</div><div class="activity-content"><div class="activity-text" style="color:#ef4444">Gagal: '+log.member+'</div><div class="activity-time">'+timeStr+' • Bulk Add Gagal</div></div></div>';
+            return'<div class="activity-item" style="--color:#60a5fa"><div class="activity-icon" style="font-size:16px;font-weight:900;color:#60a5fa;">✗</div><div class="activity-content"><div class="activity-text"><span style="font-weight:800;color:#60a5fa;">Gagal: '+log.member+'</span></div><div class="activity-time">'+timeStr+' • Bulk Add Gagal</div></div></div>';
         }
-        
-        var icon=log.change>0?'+':'−';
-        var color=log.change>0?'#22c55e':'#ef4444';
-        var action=log.change>0?'+':'';
-        var setlistText=log.setlist?' ('+log.setlist+')':'';
-        var statusBadge=log.status==='trainee'?' [TRAINEE]':'';
-        return'<div class="activity-item" style="--color:'+color+'"><div class="activity-icon">'+icon+'</div><div class="activity-content"><div class="activity-text">'+log.member+statusBadge+' '+action+log.change+' → '+log.newValue+' show'+setlistText+'</div><div class="activity-time">'+timeStr+'</div></div></div>';
+
+        var icon = log.isNonShow ? '○' : (log.change > 0 ? '+' : '−');
+        var color = log.isNonShow ? '#22c55e' : (log.change > 0 ? '#22c55e' : '#ef4444');
+        var statusBadge = log.status==='trainee' ? ' <span style="background:rgba(245,158,11,0.2);color:#f59e0b;font-size:9px;font-weight:700;padding:1px 6px;border-radius:8px;">TRAINEE</span>' : '';
+
+        // Baris 1: Nama member + perubahan show
+        var oldValue = log.isNonShow ? (log.newValue - 1) : ((log.newValue || 0) - log.change);
+        var specialBadge = '';
+        if (log.isNonShow) {
+            specialBadge = ' <span style="background:rgba(34,197,94,0.15);color:#22c55e;font-size:9px;font-weight:700;padding:2px 7px;border-radius:8px;margin-left:2px;">NON-SHOW</span>';
+        } else if (log.isGraduation) {
+            specialBadge = ' <span style="background:rgba(99,102,241,0.15);color:#818cf8;font-size:9px;font-weight:700;padding:2px 7px;border-radius:8px;margin-left:2px;">LAST SHOW</span>';
+        } else if (log.isBirthday) {
+            specialBadge = ' <span style="background:rgba(251,191,36,0.15);color:#fbbf24;font-size:9px;font-weight:700;padding:2px 7px;border-radius:8px;margin-left:2px;">STS</span>';
+        }
+        var changeDisplay = log.isNonShow ? '+1' : ((log.change > 0 ? '+' : '') + log.change);
+        var changeLine = '<span style="font-weight:800;color:'+color+';">'+log.member+'</span>'+statusBadge+specialBadge+
+            ' <span style="color:'+color+';font-weight:700;margin-left:4px;">'+changeDisplay+'</span>'+
+            ' <span style="color:#9ca3af;font-size:10px;margin-left:2px;">'+oldValue+' → '+log.newValue+' '+(log.isNonShow?'non-show':'show')+'</span>';
+
+        // Baris 2: setlist - tanggal - jam
+        var detailParts = [];
+        var cleanSetlist = log.setlist ? log.setlist.replace(/\s*\(Non-Show\)\s*/i, '').trim() : null;
+        if(cleanSetlist) detailParts.push(cleanSetlist);
+        if(log.showDate) detailParts.push(formatDate(log.showDate));
+        if(log.showTime) detailParts.push(formatTime(log.showTime));
+        var detailLine = detailParts.length > 0
+            ? '<div style="font-size:10px;color:#9ca3af;margin-top:3px;">'+detailParts.join(' · ')+'</div>'
+            : '';
+
+        return'<div class="activity-item" style="--color:'+color+'">'+
+            '<div class="activity-icon" style="font-size:16px;font-weight:900;color:'+color+';">'+icon+'</div>'+
+            '<div class="activity-content">'+
+                '<div class="activity-text">'+changeLine+'</div>'+
+                detailLine+
+                '<div class="activity-time">'+timeStr+'</div>'+
+            '</div>'+
+        '</div>';
     }).join('');
 }
 
@@ -2142,6 +2237,16 @@ function clearActivityLog(){
         renderActivityLog();
         showNotification('success', 'Activity Log', 'Log dihapus');
     }
+}
+
+function animateCounter(el, target, duration) {
+    var step = target / (duration / 16);
+    var current = 0;
+    var timer = setInterval(function() {
+        current += step;
+        if (current >= target) { current = target; clearInterval(timer); }
+        el.textContent = Math.floor(current);
+    }, 16);
 }
 
 function renderMembers(){
@@ -2204,6 +2309,11 @@ function renderMembers(){
                 '</div>'+
             '</div>';
         list.appendChild(card);
+        var numEl = card.querySelector('.show-num');
+        if (numEl) {
+            numEl.textContent = '0';
+            setTimeout(function(el, val) { animateCounter(el, val, 600); }, 0, numEl, m.show);
+        }
     });
 }
 
@@ -2755,20 +2865,28 @@ async function addShowWithSetlist(){
         // Reload data members untuk mendapatkan count yang updated dari trigger
         await loadData();
         
+        // Refresh member dari data terbaru
+        var updatedMember = members.find(function(m){ return m.id === currentMemberId; }) || member;
+        
         // Add activity log
         var activityText = '';
         if (isGraduationShow) {
             activityText = setlist + ' (LAST SHOW - ' + graduationMember + ')';
         } else if (isBirthdayShow) {
             activityText = setlist + ' (STS ' + birthdayMember + ')';
-        } else if (isNonShow) {
-            activityText = setlist + ' (Non-Show)';
         } else {
             activityText = setlist;
         }
         
-        // For non-show, don't count as a show (change=0)
-        addActivity(member.name, isNonShow ? 0 : 1, member.show, activityText, member.status);
+        // Hitung count sesuai jenis: non-show → hitung is_non_show=true, show → hitung is_non_show=false
+        var countResult = await db.from('setlist_performance')
+            .select('id', { count: 'exact', head: true })
+            .eq('member_id', updatedMember.id)
+            .eq('is_non_show', isNonShow);
+        var displayCount = countResult.count || updatedMember.show;
+        var changeVal = isNonShow ? 0 : 1;
+        
+        addActivity(updatedMember.name, changeVal, displayCount, activityText, updatedMember.status, showDate, showTime, isNonShow, isBirthdayShow, isGraduationShow);
         
         // Close modal
         closeSetlistModal();
@@ -2903,7 +3021,7 @@ async function bulkAddShows(){
         await loadData();
         
         // Add activity logs untuk yang berhasil
-        bulkData.forEach(function(showData) {
+        for (var showData of bulkData) {
             var member = members.find(function(m) { return m.id === showData.member_id });
             if (member) {
                 var activityText = setlist;
@@ -2912,9 +3030,16 @@ async function bulkAddShows(){
                 } else if (showData.is_birthday_show) {
                     activityText += ' (STS ' + showData.birthday_member + ')';
                 }
-                addActivity(member.name, 1, member.show, activityText, member.status);
+                // Hitung count sesuai jenis untuk activity log
+                var countRes = await db.from('setlist_performance')
+                    .select('id', { count: 'exact', head: true })
+                    .eq('member_id', member.id)
+                    .eq('is_non_show', showData.is_non_show);
+                var displayCount = countRes.count || member.show;
+                var changeVal = showData.is_non_show ? 0 : 1;
+                addActivity(member.name, changeVal, displayCount, activityText, member.status, showData.show_date, showData.show_time, showData.is_non_show, showData.is_birthday_show, showData.is_graduation_show);
             }
-        });
+        }
 
         // Add activity logs untuk yang GAGAL
         failedNames.forEach(function(failedEntry) {
@@ -2970,13 +3095,14 @@ async function updateShow(id, change){
             return;
         }
         
-        // Cek apakah tanggal show sudah lewat
+        // Cek apakah tanggal + jam show sudah lewat
         if (change < 0 && lastSetlist.show_date) {
-            var showDateObj = new Date(lastSetlist.show_date + 'T00:00:00');
-            var today = new Date();
-            today.setHours(0, 0, 0, 0);
-            if (showDateObj < today) {
-                showNotification('error', 'Tanggal Sudah Lewat', 'Show tanggal ' + formatDate(lastSetlist.show_date) + ' sudah lewat, tidak bisa dikurangi');
+            var showTime = lastSetlist.show_time || '00:00:00';
+            if (showTime.length === 5) showTime = showTime + ':00';
+            var showDateTime = new Date(lastSetlist.show_date + 'T' + showTime);
+            var now = new Date();
+            if (showDateTime < now) {
+                showNotification('error', 'Sudah Lewat', 'Show ' + formatDate(lastSetlist.show_date) + ' ' + formatTime(lastSetlist.show_time) + ' sudah lewat, tidak bisa dikurangi');
                 return;
             }
         }
@@ -3089,12 +3215,14 @@ async function doRemoveShow(member, lastSetlist) {
                 .delete()
                 .eq('id', lastSetlist.id);
             console.log('🗑️ Record dihapus (ID: '+lastSetlist.id+')');
+            
             await loadData();
+            var updatedMember = members.find(function(m){ return m.id === member.id; }) || member;
             var activityText = lastSetlist.setlist_name;
             if (lastSetlist.is_graduation_show) activityText += ' (LAST SHOW)';
             else if (lastSetlist.is_birthday_show) activityText += ' (STS ' + lastSetlist.birthday_member + ')';
-            addActivity(member.name, -1, member.show, activityText, member.status);
-            showNotification('success', 'Dihapus', member.name + ': show dikurangi');
+            addActivity(updatedMember.name, -1, updatedMember.show, activityText, updatedMember.status, lastSetlist.show_date, lastSetlist.show_time);
+            showNotification('success', 'Dihapus', updatedMember.name + ': show dikurangi');
         }
     } catch (err) {
         console.error('Update error:', err);
