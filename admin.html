@@ -1719,7 +1719,12 @@ body.dark #confirmEslModal .modal-footer-sticky { background:#111827; border-top
         <label class="input-label">Email</label>
         <input id="email" type="email" placeholder="Masukan email">
         <label class="input-label">Password</label>
-        <input id="password" type="password" placeholder="Masukkan password" onkeypress="if(event.key==='Enter')login()">
+        <div style="position:relative;margin-bottom:10px;">
+          <input id="password" type="password" placeholder="Masukkan password" onkeypress="if(event.key==='Enter')login()" style="margin-bottom:0;padding-right:44px;width:100%;">
+          <button type="button" onclick="togglePasswordVisibility()" id="eyeBtn" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:transparent;border:none;cursor:pointer;padding:4px;color:#9ca3af;border-radius:6px;display:flex;align-items:center;justify-content:center;transition:color 0.2s;" title="Tampilkan/sembunyikan password">
+            <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
         <div class="error" id="errorMsg"></div>
         <button onclick="login()" class="login-submit-btn">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
@@ -3906,6 +3911,18 @@ function confirmLogout(){
     localStorage.removeItem('jkt48_admin_email');
     localStorage.removeItem('jkt48_admin_login_time');
     closeLogoutModal();
+    // Reset form login
+    var emailEl = document.getElementById('email');
+    var passEl = document.getElementById('password');
+    var errEl = document.getElementById('errorMsg');
+    if (emailEl) emailEl.value = '';
+    if (passEl) { passEl.value = ''; passEl.type = 'password'; }
+    if (errEl) errEl.textContent = '';
+    // Reset eye icon ke default
+    var eyeBtn = document.getElementById('eyeBtn');
+    var eyeIcon = document.getElementById('eyeIcon');
+    if (eyeBtn) eyeBtn.style.color = '#9ca3af';
+    if (eyeIcon) eyeIcon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
     document.getElementById('loginModal').style.display='flex';
     showNotification('info', 'Logout', 'Berhasil keluar');
 }
@@ -4262,6 +4279,20 @@ async function doEditEslShow() {
 }
 
 // =================== END EDIT SHOW FUNCTIONS ===================
+
+// Toggle password visibility
+function togglePasswordVisibility() {
+    var input = document.getElementById('password');
+    var icon = document.getElementById('eyeIcon');
+    var btn = document.getElementById('eyeBtn');
+    var isHidden = input.type === 'password';
+    input.type = isHidden ? 'text' : 'password';
+    btn.style.color = isHidden ? '#e60012' : '#9ca3af';
+    // Ganti icon: eye-off saat visible, eye saat hidden
+    icon.innerHTML = isHidden
+        ? '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>'
+        : '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+}
 
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
