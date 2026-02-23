@@ -213,7 +213,19 @@ body.dark .avatar-wrap{background:#1e1e2e}
 .admin-controls button:hover{background:rgba(0,0,0,0.4);transform:scale(1.1)}
 .admin-controls button:active{transform:scale(0.93)}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:999;padding:20px;backdrop-filter:blur(8px)}
-.modal-box{background:#fff;padding:28px;border-radius:20px;width:90%;max-width:380px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.5);position:relative}
+body.modal-open{overflow:hidden;touch-action:none}
+.modal-box{background:#fff;padding:28px;border-radius:20px;width:90%;max-width:380px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.5);position:relative;scrollbar-width:none;-ms-overflow-style:none}
+.modal-box::-webkit-scrollbar{display:none}
+/* Hide scrollbar semua area scroll di dalam modal */
+.modal .modal-body::-webkit-scrollbar,
+.modal .modal-body-scroll::-webkit-scrollbar,
+.modal .modal-box::-webkit-scrollbar,
+.modal .activity-log::-webkit-scrollbar,
+.modal .msl-list::-webkit-scrollbar{display:none}
+.modal .modal-body,.modal .modal-body-scroll,.modal .modal-box,.modal .activity-log,.modal .msl-list{scrollbar-width:none;-ms-overflow-style:none}
+/* Hide semua scrollbar di dalam modal secara global */
+.modal *{scrollbar-width:none;-ms-overflow-style:none}
+.modal *::-webkit-scrollbar{display:none !important;width:0 !important;height:0 !important}
 body.dark .modal-box{background:#111827}
 .modal-theme-toggle{position:absolute;top:20px;right:20px;background:#e60012;border:none;color:#fff;width:36px;height:36px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:7px}
 .modal-theme-toggle svg{width:100%;height:100%}
@@ -2168,7 +2180,7 @@ body.dark #confirmEslModal .modal-footer-sticky { background:#111827; border-top
 
       <!-- Setlist -->
       <label class="input-label">Setlist</label>
-      <select id="editSetlistSelect" onchange="toggleEditCustomSetlistField()">
+      <select id="editSetlistSelect" onchange="toggleEditCustomSetlistField(); filterEditMemberBySetlist()">
         <option value="">Pilih Setlist...</option>
         <option value="__custom__">Kustom Setlist (Ketik Manual)</option>
       </select>
@@ -2700,6 +2712,24 @@ function toggleEditCustomSetlistField() {
     } else {
         customField.classList.remove('show');
     }
+}
+
+// Filter dropdown member berdasarkan setlist yang dipilih di edit show
+function filterEditMemberBySetlist() {
+    var setlistVal = document.getElementById('editSetlistSelect').value;
+    var memberSelect = document.getElementById('editMemberSelect');
+    var currentVal = memberSelect.value;
+    var allowedStatus = null;
+    if (SETLIST_TRAINEE[setlistVal]) allowedStatus = 'trainee';
+    else if (SETLIST_INTI[setlistVal]) allowedStatus = 'inti';
+    memberSelect.innerHTML = '<option value="">-- Pilih Member --</option>';
+    var sorted = members.slice().sort(function(a,b){ return a.name.localeCompare(b.name); });
+    sorted.forEach(function(m) {
+        if (m.status === 'graduated') return;
+        if (allowedStatus && m.status !== allowedStatus) return;
+        var selected = (String(m.id) === String(currentVal)) ? 'selected' : '';
+        memberSelect.innerHTML += '<option value="' + m.id + '" ' + selected + '>' + m.name + '</option>';
+    });
 }
 
 function getSelectedSetlist(selectId, customInputId) {
@@ -3559,11 +3589,14 @@ async function openEditShow(showId) {
                           ' ' + formatTime(currentEditShowData.show_time);
         document.getElementById('editShowOriginalInfo').textContent = originalInfo;
         
-        // Load dropdown member
+        // Load dropdown member — difilter nanti setelah setlist dipilih
         var memberSelect = document.getElementById('editMemberSelect');
         memberSelect.innerHTML = '<option value="">-- Pilih Member --</option>';
         
-        members.forEach(function(member) {
+        // Tampilkan semua member dulu (akan difilter ulang setelah setlist di-set)
+        var sortedEditMembers = members.slice().sort(function(a,b){ return a.name.localeCompare(b.name); });
+        sortedEditMembers.forEach(function(member) {
+            if (member.status === 'graduated') return;
             var selected = (member.id === currentEditShowData.member_id) ? 'selected' : '';
             memberSelect.innerHTML += '<option value="' + member.id + '" ' + selected + '>' + member.name + '</option>';
         });
@@ -3578,34 +3611,34 @@ async function openEditShow(showId) {
             document.getElementById('editShowTime').value = '19:00';
         }
         
-        // Load setlist dropdown
+        // Load setlist dropdown — tampilkan semua (inti + trainee)
         var setlistSelect = document.getElementById('editSetlistSelect');
         setlistSelect.innerHTML = '<option value="">Pilih Setlist...</option>';
-        
-        // Tambahkan opsi kustom setlist
         setlistSelect.innerHTML += '<option value="__custom__">Kustom Setlist (Ketik Manual)</option>';
         
-        // Tentukan setlist berdasarkan member yang dipilih (bukan berdasarkan data lama)
-        var currentMember = members.find(function(m) { return m.id === currentEditShowData.member_id });
-        var setlists = (currentMember && currentMember.status === 'trainee') ? SETLIST_TRAINEE : SETLIST_INTI;
-        
-        for(var key in setlists){
+        // Kelompok INTI
+        setlistSelect.innerHTML += '<optgroup label="── INTI ──">';
+        for(var key in SETLIST_INTI){
             var selected = (key === currentEditShowData.setlist_name) ? 'selected' : '';
             setlistSelect.innerHTML += '<option value="' + key + '" ' + selected + '>' + key + '</option>';
         }
+        setlistSelect.innerHTML += '</optgroup>';
+        
+        // Kelompok TRAINEE
+        setlistSelect.innerHTML += '<optgroup label="── TRAINEE ──">';
+        for(var key in SETLIST_TRAINEE){
+            var selected = (key === currentEditShowData.setlist_name) ? 'selected' : '';
+            setlistSelect.innerHTML += '<option value="' + key + '" ' + selected + '>' + key + '</option>';
+        }
+        setlistSelect.innerHTML += '</optgroup>';
         
         // Reset custom field
         document.getElementById('editCustomSetlistField').classList.remove('show');
         document.getElementById('editCustomSetlistName').value = '';
         
         // Jika setlist adalah custom (tidak ada di daftar), maka set ke custom dan isi field
-        var isCustomSetlist = true;
-        for(var key in setlists) {
-            if (key === currentEditShowData.setlist_name) {
-                isCustomSetlist = false;
-                break;
-            }
-        }
+        var allSetlists = Object.assign({}, SETLIST_INTI, SETLIST_TRAINEE);
+        var isCustomSetlist = !allSetlists[currentEditShowData.setlist_name];
         
         if (isCustomSetlist && currentEditShowData.setlist_name) {
             setlistSelect.value = '__custom__';
@@ -3614,6 +3647,9 @@ async function openEditShow(showId) {
         } else {
             setlistSelect.value = currentEditShowData.setlist_name;
         }
+        
+        // Filter member berdasarkan setlist yang aktif
+        filterEditMemberBySetlist();
         
         // Set birthday checkbox
         var isBirthday = currentEditShowData.is_birthday_show;
@@ -4293,6 +4329,29 @@ function togglePasswordVisibility() {
         ? '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>'
         : '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
 }
+
+// Auto lock scroll saat modal terbuka
+(function() {
+    function checkModals() {
+        var modals = document.querySelectorAll('.modal');
+        var anyOpen = false;
+        for (var i = 0; i < modals.length; i++) {
+            if (modals[i].style.display === 'flex') { anyOpen = true; break; }
+        }
+        if (anyOpen) {
+            document.body.classList.add('modal-open');
+        } else {
+            document.body.classList.remove('modal-open');
+        }
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        var observer = new MutationObserver(checkModals);
+        var modals = document.querySelectorAll('.modal');
+        modals.forEach(function(m) {
+            observer.observe(m, { attributes: true, attributeFilter: ['style'] });
+        });
+    });
+})();
 
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
