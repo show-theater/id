@@ -690,9 +690,9 @@ async function updateLastUpdate() {
             .order('updated_at', { ascending: false })
             .limit(1);
         if (!error && data && data.length > 0 && data[0].updated_at) {
-            const date = new Date(data[0].updated_at);
+            const rawDate = data[0].updated_at; const date = new Date(rawDate.endsWith('Z') || rawDate.includes('+') ? rawDate : rawDate + 'Z');
             const monthNames = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Oct','Nov','Des'];
-            document.getElementById('lastUpdate').innerHTML = `Update: ${date.getDate()} ${monthNames[date.getMonth()]} ${date.getFullYear()}`;
+            const hours = String(date.getHours()).padStart(2,'0'); const minutes = String(date.getMinutes()).padStart(2,'0'); document.getElementById('lastUpdate').innerHTML = `Update: ${date.getDate()} ${monthNames[date.getMonth()]} ${date.getFullYear()}, ${hours}:${minutes}`;
             return;
         }
     } catch (err) {
