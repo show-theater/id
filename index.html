@@ -40,7 +40,23 @@ body.dark .schedule-button,body.dark .theme-toggle{background:rgba(0,0,0,0.2)}
 body.dark .top{background:#1b1f3a;border-bottom:1px solid #2d3548}
 .search-box{display:inline-block;width:100%;max-width:400px;position:relative}
 
-/* ===== SEARCH ICON ===== */
+/* ===== NOTIF BANNER ===== */
+.notif-banner{position:fixed;bottom:0;left:0;right:0;background:#1b1f3a;color:#fff;padding:16px 20px;z-index:9999;display:none;animation:slideUp 0.4s ease-out;border-top:3px solid #e60012;box-shadow:0 -4px 20px rgba(0,0,0,0.3)}
+.notif-banner.show{display:block}
+body.dark .notif-banner{background:#0a0e1a;border-top-color:#f87171}
+@keyframes slideUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
+.notif-banner-content{max-width:500px;margin:0 auto;display:flex;align-items:center;gap:14px}
+.notif-banner-icon{font-size:28px;flex-shrink:0}
+.notif-banner-text{flex:1}
+.notif-banner-title{font-size:14px;font-weight:bold;margin-bottom:3px}
+.notif-banner-desc{font-size:12px;opacity:0.8;line-height:1.4}
+.notif-banner-buttons{display:flex;gap:8px;flex-shrink:0}
+.notif-btn-allow{background:#e60012;color:#fff;border:none;padding:10px 18px;border-radius:20px;font-size:13px;font-weight:bold;cursor:pointer;transition:all 0.2s;white-space:nowrap}
+.notif-btn-allow:hover{background:#c8000f;transform:scale(1.05)}
+.notif-btn-later{background:transparent;color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.3);padding:10px 14px;border-radius:20px;font-size:13px;cursor:pointer;transition:all 0.2s;white-space:nowrap}
+.notif-btn-later:hover{color:#fff;border-color:rgba(255,255,255,0.6)}
+@media(max-width:480px){.notif-banner-content{flex-wrap:wrap}.notif-banner-buttons{width:100%;justify-content:flex-end}}
+/* ======================== */
 .search-icon{
     position:absolute;
     right:14px;
@@ -193,6 +209,21 @@ body.dark .detail-footer{background:#0a0e1a;color:#9ca3af;border-top-color:#3741
 
 
 
+/* ===== NOTIF BANNER ===== */
+.notif-banner{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;padding:12px 20px;display:none;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.notif-banner.show{display:flex}
+.notif-banner-left{display:flex;align-items:center;gap:10px;flex:1}
+.notif-banner-icon{font-size:22px;flex-shrink:0}
+.notif-banner-text{font-size:13px;line-height:1.4}
+.notif-banner-text strong{display:block;font-size:14px;margin-bottom:2px}
+.notif-banner-actions{display:flex;gap:8px;flex-shrink:0}
+.notif-banner-allow{background:#fff;color:#1e40af;border:none;padding:8px 16px;border-radius:20px;font-size:13px;font-weight:bold;cursor:pointer;transition:all 0.2s}
+.notif-banner-allow:hover{background:#dbeafe;transform:scale(1.05)}
+.notif-banner-dismiss{background:rgba(255,255,255,0.2);color:#fff;border:none;padding:8px 14px;border-radius:20px;font-size:13px;cursor:pointer;transition:all 0.2s}
+.notif-banner-dismiss:hover{background:rgba(255,255,255,0.3)}
+@media(max-width:767px){.notif-banner{padding:10px 15px}.notif-banner-text strong{font-size:13px}.notif-banner-text{font-size:12px}}
+/* ======================== */
+
 /* Graduation Badge */
 .graduation-badge {
     position: absolute;
@@ -248,6 +279,19 @@ body.dark .detail-footer{background:#0a0e1a;color:#9ca3af;border-top-color:#3741
         </button>
     </div>
 </header>
+<div class="notif-banner" id="notifBanner">
+    <div class="notif-banner-left">
+        <div class="notif-banner-icon">🔔</div>
+        <div class="notif-banner-text">
+            <strong>Aktifkan Notifikasi Live Show</strong>
+            Dapat notif otomatis saat JKT48 show LIVE 🔥
+        </div>
+    </div>
+    <div class="notif-banner-actions">
+        <button class="notif-banner-allow" onclick="allowNotification()">Aktifkan</button>
+        <button class="notif-banner-dismiss" onclick="dismissNotifBanner()">Nanti</button>
+    </div>
+</div>
 <div class="live-show-banner" id="liveShowBanner" onclick="openLiveShowDetail()">
     <div class="live-show-content">
         <div class="live-show-left">
@@ -322,6 +366,21 @@ body.dark .detail-footer{background:#0a0e1a;color:#9ca3af;border-top-color:#3741
 <footer class="detail-footer" id="mainFooter">
     <p>© 2026 Show Theater. Data diperbarui secara real-time</p>
 </footer>
+
+<!-- NOTIF BANNER -->
+<div class="notif-banner" id="notifBanner">
+    <div class="notif-banner-content">
+        <div class="notif-banner-icon">🔔</div>
+        <div class="notif-banner-text">
+            <div class="notif-banner-title">Aktifkan Notifikasi</div>
+            <div class="notif-banner-desc">Dapat update saat JKT48 show LIVE! 🔥</div>
+        </div>
+        <div class="notif-banner-buttons">
+            <button class="notif-btn-later" onclick="dismissNotifBanner()">Nanti saja</button>
+            <button class="notif-btn-allow" onclick="allowNotification()">Aktifkan</button>
+        </div>
+    </div>
+</div>
 
 <div class="modal-overlay" id="genModal" onclick="closeModalOnOverlay(event)">
     <div class="modal">
@@ -1000,7 +1059,7 @@ function selectGen(gen) {
     saveCurrentState();
 }
 
-// ============= PUSH NOTIFICATION (AUTO) =============
+// ============= PUSH NOTIFICATION (BANNER) =============
 const VAPID_PUBLIC_KEY = 'BDV5GgZafvlEa3ArE29_fuMuoWPLEuofOHSgaJNi6RiVWhIcAJTIdjc0yFGBnxXu26gqBwMzqV3oB34-INKruel';
 
 function urlBase64ToUint8Array(base64String) {
@@ -1016,48 +1075,53 @@ async function initNotification() {
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
     try {
         swRegistration = await navigator.serviceWorker.register('./service-worker.js');
-        console.log('✅ Service Worker registered');
 
-        // Kalau sudah pernah subscribe, tidak perlu minta izin lagi
+        // Kalau sudah subscribe, tidak perlu tampilkan banner
         const existingSub = await swRegistration.pushManager.getSubscription();
-        if (existingSub) {
-            console.log('✅ Already subscribed');
-            return;
-        }
+        if (existingSub) return;
 
-        // Kalau sudah pernah denied, jangan minta lagi
+        // Kalau sudah denied, tidak perlu tampilkan banner
         if (Notification.permission === 'denied') return;
 
-        // Kalau sudah pernah minta (granted tapi belum subscribe), langsung subscribe
-        if (Notification.permission === 'granted') {
-            await doSubscribe();
-            return;
-        }
+        // Kalau sudah pernah dismiss banner, tidak tampilkan lagi
+        if (localStorage.getItem('jkt48_notif_dismissed')) return;
 
-        // Baru pertama kali → minta izin 1 kali
-        const permission = await Notification.requestPermission();
-        if (permission === 'granted') {
-            await doSubscribe();
-        }
+        // Tampilkan banner setelah 2 detik
+        setTimeout(() => {
+            document.getElementById('notifBanner').classList.add('show');
+        }, 2000);
     } catch (err) {
         console.error('Notification init error:', err);
     }
 }
 
+function dismissNotifBanner() {
+    document.getElementById('notifBanner').classList.remove('show');
+    localStorage.setItem('jkt48_notif_dismissed', '1');
+}
+
+async function allowNotification() {
+    document.getElementById('notifBanner').classList.remove('show');
+    try {
+        const permission = await Notification.requestPermission();
+        if (permission !== 'granted') return;
+        await doSubscribe();
+    } catch (err) {
+        console.error('Allow notification error:', err);
+    }
+}
+
 async function doSubscribe() {
     try {
+        if (!swRegistration) swRegistration = await navigator.serviceWorker.ready;
         const subscription = await swRegistration.pushManager.subscribe({
             userVisibleOnly: true,
             applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
         });
-
-        // Simpan ke Supabase
         const { error } = await db.from('push_subscriptions').upsert([
             { subscription: subscription.toJSON(), created_at: new Date().toISOString() }
         ]);
         if (error) console.error('Supabase error:', error);
-
-        console.log('✅ Push notification subscribed');
 
         // Welcome notif hanya 1 kali
         if (!localStorage.getItem('jkt48_notif_welcomed')) {
