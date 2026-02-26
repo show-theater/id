@@ -772,9 +772,8 @@ function getLiveStatus(showDate, showTime, isNonShow = false) {
     
     const now = new Date();
     const showDateTime = new Date(`${showDate}T${showTime}`);
-    const duration = isNonShow ? LIVE_CONFIG.EVENT_DURATION_MINUTES : LIVE_CONFIG.DURATION_MINUTES;
-    const liveStart = new Date(showDateTime.getTime() - (LIVE_CONFIG.BEFORE_MINUTES * 60 * 1000));
-    const liveEnd = new Date(showDateTime.getTime() + (duration * 60 * 1000));
+    const liveStart = new Date(showDateTime.getTime() - PRE_SHOW_BUFFER_MINUTES * 60000);
+    const liveEnd = new Date(showDateTime.getTime() + getDurationMinutes(isNonShow) * 60000);
     
     if (now < liveStart) return 'UPCOMING';
     if (now >= liveStart && now <= liveEnd) return 'LIVE';

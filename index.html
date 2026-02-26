@@ -360,7 +360,13 @@ const SETLIST_DATA = {
     pajama: {id: 'pajama', title: 'Pajama Drive', members: {}}
 };
 
-const TIME_CONFIG = {LIVE_BEFORE: 15, LIVE_DURATION: 150, EVENT_DURATION: 100};
+const SHOW_DURATION_MINUTES = 150;       // Durasi show biasa
+const EVENT_DURATION_MINUTES = 100;      // Durasi event (non-show)
+const PRE_SHOW_BUFFER_MINUTES = 15; // Live mulai 15 menit sebelum jam tayang
+
+function getDurationMinutes(isNonShow) {
+    return isNonShow ? EVENT_DURATION_MINUTES : SHOW_DURATION_MINUTES;
+}
 const MILESTONE = 1000;
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -383,9 +389,8 @@ function getLiveStatus(showDate, showTime, isNonShow = false) {
     if (!showDate || !showTime) return 'FINISHED';
     const now = new Date();
     const showDateTime = new Date(`${showDate}T${showTime}`);
-    const duration = isNonShow ? TIME_CONFIG.EVENT_DURATION : TIME_CONFIG.LIVE_DURATION;
-    const liveStart = new Date(showDateTime.getTime() - (TIME_CONFIG.LIVE_BEFORE * 60 * 1000));
-    const liveEnd = new Date(showDateTime.getTime() + (duration * 60 * 1000));
+    const liveStart = new Date(showDateTime.getTime() - PRE_SHOW_BUFFER_MINUTES * 60000);
+    const liveEnd = new Date(showDateTime.getTime() + getDurationMinutes(isNonShow) * 60000);
     if (now < liveStart) return 'UPCOMING';
     if (now >= liveStart && now <= liveEnd) return 'LIVE';
     return 'FINISHED';

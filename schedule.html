@@ -466,11 +466,13 @@ const SUPABASE_URL = "https://pprxfopqkvpeajeoxzig.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBwcnhmb3Bxa3ZwZWFqZW94emlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYyNTI4MTIsImV4cCI6MjA4MTgyODgxMn0.iXRO_dAHhtVHRLqGTresG_63RD2zIaopNXtXYNfthdg";
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const LIVE_CONFIG = {
-    BEFORE_MINUTES: 15,
-    DURATION_MINUTES: 150,
-    EVENT_DURATION_MINUTES: 100
-};
+const SHOW_DURATION_MINUTES = 150;       // Durasi show biasa
+const EVENT_DURATION_MINUTES = 100;      // Durasi event (non-show)
+const PRE_SHOW_BUFFER_MINUTES = 15; // Live mulai 15 menit sebelum jam tayang
+
+function getDurationMinutes(isNonShow) {
+    return isNonShow ? EVENT_DURATION_MINUTES : SHOW_DURATION_MINUTES;
+}
 
 // ============= THEME =============
 (function initializeTheme() {
@@ -525,9 +527,8 @@ function getLiveStatus(showDate, showTime, isNonShow = false) {
     
     const now = new Date();
     const showDateTime = new Date(`${showDate}T${showTime}`);
-    const duration = isNonShow ? LIVE_CONFIG.EVENT_DURATION_MINUTES : LIVE_CONFIG.DURATION_MINUTES;
-    const liveStart = new Date(showDateTime.getTime() - (LIVE_CONFIG.BEFORE_MINUTES * 60 * 1000));
-    const liveEnd = new Date(showDateTime.getTime() + (duration * 60 * 1000));
+    const liveStart = new Date(showDateTime.getTime() - PRE_SHOW_BUFFER_MINUTES * 60000);
+    const liveEnd = new Date(showDateTime.getTime() + getDurationMinutes(isNonShow) * 60000);
     
     if (now < liveStart) return 'UPCOMING';
     if (now >= liveStart && now <= liveEnd) return 'LIVE';
@@ -843,7 +844,7 @@ function renderShows(date) {
                 birthdayMember: show.birthday_member,
                 isGraduation: show.is_graduation_show,
                 graduationMember: show.graduation_member,
-                isNonShow: show.is_non_show || false
+                is_non_show: show.is_non_show || false
             };
         }
         // Gunakan memberName dari JOIN
@@ -861,7 +862,7 @@ function renderShows(date) {
     let showsHTML = '<div class="shows-list">';
     
     sortedShows.forEach(show => {
-        const status = getLiveStatus(show.date, show.time, show.isNonShow);
+        const status = getLiveStatus(show.date, show.time, show.is_non_show);
         
         let headerClass = '';
         let statusBadge = '';
@@ -926,7 +927,7 @@ function renderShows(date) {
         
         showsHTML += `
             <div class="show-card" data-setlist="${setlistParam}" data-date="${dateParam}" data-time="${timeParam}" onclick="openShowDetail(this)">
-                <div class="show-card-header ${headerClass}" style="background:${status === 'LIVE' ? 'linear-gradient(135deg, #e60012 0%, #a00010 100%)' : status === 'FINISHED' ? 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)' : (getSetlistGradient(show.setlist, show.isNonShow) || 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)')};">
+                <div class="show-card-header ${headerClass}" style="background:${status === 'LIVE' ? 'linear-gradient(135deg, #e60012 0%, #a00010 100%)' : status === 'FINISHED' ? 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)' : (getSetlistGradient(show.setlist, show.is_non_show) || 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)')};">
                     ${statusBadge}
                     <div class="show-card-title">
                         <span>${show.setlist}</span>
