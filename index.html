@@ -7,9 +7,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
-
-</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:Arial,sans-serif;background:#f5f5f5;color:#333;min-height:100vh;padding-bottom:60px;transition:background 0.3s,color 0.3s}
@@ -119,7 +117,7 @@ body.dark .setlist-stats{background:#1b1f3a;color:#e5e7eb;border-top:2px solid #
 @media (min-width:768px) and (max-width:1023px){.container{grid-template-columns:repeat(8,1fr);gap:12px;padding:18px}}
 @media (min-width:1024px){.container{grid-template-columns:repeat(10,1fr);gap:15px;padding:20px}}
 @media (min-width:1200px){.container{grid-template-columns:repeat(12,1fr);gap:16px;padding:24px}}
-.card{background:#fff;border-radius:5px;overflow:hidden;text-align:center;cursor:pointer;transition:all 0.3s;display:flex;flex-direction:column;height:100%}
+.card{background:#fff;border-radius:3.5px;overflow:hidden;text-align:center;cursor:pointer;transition:all 0.3s;display:flex;flex-direction:column;height:100%}
 .card:hover{transform:translateY(-4px)}
 body.dark .card{background:#1b1f3a}
 .card.setlist-card{position:relative;border:2px solid transparent}
@@ -137,8 +135,8 @@ body.dark .avatar-placeholder{background:#1e1e2e;color:#5a5a7a}
 body.dark .gen-badge{background:rgba(0,0,0,0.6)}
 .name-container{margin:6px 0;min-height:32px;display:flex;align-items:center;justify-content:center;width:100%}
 .name{font-weight:bold;font-size:13px;color:#fff;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-overflow:ellipsis;max-height:2.6em;padding:0 4px}
-.show-info{font-size:11px;color:rgba(255,255,255,0.95);line-height:1.3;margin:4px 0 2px 0;display:flex;align-items:center;justify-content:center;font-weight:700;min-height:18px}
-.bar-container{margin-top:0;padding-top:2px;width:100%;padding-left:8px;padding-right:8px;position:relative}
+.show-info{font-size:11px;color:rgba(255,255,255,0.95);line-height:1.3;margin:4px 0 8px 0;display:flex;align-items:center;justify-content:center;font-weight:700;min-height:18px}
+.bar-container{margin-top:auto;padding-top:6px;width:100%;padding-left:8px;padding-right:8px;position:relative}
 .bar{height:5px;background:rgba(0,0,0,0.2);border-radius:3px;overflow:hidden}
 .bar span{display:block;height:100%;background:#fff;transition:width 0.5s ease}
 body.dark .bar{background:rgba(255,255,255,0.2)}
@@ -188,7 +186,7 @@ body.dark .gen-option.active{border-color:#f87171}
 .gen-option.gen-12{background:#fde047;color:#000}
 .gen-option.gen-13{background:#facc15;color:#000}
 .gen-option.gen-14{background:#e879f9;color:#fff}
-@media (max-width:767px){header{padding:12px 15px;min-height:55px}.header-title{font-size:18px;padding:0 5px}.header-buttons{gap:6px}.schedule-button,.theme-toggle{width:35px;height:35px}.schedule-button svg,.theme-toggle svg{width:18px;height:18px}.name{font-size:12px}.show-info{font-size:10px;margin:3px 0 2px 0}.gen-badge{font-size:9px;padding:3px 8px;min-width:45px}.bar{height:4px}.bar-container{padding-left:6px;padding-right:6px}.rank-badge{width:20px;height:20px;font-size:10px}.photo-setlist-badge{font-size:7px;padding:1px 4px}.card-footer{padding:8px 6px;min-height:85px}.name-container{min-height:28px}.top-member-filter{min-width:110px;padding:8px 12px;font-size:12px}.filter{min-width:100px;padding:8px 12px;font-size:12px}.live-show-content{flex-direction:column;align-items:stretch;gap:10px}.live-show-left{flex-direction:column;align-items:flex-start;gap:8px}.live-show-info{width:100%}.live-show-title{font-size:14px}.live-show-time{font-size:12px}.live-show-right{width:100%;justify-content:flex-end}}
+@media (max-width:767px){header{padding:12px 15px;min-height:55px}.header-title{font-size:18px;padding:0 5px}.header-buttons{gap:6px}.schedule-button,.theme-toggle{width:35px;height:35px}.schedule-button svg,.theme-toggle svg{width:18px;height:18px}.name{font-size:12px}.show-info{font-size:10px;margin:3px 0 6px 0}.gen-badge{font-size:9px;padding:3px 8px;min-width:45px}.bar{height:4px}.bar-container{padding-left:6px;padding-right:6px}.rank-badge{width:20px;height:20px;font-size:10px}.photo-setlist-badge{font-size:7px;padding:1px 4px}.card-footer{padding:8px 6px;min-height:85px}.name-container{min-height:28px}.top-member-filter{min-width:110px;padding:8px 12px;font-size:12px}.filter{min-width:100px;padding:8px 12px;font-size:12px}.live-show-content{flex-direction:column;align-items:stretch;gap:10px}.live-show-left{flex-direction:column;align-items:flex-start;gap:8px}.live-show-info{width:100%}.live-show-title{font-size:14px}.live-show-time{font-size:12px}.live-show-right{width:100%;justify-content:flex-end}}
 @media (max-width:480px){.header-title{font-size:16px}.schedule-button,.theme-toggle{width:32px;height:32px}.schedule-button svg,.theme-toggle svg{width:16px;height:16px}.header-buttons{gap:4px}}
 .detail-footer{text-align:center;padding:12px;color:#6b7280;font-size:10px;border-top:1px solid #e5e7eb;margin-top:20px;background:#fff;transition:background 0.3s,color 0.3s,border-color 0.3s}
 body.dark .detail-footer{background:#0a0e1a;color:#9ca3af;border-top-color:#374151}
@@ -232,137 +230,6 @@ body.dark .detail-footer{background:#0a0e1a;color:#9ca3af;border-top-color:#3741
 .card-footer.graduated-bg {
     background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%) !important;
 }
-
-/* ===== BIRTHDAY BADGE ===== */
-.birthday-badge {
-    position: absolute;
-    top: 8px; right: 8px;
-    background: linear-gradient(135deg, #f9a8d4, #ec4899);
-    color: white; font-size: 9px; font-weight: bold;
-    padding: 4px 8px; border-radius: 12px; z-index: 3;
-    box-shadow: 0 2px 8px rgba(236,72,153,0.5);
-    border: 1px solid rgba(255,255,255,0.3);
-    display: flex; align-items: center; gap: 3px;
-    animation: birthdayGlow 2s ease-in-out infinite;
-}
-.birthday-badge::before { content: ""; font-size: 10px; }
-@keyframes birthdayGlow {
-    0%,100% { box-shadow: 0 2px 8px rgba(236,72,153,0.5); }
-    50% { box-shadow: 0 2px 18px rgba(236,72,153,0.9); }
-}
-.card.birthday-today { outline: 2.5px solid #ec4899; }
-
-/* ===== BIRTHDAY BANNER (hari ini) ===== */
-.birthday-banner {
-    background: linear-gradient(135deg, #be185d 0%, #ec4899 50%, #f9a8d4 100%);
-    color: white; padding: 10px 20px; text-align: center;
-    font-size: 13px; font-weight: bold; display: none;
-    animation: birthdaySlide 0.5s ease-out;
-}
-@keyframes birthdaySlide { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
-body.dark .birthday-banner { background: linear-gradient(135deg, #831843 0%, #be185d 50%, #ec4899 100%); }
-
-/* ===== NEXT BIRTHDAY SECTION ===== */
-.next-birthday-section {
-    background: #fff; border-bottom: 1px solid #ddd;
-    transition: background 0.3s, border-color 0.3s;
-}
-body.dark .next-birthday-section { background: #1b1f3a; border-bottom-color: #2d3548; }
-.next-birthday-header {
-    padding: 10px 20px 6px;
-    display: flex; align-items: center; gap: 6px;
-}
-.next-birthday-title {
-    font-size: 12px; font-weight: 700; color: #e60012; letter-spacing: 1px;
-}
-body.dark .next-birthday-title { color: #f87171; }
-.next-birthday-list {
-    display: flex; overflow: hidden;
-}
-.birthday-member-item {
-    flex: 1; display: flex; align-items: center; gap: 10px;
-    padding: 6px 14px 12px; border-right: 1px solid #f3f4f6;
-    cursor: pointer; transition: background 0.2s; min-width: 0;
-}
-.birthday-member-item:last-child { border-right: none; }
-.birthday-member-item:hover { background: #fff5f5; }
-body.dark .birthday-member-item { border-right-color: #2d3548; }
-body.dark .birthday-member-item:hover { background: #1f2937; }
-.bday-avatar-wrap { position: relative; flex-shrink: 0; }
-.bday-avatar {
-    width: 42px; height: 42px; border-radius: 50%;
-    object-fit: cover; border: 2px solid #fce7f3; display: block;
-}
-body.dark .bday-avatar { border-color: #4b2250; }
-.bday-avatar-placeholder {
-    width: 42px; height: 42px; border-radius: 50%;
-    background: #fce7f3; display: flex; align-items: center;
-    justify-content: center; font-weight: bold; font-size: 16px;
-    color: #ec4899; border: 2px solid #fce7f3; flex-shrink: 0;
-}
-body.dark .bday-avatar-placeholder { background: #4b2250; color: #f9a8d4; }
-.bday-today-ring { border-color: #ec4899 !important; box-shadow: 0 0 0 2px #f9a8d4; animation: birthdayGlow 2s ease-in-out infinite; }
-.bday-info { min-width: 0; flex: 1; }
-.bday-name { font-size: 11px; font-weight: 700; color: #1f2937; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
-body.dark .bday-name { color: #e5e7eb; }
-.bday-date { font-size: 10px; color: #9ca3af; font-weight: 600; white-space: nowrap; }
-.bday-date.today { color: #ec4899; }
-body.dark .bday-date.upcoming { color: #6b7280; }
-.bday-days-left { font-size: 9px; color: #9ca3af; font-weight: 500; }
-.bday-days-left.today-label { color: #ec4899; font-weight: 700; }
-body.dark .bday-days-left { color: #6b7280; }
-@media (max-width:480px) {
-    .birthday-member-item { padding: 6px 10px 10px; gap: 7px; }
-    .bday-avatar, .bday-avatar-placeholder { width: 36px; height: 36px; font-size: 13px; }
-    .bday-name { font-size: 10px; }
-    .bday-date, .bday-days-left { font-size: 9px; }
-}
-
-/* ===== LIVE SHOW: UPCOMING style ===== */
-.live-show-banner.upcoming-show { background: linear-gradient(135deg,#7c3aed 0%,#6d28d9 100%); border-bottom-color: #a78bfa; }
-
-/* ===== REMIND ME BUTTON ===== */
-.remind-me-btn {
-    background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.5);
-    color: #fff; padding: 7px 14px; border-radius: 20px; cursor: pointer;
-    font-size: 12px; font-weight: bold;
-    display: none; align-items: center; gap: 5px;
-    transition: all 0.3s; white-space: nowrap;
-}
-.remind-me-btn:hover { background: rgba(255,255,255,0.35); transform: scale(1.05); }
-.remind-me-btn.reminded { opacity: 0.8; cursor: default; }
-
-/* ===== REMIND ME MODAL ===== */
-.remind-modal-overlay {
-    display: none; position: fixed; top:0; left:0; width:100%; height:100%;
-    background: rgba(0,0,0,0.7); z-index: 1100;
-    align-items: center; justify-content: center; backdrop-filter: blur(4px);
-}
-.remind-modal-overlay.active { display: flex; }
-.remind-modal {
-    background: #fff; border-radius: 20px; padding: 28px 24px;
-    max-width: 380px; width: 92%; text-align: center;
-    animation: modalSlide 0.3s ease-out;
-}
-body.dark .remind-modal { background: #1b1f3a; color: #e5e7eb; border: 1px solid #2d3548; }
-.remind-modal-icon { font-size: 48px; margin-bottom: 12px; }
-.remind-modal-title { font-size: 18px; font-weight: bold; color: #e60012; margin-bottom: 6px; }
-body.dark .remind-modal-title { color: #f87171; }
-.remind-modal-subtitle { font-size: 13px; color: #6b7280; margin-bottom: 20px; line-height: 1.5; }
-body.dark .remind-modal-subtitle { color: #9ca3af; }
-.remind-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
-.remind-option-btn {
-    padding: 13px 16px; border-radius: 12px; border: 2px solid #e5e7eb;
-    background: #f9fafb; cursor: pointer; font-size: 14px; font-weight: 600;
-    color: #333; transition: all 0.2s;
-    display: flex; align-items: center; justify-content: space-between;
-}
-.remind-option-btn:hover { border-color: #e60012; background: #fff5f5; color: #e60012; transform: translateY(-1px); }
-body.dark .remind-option-btn { background: #252d47; border-color: #374151; color: #e5e7eb; }
-body.dark .remind-option-btn:hover { border-color: #f87171; color: #f87171; }
-.remind-time-label { font-size: 11px; color: #9ca3af; font-weight: normal; }
-.remind-cancel-btn { background: transparent; border: none; color: #9ca3af; cursor: pointer; font-size: 13px; text-decoration: underline; }
-.remind-cancel-btn:hover { color: #e60012; }
 </style>
 </head>
 <body>
@@ -395,7 +262,6 @@ body.dark .remind-option-btn:hover { border-color: #f87171; color: #f87171; }
         </div>
     </div>
 </div>
-<div class="birthday-banner" id="birthdayBanner"></div>
 <div class="top">
     <div class="search-box">
         <!-- Search icon (kaca pembesar) -->
@@ -416,12 +282,6 @@ body.dark .remind-option-btn:hover { border-color: #f87171; color: #f87171; }
 <div class="last-update" id="lastUpdate">
     <div class="spinner"></div>
     <span>Loading...</span>
-</div>
-<div class="next-birthday-section" id="nextBirthdaySection" style="display:none">
-    <div class="next-birthday-header">
-        <div class="next-birthday-title"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:5px"><path d="M12 6c1.1 0 2-.9 2-2 0-.6-.3-1.1-.7-1.5L12 1l-1.3 1.5c-.4.4-.7.9-.7 1.5 0 1.1.9 2 2 2zm6 2h-2V6h-2v2H10V6H8v2H6C4.9 8 4 8.9 4 10v2c0 .74.4 1.38 1 1.72V20c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-6.28c.6-.34 1-.98 1-1.72v-2c0-1.1-.9-2-2-2zm-1 11H7v-6h10v6zm1-8H6v-1h12v1z"/></svg> NEXT BIRTHDAY</div>
-    </div>
-    <div class="next-birthday-list" id="nextBirthdayList"></div>
 </div>
 <div class="top-member-section">
     <div class="top-member-title">SETLIST PERFORMANCE</div>
@@ -601,17 +461,17 @@ async function checkLiveShows() {
         const today = now.toISOString().split('T')[0];
         const todayShows = allShowsData.filter(show => show.show_date === today);
         if (todayShows.length === 0) return null;
-        const liveShows = [], upcomingShows = [];
+        const liveShows = [];
         todayShows.forEach(show => {
             const status = getLiveStatus(show.show_date, show.show_time);
-            const member = membersMap[show.member_id];
-            if (member) {
-                if (status === 'LIVE') liveShows.push({ ...show, memberName: member.name, status });
-                else if (status === 'UPCOMING') upcomingShows.push({ ...show, memberName: member.name, status });
+            if (status === 'LIVE') {
+                const member = membersMap[show.member_id];
+                if (member) {
+                    liveShows.push({ ...show, memberName: member.name, status });
+                }
             }
         });
         if (liveShows.length > 0) return prepareShowData(liveShows);
-        if (upcomingShows.length > 0) return prepareShowData(upcomingShows);
         return null;
     } catch (err) {
         console.error('Error in checkLiveShows:', err);
@@ -633,7 +493,7 @@ function prepareShowData(shows) {
                 birthdayMember: show.birthday_member || null,
                 isGraduationShow: show.is_graduation_show || false,
                 graduationMember: show.graduation_member || null,
-                status: getLiveStatus(show.show_date, show.show_time)
+                status: show.status
             };
         }
         if (show.memberName && !groupedShows[key].members.includes(show.memberName)) {
@@ -679,13 +539,12 @@ async function updateLiveShowBanner() {
         title.textContent = displayTitle;
         banner.className = 'live-show-banner';
         badge.className = 'live-badge';
-        const liveStatus = getLiveStatus(new Date().toISOString().split('T')[0], showData.earliestTime);
-        if (liveStatus === 'LIVE') {
+        if (showData.status === 'LIVE') {
             banner.classList.add('live-now');
-            badge.innerHTML = '<span class="live-dot"></span><span>LIVE NOW</span>';
+            badge.innerHTML = '<span class="live-dot"></span><span>LIVE</span>';
         } else {
-            banner.style.display = 'none';
-            return;
+            banner.classList.add('finished');
+            badge.innerHTML = '<span>SHOW ENDED</span>';
         }
         if (showData.earliestTime) {
             const timeStr = showData.earliestTime.slice(0, 5);
@@ -715,7 +574,7 @@ async function loadData() {
     try {
         const { data: membersData, error: membersError } = await db
             .from('members')
-            .select('id, name, gen, team, show, status, birth_date')
+            .select('id, name, gen, team, show, status')
             .order('show', { ascending: false });
         if (membersError) throw membersError;
         members = membersData || [];
@@ -733,11 +592,8 @@ async function loadData() {
             await updateLastUpdate();
             renderMembers();
             updateStats();
-            checkBirthdays();
-            renderNextBirthday();
             isDataLoaded = true;
             setTimeout(() => restoreScrollPosition(), 100);
-            // Setup auto push notification
             setupPushNotification();
         }
     } catch (err) {
@@ -835,9 +691,9 @@ async function updateLastUpdate() {
             .order('updated_at', { ascending: false })
             .limit(1);
         if (!error && data && data.length > 0 && data[0].updated_at) {
-            const date = new Date(data[0].updated_at);
+            const rawDate = data[0].updated_at; const date = new Date(rawDate.endsWith('Z') || rawDate.includes('+') ? rawDate : rawDate + 'Z');
             const monthNames = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Oct','Nov','Des'];
-            document.getElementById('lastUpdate').innerHTML = `Update: ${date.getDate()} ${monthNames[date.getMonth()]} ${date.getFullYear()}`;
+            const hours = String(date.getHours()).padStart(2,'0'); const minutes = String(date.getMinutes()).padStart(2,'0'); document.getElementById('lastUpdate').innerHTML = `Update: ${date.getDate()} ${monthNames[date.getMonth()]} ${date.getFullYear()}, ${hours}:${minutes}`;
             return;
         }
     } catch (err) {
@@ -879,20 +735,16 @@ function renderMembers() {
         const percent = Math.min(100, (m.show / MILESTONE) * 100);
         const color = GEN_COLORS[m.gen] || '#6366f1';
         const isGraduated = m.status === 'graduated';
-        const isBirthday = isBirthdayToday(m);
         const card = document.createElement('div');
         card.className = isGraduated ? 'card graduated-member' : 'card';
-        if (isBirthday) card.classList.add('birthday-today');
         card.addEventListener('click', () => openMemberPage(m.name));
         const genText = m.gen ? `Gen ${m.gen}` : 'Gen ?';
         const graduationBadge = isGraduated ? '<div class="graduation-badge">GRADUATED</div>' : '';
-        const birthdayBadgeEl = isBirthday ? '<div class="birthday-badge">HBD!</div>' : '';
         const footerColor = isGraduated ? '#6b7280' : color;
         card.innerHTML = `
             <div class="avatar-container">
                 <img class="avatar" src="img/${m.name.toLowerCase()}.jpg" alt="${m.name}" loading="lazy" onerror="this.onerror=null;this.style.display='none';this.parentNode.innerHTML='<div class=&quot;avatar-placeholder&quot;>${m.name.charAt(0)}</div>'">
                 ${graduationBadge}
-                ${birthdayBadgeEl}
             </div>
             <div class="card-footer" style="background-color:${footerColor}">
                 <div class="gen-badge">${genText}</div>
@@ -941,15 +793,12 @@ function renderSetlistMembers() {
         const percent = Math.min(100, (m.shows / scale) * 100);
         const color = GEN_COLORS[m.memberData.gen] || '#6366f1';
         const isGraduated = m.memberData.status === 'graduated';
-        const isBirthday = isBirthdayToday(m.memberData);
         const card = document.createElement('div');
         card.className = `card setlist-card ${rank <= 3 ? 'rank-' + rank : ''}`;
         if (isGraduated) card.classList.add('graduated-member');
-        if (isBirthday) card.classList.add('birthday-today');
         card.addEventListener('click', () => openMemberPage(m.name));
         const rankBadge = rank <= 10 ? `<div class="rank-badge rank-${rank}">${rank}</div>` : '';
         const graduationBadge = isGraduated ? '<div class="graduation-badge">GRADUATED</div>' : '';
-        const birthdayBadgeEl = isBirthday ? '<div class="birthday-badge">HBD!</div>' : '';
         const genText = m.memberData.gen ? `Gen ${m.memberData.gen}` : 'Gen ?';
         const footerColor = isGraduated ? '#6b7280' : color;
         card.innerHTML = `
@@ -957,7 +806,6 @@ function renderSetlistMembers() {
                 <img class="avatar" src="img/${m.name.toLowerCase()}.jpg" alt="${m.name}" loading="lazy" onerror="this.onerror=null;this.style.display='none';this.parentNode.innerHTML='<div class=&quot;avatar-placeholder&quot;>${m.name.charAt(0)}</div>'">
                 ${rankBadge}
                 ${graduationBadge}
-                ${birthdayBadgeEl}
                 <div class="photo-setlist-badge">${badge}</div>
             </div>
             <div class="card-footer" style="background-color:${footerColor}">
@@ -1151,7 +999,7 @@ function selectGen(gen) {
     saveCurrentState();
 }
 
-// ============= SERVICE WORKER REGISTRATION =============
+// ============= SERVICE WORKER =============
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('/service-worker.js')
@@ -1160,146 +1008,7 @@ if ('serviceWorker' in navigator) {
     });
 }
 
-// ============= INITIALIZATION =============
-document.addEventListener('DOMContentLoaded', () => {
-    loadData();
-    if (liveShowRefreshInterval) clearInterval(liveShowRefreshInterval);
-    liveShowRefreshInterval = setInterval(() => {
-        updateLiveShowBanner();
-    }, 30000);
-});
-
-window.addEventListener('unload', () => {
-    if (liveShowRefreshInterval) clearInterval(liveShowRefreshInterval);
-});
-
-// ============= BIRTHDAY =============
-const BULAN_ID = {
-    'januari':1,'februari':2,'maret':3,'april':4,'mei':5,'juni':6,
-    'juli':7,'agustus':8,'september':9,'oktober':10,'november':11,'desember':12,
-    'january':1,'february':2,'march':3,'may':5,'june':6,'july':7,
-    'august':8,'october':10,'december':12
-};
-
-function parseBirthDate(birthDate) {
-    if (!birthDate) return null;
-    const str = String(birthDate).trim();
-    // ISO: 2002-02-24
-    const iso = str.match(/^(\d{4})-(\d{2})-(\d{2})/);
-    if (iso) return { day: parseInt(iso[3]), month: parseInt(iso[2]) };
-    // "24 Februari 2002"
-    const parts = str.split(/\s+/);
-    if (parts.length >= 2) {
-        const day = parseInt(parts[0]);
-        const mon = BULAN_ID[parts[1].toLowerCase().replace('.','')];
-        if (day && mon) return { day, month: mon };
-    }
-    return null;
-}
-
-function isBirthdayToday(member) {
-    const p = parseBirthDate(member.birth_date);
-    if (!p) return false;
-    const t = new Date();
-    return p.day === t.getDate() && p.month === t.getMonth() + 1;
-}
-
-function checkBirthdays() {
-    const t = new Date();
-    const todayDay = t.getDate(), todayMonth = t.getMonth() + 1;
-    const bdays = members.filter(m => {
-        const p = parseBirthDate(m.birth_date);
-        return p && p.day === todayDay && p.month === todayMonth;
-    });
-    const banner = document.getElementById('birthdayBanner');
-    if (bdays.length > 0) {
-        banner.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:6px"><path d="M12 6c1.1 0 2-.9 2-2 0-.6-.3-1.1-.7-1.5L12 1l-1.3 1.5c-.4.4-.7.9-.7 1.5 0 1.1.9 2 2 2zm6 2h-2V6h-2v2H10V6H8v2H6C4.9 8 4 8.9 4 10v2c0 .74.4 1.38 1 1.72V20c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-6.28c.6-.34 1-.98 1-1.72v-2c0-1.1-.9-2-2-2zm-1 11H7v-6h10v6zm1-8H6v-1h12v1z"/></svg> Happy Birthday ' + bdays.map(m => m.name).join(', ') + '!';
-        banner.style.display = 'block';
-    } else {
-        banner.style.display = 'none';
-    }
-}
-
-function renderNextBirthday() {
-    const section = document.getElementById('nextBirthdaySection');
-    const list = document.getElementById('nextBirthdayList');
-    if (!section || !list) return;
-
-    const now = new Date();
-    // Gunakan tanggal lokal (bukan UTC) supaya timezone WIB tidak geser
-    const todayDay   = now.getDate();
-    const todayMonth = now.getMonth() + 1; // 1-12
-    const todayYear  = now.getFullYear();
-
-    const BSHORT = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
-
-    // Debug — lihat hari ini menurut browser
-    console.log('[NextBirthday] Hari ini:', todayDay + '/' + todayMonth + '/' + todayYear);
-
-    function daysUntil(m) {
-        const p = parseBirthDate(m.birth_date);
-        if (!p) return null;
-
-        // Hitung selisih hari tanpa objek Date supaya tidak ada isu timezone
-        // Buat "ulang tahun tahun ini" dalam hari sejak epoch
-        function toEpochDays(y, mo, d) {
-            return Math.floor(new Date(y, mo - 1, d).getTime() / 86400000);
-        }
-
-        const todayEpoch = toEpochDays(todayYear, todayMonth, todayDay);
-        let bdEpoch = toEpochDays(todayYear, p.month, p.day);
-        const diff = bdEpoch - todayEpoch;
-
-        // Lewat lebih dari 1 hari → geser ke tahun depan
-        if (diff < -1) {
-            bdEpoch = toEpochDays(todayYear + 1, p.month, p.day);
-            return { days: bdEpoch - todayEpoch, parsed: p };
-        }
-
-        // diff === -1 → kemarin (masih tampil hari ini, hilang besok)
-        // Tampilkan dengan days = 0 supaya label tetap "Hari ini!"
-        if (diff === -1) {
-            return { days: 0, parsed: p };
-        }
-
-        // 0 = hari ini, >0 = akan datang
-        return { days: diff, parsed: p };
-    }
-
-    const withBdi = members
-        .filter(m => m.birth_date)
-        .map(m => {
-            const bdi = daysUntil(m);
-            if (bdi) console.log('[NextBirthday]', m.name, '| birth_date:', m.birth_date, '| parsed:', bdi.parsed, '| days:', bdi.days);
-            return { ...m, bdi };
-        })
-        .filter(m => m.bdi)
-        .sort((a, b) => a.bdi.days - b.bdi.days)
-        .slice(0, 3);
-
-    if (withBdi.length === 0) { section.style.display = 'none'; return; }
-    section.style.display = 'block';
-
-    list.innerHTML = withBdi.map(m => {
-        const { days, parsed } = m.bdi;
-        const isToday = days === 0;
-        const dateLabel = parsed.day + ' ' + BSHORT[parsed.month - 1];
-        const daysLabel = isToday ? '<svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:3px"><path d="M12 6c1.1 0 2-.9 2-2 0-.6-.3-1.1-.7-1.5L12 1l-1.3 1.5c-.4.4-.7.9-.7 1.5 0 1.1.9 2 2 2zm6 2h-2V6h-2v2H10V6H8v2H6C4.9 8 4 8.9 4 10v2c0 .74.4 1.38 1 1.72V20c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-6.28c.6-.34 1-.98 1-1.72v-2c0-1.1-.9-2-2-2zm-1 11H7v-6h10v6zm1-8H6v-1h12v1z"/></svg> Hari ini!' : days + ' hari lagi';
-        const firstName = m.name.split(' ')[0];
-        return '<div class="birthday-member-item" onclick="openMemberPage(\'' + m.name.replace(/'/g, "\'") + '\')">' +
-            '<div class="bday-avatar-wrap">' +
-            '<img class="bday-avatar' + (isToday ? ' bday-today-ring' : '') + '" src="img/' + m.name.toLowerCase() + '.jpg" alt="' + firstName + '" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">' +
-            '<div class="bday-avatar-placeholder" style="display:none">' + m.name.charAt(0) + '</div>' +
-            '</div>' +
-            '<div class="bday-info">' +
-            '<div class="bday-name">' + firstName + '</div>' +
-            '<div class="bday-date' + (isToday ? ' today' : '') + '">' + dateLabel + '</div>' +
-            '<div class="bday-days-left' + (isToday ? ' today-label' : '') + '">' + daysLabel + '</div>' +
-            '</div></div>';
-    }).join('');
-}
-
-// ============= WEB PUSH AUTO NOTIFICATION =============
+// ============= WEB PUSH NOTIFICATION =============
 const VAPID_PUBLIC_KEY = 'BDV5GgZafvlEa3ArE29_fuMuoWPLEuofOHSgaJNi6RiVWhIcAJTIdjc0yFGBnxXu26gqBwMzqV3oB34-INKrueI';
 const MINUTES_BEFORE = 15;
 
@@ -1310,27 +1019,70 @@ function urlBase64ToUint8Array(base64String) {
     return Uint8Array.from([...rawData].map(c => c.charCodeAt(0)));
 }
 
-async function setupPushNotification() {
-    if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
-    if (!('Notification' in window)) return;
-    // Kalau sudah pernah ditolak, skip
+function showNotifBanner() {
+    if (!('Notification' in window) || !('serviceWorker' in navigator)) return;
     if (Notification.permission === 'denied') return;
-    // Kalau sudah granted, langsung subscribe tanpa tanya lagi
-    if (Notification.permission === 'granted') {
-        await subscribeAndSchedule();
-        return;
-    }
-    // Tanya izin user
+    if (Notification.permission === 'granted') { subscribeAndSchedule(); return; }
+    if (document.getElementById('notifBanner')) return;
+    const dismissed = localStorage.getItem('notif_dismissed');
+    const today = new Date().toISOString().split('T')[0];
+    if (dismissed === today) return;
+
+    const banner = document.createElement('div');
+    banner.id = 'notifBanner';
+    banner.style.cssText = `
+        position:fixed;bottom:0;left:0;right:0;z-index:9998;
+        background:#1f2937;color:#fff;
+        padding:14px 20px;
+        display:flex;align-items:center;justify-content:space-between;gap:12px;
+        box-shadow:0 -4px 20px rgba(0,0,0,0.3);
+        animation:slideUp 0.4s ease-out;
+    `;
+    banner.innerHTML = `
+        <style>@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}</style>
+        <div style="display:flex;align-items:center;gap:10px;flex:1">
+            <span style="font-size:22px">🔔</span>
+            <div>
+                <div style="font-weight:bold;font-size:13px">Aktifkan Notifikasi Show</div>
+                <div style="font-size:11px;opacity:0.75">Dapat notif 15 menit sebelum show JKT48</div>
+            </div>
+        </div>
+        <div style="display:flex;gap:8px;flex-shrink:0">
+            <button onclick="dismissNotifBanner()" style="background:transparent;border:1px solid rgba(255,255,255,0.3);color:#fff;padding:7px 12px;border-radius:20px;cursor:pointer;font-size:12px">Nanti</button>
+            <button onclick="requestNotifPermission()" style="background:#e60012;border:none;color:#fff;padding:7px 16px;border-radius:20px;cursor:pointer;font-size:12px;font-weight:bold">Aktifkan</button>
+        </div>
+    `;
+    document.body.appendChild(banner);
+}
+
+function dismissNotifBanner() {
+    const b = document.getElementById('notifBanner');
+    if (b) b.remove();
+    localStorage.setItem('notif_dismissed', new Date().toISOString().split('T')[0]);
+}
+
+async function requestNotifPermission() {
+    const b = document.getElementById('notifBanner');
+    if (b) b.remove();
     const perm = await Notification.requestPermission();
     if (perm === 'granted') {
         showToast('✅ Notifikasi show theater aktif!');
         await subscribeAndSchedule();
+    } else {
+        showToast('Notifikasi dinonaktifkan');
     }
+}
+
+async function setupPushNotification() {
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+    if (!('Notification' in window)) return;
+    if (Notification.permission === 'denied') return;
+    if (Notification.permission === 'granted') { await subscribeAndSchedule(); return; }
+    setTimeout(showNotifBanner, 2000);
 }
 
 async function subscribeAndSchedule() {
     try {
-        // Ambil show hari ini dari Supabase
         const today = new Date().toISOString().split('T')[0];
         const { data: shows, error } = await db
             .from('setlist_performance')
@@ -1338,7 +1090,6 @@ async function subscribeAndSchedule() {
             .eq('show_date', today);
         if (error || !shows || shows.length === 0) return;
 
-        // Kelompokkan per show unik (setlist + waktu)
         const uniqueShows = {};
         shows.forEach(s => {
             const key = `${s.setlist_name}|${s.show_time}`;
@@ -1354,15 +1105,13 @@ async function subscribeAndSchedule() {
             });
         }
 
-        // Schedule tiap show
         for (const key of Object.keys(uniqueShows)) {
             const show = uniqueShows[key];
             const showDateTime = new Date(`${today}T${show.show_time}`);
             const reminderTime = new Date(showDateTime - MINUTES_BEFORE * 60000);
             const delay = reminderTime - new Date();
-            if (delay <= 0) continue; // sudah lewat, skip
+            if (delay <= 0) continue;
 
-            // Simpan ke Supabase (cek duplikat dulu)
             const { data: existing } = await db
                 .from('push_subscriptions')
                 .select('id')
@@ -1380,15 +1129,11 @@ async function subscribeAndSchedule() {
                 });
             }
 
-            // Schedule trigger edge function
             setTimeout(async () => {
                 try {
                     await fetch('https://pprxfopqkvpeajeoxzig.supabase.co/functions/v1/send-push', {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': 'Bearer ' + SUPABASE_KEY
-                        },
+                        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SUPABASE_KEY },
                         body: JSON.stringify({
                             show_date: today,
                             show_time: show.show_time,
@@ -1404,22 +1149,18 @@ async function subscribeAndSchedule() {
     }
 }
 
-function showToast(msg) {
-    let t = document.getElementById('globalToast');
-    if (!t) {
-        t = document.createElement('div');
-        t.id = 'globalToast';
-        t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:#1f2937;color:#fff;padding:12px 20px;border-radius:12px;font-size:13px;font-weight:600;z-index:9999;opacity:0;transition:all 0.35s ease;pointer-events:none;max-width:320px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.3)';
-        document.body.appendChild(t);
-    }
-    t.textContent = msg;
-    t.style.opacity = '1'; t.style.transform = 'translateX(-50%) translateY(0)';
-    clearTimeout(t._to);
-    t._to = setTimeout(() => { t.style.opacity='0'; t.style.transform='translateX(-50%) translateY(20px)'; }, 3000);
-}
+// ============= INITIALIZATION =============
+document.addEventListener('DOMContentLoaded', () => {
+    loadData();
+    if (liveShowRefreshInterval) clearInterval(liveShowRefreshInterval);
+    liveShowRefreshInterval = setInterval(() => {
+        updateLiveShowBanner();
+    }, 30000);
+});
 
+window.addEventListener('unload', () => {
+    if (liveShowRefreshInterval) clearInterval(liveShowRefreshInterval);
+});
 </script>
-
-
 </body>
 </html>
