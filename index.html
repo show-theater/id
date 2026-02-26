@@ -41,21 +41,22 @@ body.dark .top{background:#1b1f3a;border-bottom:1px solid #2d3548}
 .search-box{display:inline-block;width:100%;max-width:400px;position:relative}
 
 /* ===== NOTIF BANNER ===== */
-.notif-banner{position:fixed;bottom:0;left:0;right:0;background:#1b1f3a;color:#fff;padding:16px 20px;z-index:9999;display:none;animation:slideUp 0.4s ease-out;border-top:3px solid #e60012;box-shadow:0 -4px 20px rgba(0,0,0,0.3)}
+.notif-banner{position:fixed;bottom:0;left:0;right:0;background:#e60012;color:#fff;padding:14px 20px;z-index:9999;display:none;animation:slideUp 0.4s ease-out;box-shadow:0 -4px 24px rgba(230,0,18,0.4)}
 .notif-banner.show{display:block}
-body.dark .notif-banner{background:#0a0e1a;border-top-color:#f87171}
 @keyframes slideUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
 .notif-banner-content{max-width:500px;margin:0 auto;display:flex;align-items:center;gap:14px}
-.notif-banner-icon{font-size:28px;flex-shrink:0}
-.notif-banner-text{flex:1}
-.notif-banner-title{font-size:14px;font-weight:bold;margin-bottom:3px}
-.notif-banner-desc{font-size:12px;opacity:0.8;line-height:1.4}
+.notif-banner-icon{width:42px;height:42px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.notif-banner-icon svg{width:22px;height:22px;fill:#fff}
+.notif-banner-text{flex:1;min-width:0}
+.notif-banner-title{font-size:13px;font-weight:700;margin-bottom:2px;color:#fff;display:flex;align-items:center;gap:6px}
+.notif-banner-title svg{width:14px;height:14px;flex-shrink:0}
+.notif-banner-desc{font-size:11px;color:rgba(255,255,255,0.85);line-height:1.4}
 .notif-banner-buttons{display:flex;gap:8px;flex-shrink:0}
-.notif-btn-allow{background:#e60012;color:#fff;border:none;padding:10px 18px;border-radius:20px;font-size:13px;font-weight:bold;cursor:pointer;transition:all 0.2s;white-space:nowrap}
-.notif-btn-allow:hover{background:#c8000f;transform:scale(1.05)}
-.notif-btn-later{background:transparent;color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.3);padding:10px 14px;border-radius:20px;font-size:13px;cursor:pointer;transition:all 0.2s;white-space:nowrap}
-.notif-btn-later:hover{color:#fff;border-color:rgba(255,255,255,0.6)}
-@media(max-width:480px){.notif-banner-content{flex-wrap:wrap}.notif-banner-buttons{width:100%;justify-content:flex-end}}
+.notif-btn-allow{background:#fff;color:#e60012;border:none;padding:9px 16px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;transition:all 0.2s;white-space:nowrap}
+.notif-btn-allow:hover{background:#f3f4f6;transform:scale(1.04)}
+.notif-btn-later{background:transparent;color:rgba(255,255,255,0.8);border:1.5px solid rgba(255,255,255,0.5);padding:9px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;white-space:nowrap}
+.notif-btn-later:hover{border-color:#fff;color:#fff}
+@media(max-width:420px){.notif-banner-content{flex-wrap:wrap;gap:10px}.notif-banner-buttons{width:100%;justify-content:flex-end}}
 /* ======================== */
 .search-icon{
     position:absolute;
@@ -370,13 +371,18 @@ body.dark .detail-footer{background:#0a0e1a;color:#9ca3af;border-top-color:#3741
 <!-- NOTIF BANNER -->
 <div class="notif-banner" id="notifBanner">
     <div class="notif-banner-content">
-        <div class="notif-banner-icon">🔔</div>
+        <div class="notif-banner-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+        </div>
         <div class="notif-banner-text">
-            <div class="notif-banner-title">Aktifkan Notifikasi</div>
-            <div class="notif-banner-desc">Dapat update saat JKT48 show LIVE! 🔥</div>
+            <div class="notif-banner-title">Aktifkan Notifikasi Live Show</div>
+            <div class="notif-banner-desc">Dapat notif otomatis saat JKT48 show LIVE</div>
         </div>
         <div class="notif-banner-buttons">
-            <button class="notif-btn-later" onclick="dismissNotifBanner()">Nanti saja</button>
+            <button class="notif-btn-later" onclick="dismissNotifBanner()">Nanti</button>
             <button class="notif-btn-allow" onclick="allowNotification()">Aktifkan</button>
         </div>
     </div>
