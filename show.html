@@ -717,7 +717,8 @@ const GEN_COLORS = {
 
 const LIVE_CONFIG = {
     BEFORE_MINUTES: 15,
-    DURATION_MINUTES: 155
+    DURATION_MINUTES: 150,
+    EVENT_DURATION_MINUTES: 100
 };
 
 (function initializeTheme() {
@@ -766,14 +767,14 @@ function toggleTheme() {
   }
 }
 
-function getLiveStatus(showDate, showTime) {
+function getLiveStatus(showDate, showTime, isNonShow = false) {
     if (!showDate || !showTime) return 'FINISHED';
     
     const now = new Date();
     const showDateTime = new Date(`${showDate}T${showTime}`);
-    
+    const duration = isNonShow ? LIVE_CONFIG.EVENT_DURATION_MINUTES : LIVE_CONFIG.DURATION_MINUTES;
     const liveStart = new Date(showDateTime.getTime() - (LIVE_CONFIG.BEFORE_MINUTES * 60 * 1000));
-    const liveEnd = new Date(showDateTime.getTime() + (LIVE_CONFIG.DURATION_MINUTES * 60 * 1000));
+    const liveEnd = new Date(showDateTime.getTime() + (duration * 60 * 1000));
     
     if (now < liveStart) return 'UPCOMING';
     if (now >= liveStart && now <= liveEnd) return 'LIVE';
@@ -951,7 +952,7 @@ function renderShowList() {
         const time = show.show_time ? formatTime(show.show_time) : null;
         const showNumber = sortedFilteredShows.findIndex(s => s.id === show.id) + 1;
         
-        const status = getLiveStatus(show.show_date, show.show_time);
+        const status = getLiveStatus(show.show_date, show.show_time, show.is_non_show);
         const isLive = status === 'LIVE';
         
         const isMemberBirthday = show.is_birthday_show && show.birthday_member === memberData.name;

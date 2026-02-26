@@ -419,17 +419,22 @@ function getSetlistGradient(setlistName, isNonShow) {
   return null;
 }
 
-const SHOW_DURATION_MINUTES = 155;
+const SHOW_DURATION_MINUTES = 150;       // Durasi show biasa
+const EVENT_DURATION_MINUTES = 100;      // Durasi event (non-show)
 const PRE_SHOW_BUFFER_MINUTES = 15; // Live mulai 15 menit sebelum jam tayang
 
-function getLiveStatus(show_date, show_time) {
+function getDurationMinutes(isNonShow) {
+    return isNonShow ? EVENT_DURATION_MINUTES : SHOW_DURATION_MINUTES;
+}
+
+function getLiveStatus(show_date, show_time, isNonShow = false) {
     if (!show_date || !show_time) return 'FINISHED';
     const now = new Date();
     const showStart = new Date(`${show_date}T${show_time}`);
     
     // Live dimulai 15 menit sebelum jam tayang
     const liveStart = new Date(showStart.getTime() - PRE_SHOW_BUFFER_MINUTES * 60000);
-    const liveEnd = new Date(showStart.getTime() + SHOW_DURATION_MINUTES * 60000);
+    const liveEnd = new Date(showStart.getTime() + getDurationMinutes(isNonShow) * 60000);
     
     if (now < liveStart) return 'UPCOMING';
     if (now >= liveStart && now <= liveEnd) return 'LIVE';
@@ -646,7 +651,7 @@ function renderPage(showData, showTime, isBirthdayShow, birthdayMember, isGradua
   const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
   const formattedDate = `${dayNames[date.getDay()]}, ${date.getDate()} ${monthNames[date.getMonth()]} ${date.getFullYear()}`;
   const displayTime = showTime ? showTime.slice(0, 5) : '-';
-  const status = getLiveStatus(SHOW_DATE, showTime);
+  const status = getLiveStatus(SHOW_DATE, showTime, isNonShow);
   
   let statusBadge = '';
   let headerClass = status.toLowerCase();

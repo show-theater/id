@@ -360,7 +360,7 @@ const SETLIST_DATA = {
     pajama: {id: 'pajama', title: 'Pajama Drive', members: {}}
 };
 
-const TIME_CONFIG = {LIVE_BEFORE: 15, LIVE_DURATION: 155};
+const TIME_CONFIG = {LIVE_BEFORE: 15, LIVE_DURATION: 150, EVENT_DURATION: 100};
 const MILESTONE = 1000;
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -379,12 +379,13 @@ let members = [],
     allShowsData = [];
 
 // ============= FUNGSI LIVE STATUS =============
-function getLiveStatus(showDate, showTime) {
+function getLiveStatus(showDate, showTime, isNonShow = false) {
     if (!showDate || !showTime) return 'FINISHED';
     const now = new Date();
     const showDateTime = new Date(`${showDate}T${showTime}`);
+    const duration = isNonShow ? TIME_CONFIG.EVENT_DURATION : TIME_CONFIG.LIVE_DURATION;
     const liveStart = new Date(showDateTime.getTime() - (TIME_CONFIG.LIVE_BEFORE * 60 * 1000));
-    const liveEnd = new Date(showDateTime.getTime() + (TIME_CONFIG.LIVE_DURATION * 60 * 1000));
+    const liveEnd = new Date(showDateTime.getTime() + (duration * 60 * 1000));
     if (now < liveStart) return 'UPCOMING';
     if (now >= liveStart && now <= liveEnd) return 'LIVE';
     return 'FINISHED';
@@ -463,7 +464,7 @@ async function checkLiveShows() {
         if (todayShows.length === 0) return null;
         const liveShows = [];
         todayShows.forEach(show => {
-            const status = getLiveStatus(show.show_date, show.show_time);
+            const status = getLiveStatus(show.show_date, show.show_time, show.is_non_show);
             if (status === 'LIVE') {
                 const member = membersMap[show.member_id];
                 if (member) {
@@ -594,6 +595,7 @@ async function loadData() {
             updateStats();
             isDataLoaded = true;
             setTimeout(() => restoreScrollPosition(), 100);
+            setupRealtimeSubscription();
         }
     } catch (err) {
         console.error('Error:', err);
@@ -998,6 +1000,48 @@ function selectGen(gen) {
     saveCurrentState();
 }
 
+// ============= REALTIME SUBSCRIPTION =============
+let realtimeChannel = null;
+
+function setupRealtimeSubscription() {
+    if (realtimeChannel) {
+        db.removeChannel(realtimeChannel);
+    }
+    realtimeChannel = db
+        .channel('db-changes')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'setlist_performance' }, async () => {
+            await loadAllShows();
+            await updateLastUpdate();
+            if (currentSetlistView) {
+                renderSetlistMembers();
+            } else {
+                renderMembers();
+            }
+            updateStats();
+        })
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'members' }, async () => {
+            const { data: membersData, error } = await db
+                .from('members')
+                .select('id, name, gen, team, show, status')
+                .order('show', { ascending: false });
+            if (!error && membersData) {
+                members = membersData;
+                allMembersData = [...members];
+                membersMap = {};
+                members.forEach(member => { membersMap[member.id] = member; });
+                processSetlistCounts();
+                await updateLastUpdate();
+                if (currentSetlistView) {
+                    renderSetlistMembers();
+                } else {
+                    renderMembers();
+                }
+                updateStats();
+            }
+        })
+        .subscribe();
+}
+
 // ============= INITIALIZATION =============
 document.addEventListener('DOMContentLoaded', () => {
     loadData();
@@ -1009,6 +1053,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 window.addEventListener('unload', () => {
     if (liveShowRefreshInterval) clearInterval(liveShowRefreshInterval);
+    if (realtimeChannel) db.removeChannel(realtimeChannel);
 });
 </script>
 </body>

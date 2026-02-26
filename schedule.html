@@ -468,7 +468,8 @@ const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const LIVE_CONFIG = {
     BEFORE_MINUTES: 15,
-    DURATION_MINUTES: 155
+    DURATION_MINUTES: 150,
+    EVENT_DURATION_MINUTES: 100
 };
 
 // ============= THEME =============
@@ -519,14 +520,14 @@ function toggleTheme() {
 }
 
 // ============= LIVE STATUS =============
-function getLiveStatus(showDate, showTime) {
+function getLiveStatus(showDate, showTime, isNonShow = false) {
     if (!showDate || !showTime) return 'FINISHED';
     
     const now = new Date();
     const showDateTime = new Date(`${showDate}T${showTime}`);
-    
+    const duration = isNonShow ? LIVE_CONFIG.EVENT_DURATION_MINUTES : LIVE_CONFIG.DURATION_MINUTES;
     const liveStart = new Date(showDateTime.getTime() - (LIVE_CONFIG.BEFORE_MINUTES * 60 * 1000));
-    const liveEnd = new Date(showDateTime.getTime() + (LIVE_CONFIG.DURATION_MINUTES * 60 * 1000));
+    const liveEnd = new Date(showDateTime.getTime() + (duration * 60 * 1000));
     
     if (now < liveStart) return 'UPCOMING';
     if (now >= liveStart && now <= liveEnd) return 'LIVE';
@@ -841,7 +842,8 @@ function renderShows(date) {
                 isBirthday: show.is_birthday_show,
                 birthdayMember: show.birthday_member,
                 isGraduation: show.is_graduation_show,
-                graduationMember: show.graduation_member
+                graduationMember: show.graduation_member,
+                isNonShow: show.is_non_show || false
             };
         }
         // Gunakan memberName dari JOIN
@@ -859,7 +861,7 @@ function renderShows(date) {
     let showsHTML = '<div class="shows-list">';
     
     sortedShows.forEach(show => {
-        const status = getLiveStatus(show.date, show.time);
+        const status = getLiveStatus(show.date, show.time, show.isNonShow);
         
         let headerClass = '';
         let statusBadge = '';
