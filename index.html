@@ -1030,7 +1030,7 @@ let swRegistration = null;
 async function initServiceWorker() {
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
     try {
-        swRegistration = await navigator.serviceWorker.register('/service-worker.js');
+        swRegistration = await navigator.serviceWorker.register('./service-worker.js');
         console.log('✅ Service Worker registered');
         updateNotifButtonState();
     } catch (err) {
