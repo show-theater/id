@@ -962,7 +962,7 @@ function renderShowList() {
         if (isLive) cardClass += ' live-now';
         
         return `
-          <div class="${cardClass}" onclick="openShowDetail('${show.setlist_name}', '${show.show_date}', '${show.show_time}')">
+          <div class="${cardClass}" data-setlist="${show.setlist_name.replace(/'/g, '&#39;')}" data-date="${show.show_date}" data-time="${show.show_time || ''}" onclick="openShowDetail(this.dataset.setlist, this.dataset.date, this.dataset.time)">
             <div class="show-header">
               <div>
                 <div class="show-date">${date}</div>
