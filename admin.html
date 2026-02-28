@@ -2004,10 +2004,27 @@ body.dark #confirmEslModal .modal-footer-sticky { background:#111827; border-top
 
       </div>
 
+      <!-- Toggle: Schedule Kosong -->
+      <div id="scheduleKosongCard" style="margin-bottom:12px;padding:12px 14px;border-radius:12px;border:1.5px solid #e5e7eb;background:#f9fafb;transition:all 0.2s;">
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;">
+          <input type="checkbox" id="isScheduleKosong" onchange="toggleScheduleKosong()" style="width:18px;height:18px;cursor:pointer;margin:0;accent-color:#8b5cf6;">
+          <span style="font-size:13px;font-weight:600;color:#6d28d9;display:flex;align-items:center;gap:6px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="12" y1="15" x2="12" y2="15"/></svg>
+            Schedule Kosong (Tanpa Member)
+          </span>
+        </label>
+        <div id="scheduleKosongInfo" style="display:none;margin-top:8px;font-size:11px;color:#7c3aed;display:none;align-items:center;gap:5px;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          <span>Jadwal dibuat tanpa member — bisa diisi nanti lewat <strong>Edit Show</strong>.</span>
+        </div>
+      </div>
+
       <!-- Member Names -->
-      <label class="input-label">Nama Member <span style="font-weight:400;color:#9ca3af;">(pisahkan dengan koma)</span></label>
-      <textarea class="member-textarea" id="bulkMemberNames" placeholder="Contoh: Cynthia, Danella, Eli, Elin, Ella, Fritzy, Indah, Kimmy"></textarea>
-      <div class="tip-text" style="margin-top:6px;"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;vertical-align:middle;margin-right:5px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>Nama harus persis sama dengan database (tidak case sensitive)</div>
+      <div id="bulkMemberSection">
+        <label class="input-label">Nama Member <span style="font-weight:400;color:#9ca3af;">(pisahkan dengan koma)</span></label>
+        <textarea class="member-textarea" id="bulkMemberNames" placeholder="Contoh: Cynthia, Danella, Eli, Elin, Ella, Fritzy, Indah, Kimmy"></textarea>
+        <div class="tip-text" style="margin-top:6px;"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;vertical-align:middle;margin-right:5px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>Nama harus persis sama dengan database (tidak case sensitive)</div>
+      </div>
     </div>
 
     <!-- Sticky footer buttons -->
@@ -2077,10 +2094,8 @@ body.dark #confirmEslModal .modal-footer-sticky { background:#111827; border-top
         <h3 style="font-size:16px;font-weight:700;margin-bottom:4px;">Edit Show Ini</h3>
         <p id="confirmEslDesc" style="font-size:13px;color:#6b7280;margin-bottom:12px;"></p>
       </div>
-      <div style="margin-bottom:14px;">
-        <div style="font-size:12px;font-weight:700;color:#6b7280;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px;">Member di show ini</div>
-        <div id="confirmEslMembers" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px;"></div>
-      </div>
+
+      <!-- Edit info show -->
       <div>
         <label class="input-label">Nama Setlist</label>
         <input type="text" id="eslSetlistName" placeholder="Nama setlist...">
@@ -2089,6 +2104,21 @@ body.dark #confirmEslModal .modal-footer-sticky { background:#111827; border-top
         <label class="input-label">Waktu Show</label>
         <input type="time" id="eslShowTime">
       </div>
+
+      <!-- Edit Member Section -->
+      <div style="margin-top:16px;">
+        <div style="font-size:12px;font-weight:700;color:#6b7280;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px;">Member di Show Ini</div>
+        <div id="confirmEslMembers" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;min-height:28px;"></div>
+        <label class="input-label">Tambah Member <span style="font-weight:400;color:#9ca3af;">(pisahkan dengan koma)</span></label>
+        <textarea id="eslAddMemberTextarea" placeholder="Contoh: Cynthia, Danella, Eli, Kimmy" style="width:100%;min-height:70px;max-height:110px;resize:vertical;padding:10px 12px;border-radius:12px;border:1.5px solid #ddd;background:#fff;color:#333;font-size:13px;font-family:Arial,sans-serif;outline:none;transition:border-color 0.2s;display:block;margin-bottom:6px;" onfocus="this.style.borderColor='#3b82f6'" onblur="this.style.borderColor='#ddd'"></textarea>
+        <div style="font-size:11px;color:#9ca3af;display:flex;align-items:center;gap:4px;margin-bottom:8px;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          Nama harus persis sama dengan database (tidak case sensitive)
+        </div>
+        <button onclick="eslAddMembersFromTextarea()" style="width:100%;padding:10px;background:#22c55e;color:#fff;border-radius:10px;font-size:13px;font-weight:700;">+ Tambah Member</button>
+        <div id="eslMemberError" style="color:#ef4444;font-size:11px;margin-top:6px;display:none;"></div>
+      </div>
+
     </div>
     <div class="modal-footer-sticky">
       <button class="btn-cancel" onclick="document.getElementById('confirmEslModal').style.display='none'" style="flex:1;padding:12px;font-size:14px;border-radius:12px;">Batal</button>
@@ -3083,6 +3113,13 @@ function openBulkAddModal(){
     // Reset non-show activity
     document.getElementById('bulkIsNonShow').checked = false;
     document.getElementById('bulkAddBtn').textContent = 'Tambah Semua';
+
+    // Reset schedule kosong
+    document.getElementById('isScheduleKosong').checked = false;
+    document.getElementById('bulkMemberSection').style.display = 'block';
+    document.getElementById('scheduleKosongInfo').style.display = 'none';
+    document.getElementById('scheduleKosongCard').style.borderColor = '#e5e7eb';
+    document.getElementById('scheduleKosongCard').style.background = '#f9fafb';
     document.getElementById('bulkAddBtn').style.background = '';
     document.getElementById('bulkIsBirthdayShow').disabled = false;
     document.getElementById('bulkIsGraduationShow').disabled = false;
@@ -3227,6 +3264,18 @@ async function addShowWithSetlist(){
     }
 }
 
+function toggleScheduleKosong() {
+    var isKosong = document.getElementById('isScheduleKosong').checked;
+    var section = document.getElementById('bulkMemberSection');
+    var infoEl = document.getElementById('scheduleKosongInfo');
+    var card = document.getElementById('scheduleKosongCard');
+
+    section.style.display = isKosong ? 'none' : 'block';
+    infoEl.style.display = isKosong ? 'flex' : 'none';
+    card.style.borderColor = isKosong ? '#8b5cf6' : '#e5e7eb';
+    card.style.background = isKosong ? '#f5f3ff' : '#f9fafb';
+}
+
 async function bulkAddShows(){
     // Dapatkan setlist (bisa dari pilihan atau custom)
     var setlist = getSelectedSetlist('bulkSetlistSelect', 'bulkCustomSetlistName');
@@ -3240,6 +3289,7 @@ async function bulkAddShows(){
     var isGraduationShow=document.getElementById('bulkIsGraduationShow').checked;
     var graduationMember=document.getElementById('bulkGraduationMember').value;
     var isNonShow=document.getElementById('bulkIsNonShow').checked;
+    var isScheduleKosong=document.getElementById('isScheduleKosong').checked;
     
     if(!setlist){
         showNotification('warning', 'Peringatan', 'Pilih setlist dulu');
@@ -3257,6 +3307,30 @@ async function bulkAddShows(){
             showTime = showTime + ':00';
         }
     }
+
+    // ===== MODE SCHEDULE KOSONG =====
+    if (isScheduleKosong) {
+        try {
+            var scheduleData = {
+                member_id: null,
+                setlist_name: setlist,
+                show_date: showDate,
+                show_time: showTime,
+                is_non_show: isNonShow,
+                created_at: new Date().toISOString()
+            };
+            var insertRes = await db.from('setlist_performance').insert([scheduleData]).select();
+            if (insertRes.error) throw insertRes.error;
+
+            showNotification('success', 'Schedule Dibuat', 'Jadwal "' + setlist + '" ' + formatDate(showDate) + ' berhasil dibuat tanpa member. Tambahkan member lewat Edit Show.');
+            closeBulkAddModal();
+            await loadData();
+        } catch(err) {
+            showNotification('error', 'Error', 'Gagal buat schedule: ' + err.message);
+        }
+        return;
+    }
+    // ================================
     
     if(!namesInput.trim()){
         showNotification('warning', 'Peringatan', 'Masukkan nama member');
@@ -4073,7 +4147,10 @@ async function openDeleteShowModal() {
             if (!groupMap[key]) {
                 groupMap[key] = { setlist_name: s.setlist_name, show_date: s.show_date, show_time: s.show_time, is_non_show: s.is_non_show, members: [], ids: [] };
             }
-            groupMap[key].members.push({ id: s.member_id, name: s.members ? s.members.name : '?', rowId: s.id });
+            // Hanya push member jika member_id tidak null
+            if (s.member_id) {
+                groupMap[key].members.push({ id: s.member_id, name: s.members ? s.members.name : '?', rowId: s.id });
+            }
             groupMap[key].ids.push(s.id);
             dslShowCache[s.id] = s;
         });
@@ -4133,6 +4210,7 @@ function confirmDslDelete(group) {
     // Isi dropdown member (pilih hapus untuk member mana saja atau semua)
     var select = document.getElementById('dslMemberSelect');
     select.innerHTML = '<option value="all">Semua Member (' + group.members.length + ')</option>';
+    select.innerHTML += '<option value="entire">Hapus Seluruh Schedule</option>';
     group.members.forEach(function(m){
         var opt = document.createElement('option');
         opt.value = m.rowId;
@@ -4153,21 +4231,52 @@ async function doDeleteDslShow() {
     document.getElementById('confirmDslModal').style.display = 'none';
 
     try {
-        var idsToDelete = val === 'all' ? group.ids : [parseInt(val)];
+        var idsToDelete;
+        if (val === 'entire') {
+            // Hapus semua row termasuk null placeholder (hapus seluruh schedule)
+            idsToDelete = group.ids;
+        } else if (val === 'all') {
+            // Hapus semua row member, tapi pertahankan 1 row sebagai null placeholder
+            var memberRowIds = group.members.map(function(m){ return m.rowId; });
+            if (memberRowIds.length > 0) {
+                // Jadikan row pertama sebagai null placeholder (set member_id = null)
+                var keepRowId = memberRowIds[0];
+                var nullRes = await db.from('setlist_performance').update({ member_id: null }).eq('id', keepRowId);
+                if (nullRes.error) throw nullRes.error;
+                // Hapus sisanya
+                idsToDelete = memberRowIds.slice(1);
+            } else {
+                idsToDelete = [];
+            }
+        } else {
+            idsToDelete = [parseInt(val)];
+        }
 
         for (var i = 0; i < idsToDelete.length; i++) {
-            await db.from('setlist_performance').delete().eq('id', idsToDelete[i]);
+            var delRes = await db.from('setlist_performance').delete().eq('id', idsToDelete[i]);
+            if (delRes.error) throw delRes.error;
+        }
 
-            if (!group.is_non_show) {
-                // Cari member yang row-nya dihapus
-                var m = group.members.find(function(x){ return x.rowId === idsToDelete[i]; });
-                if (m) {
-                    var memberObj = members.find(function(x){ return String(x.id) === String(m.id); });
-                    if (memberObj) {
-                        await db.from('members')
-                            .update({ show: Math.max((memberObj.show || 0) - 1, 0) })
-                            .eq('id', memberObj.id);
-                    }
+        // Update show count - hanya untuk member yang benar-benar dihapus dari show
+        if (!group.is_non_show) {
+            var membersToDecrement = [];
+            if (val === 'all' || val === 'entire') {
+                // Semua member di show ini dikurang 1 masing-masing
+                membersToDecrement = group.members;
+            } else {
+                // Hanya 1 member yang dipilih
+                var targetRowId = parseInt(val);
+                var singleMember = group.members.find(function(x){ return x.rowId === targetRowId || String(x.rowId) === String(targetRowId); });
+                if (singleMember) membersToDecrement = [singleMember];
+            }
+
+            for (var j = 0; j < membersToDecrement.length; j++) {
+                var m = membersToDecrement[j];
+                var memberObj = members.find(function(x){ return String(x.id) === String(m.id); });
+                if (memberObj) {
+                    await db.from('members')
+                        .update({ show: Math.max((memberObj.show || 0) - 1, 0) })
+                        .eq('id', memberObj.id);
                 }
             }
         }
@@ -4218,7 +4327,10 @@ async function openEditShowListModal() {
             if (!groupMap[key]) {
                 groupMap[key] = { setlist_name: s.setlist_name, show_date: s.show_date, show_time: s.show_time, is_non_show: s.is_non_show, members: [], ids: [] };
             }
-            groupMap[key].members.push({ id: s.member_id, name: s.members ? s.members.name : '?', rowId: s.id });
+            // Hanya push member jika member_id tidak null
+            if (s.member_id) {
+                groupMap[key].members.push({ id: s.member_id, name: s.members ? s.members.name : '?', rowId: s.id });
+            }
             groupMap[key].ids.push(s.id);
         });
 
@@ -4230,14 +4342,19 @@ async function openEditShowListModal() {
             var timeStr = g.show_time ? formatTime(g.show_time) : '';
             var meta = dateStr + (timeStr ? ' · ' + timeStr : '');
             var nonShowLabel = g.is_non_show ? '<span style="font-size:10px;background:#6b7280;color:#fff;border-radius:4px;padding:2px 7px;white-space:nowrap;">Non-Show</span>' : '';
-            var memberNames = g.members.map(function(m){ return m.name; }).join(', ');
+            var isKosong = g.members.length === 0;
+            var emptyLabel = isKosong ? '<span style="font-size:10px;background:#8b5cf6;color:#fff;border-radius:4px;padding:2px 7px;white-space:nowrap;">Belum Ada Member</span>' : '';
+            var memberNames = isKosong
+                ? '<span style="color:#8b5cf6;font-style:italic;">Belum ada member — tambah lewat Edit</span>'
+                : g.members.map(function(m){ return m.name; }).join(', ');
 
             var item = document.createElement('div');
             item.className = 'msl-item';
             item.style.cursor = 'default';
+            if (isKosong) item.style.borderLeft = '3px solid #8b5cf6';
             item.innerHTML =
                 '<div style="flex:1;min-width:0;">' +
-                  '<div class="msl-setlist">' + (g.setlist_name || '—') + nonShowLabel + '</div>' +
+                  '<div class="msl-setlist" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">' + (g.setlist_name || '—') + ' ' + nonShowLabel + emptyLabel + '</div>' +
                   '<div class="msl-date">' + meta + '</div>' +
                   '<div style="font-size:11px;color:#9ca3af;margin-top:2px;">' + memberNames + '</div>' +
                 '</div>' +
@@ -4266,18 +4383,75 @@ function confirmEslEdit(group) {
     var timeStr = group.show_time ? formatTime(group.show_time) : '';
     document.getElementById('confirmEslDesc').textContent = (group.setlist_name || '—') + ' · ' + dateStr + (timeStr ? ' · ' + timeStr : '');
 
-    var chipsHtml = group.members.map(function(m){
-        return '<div class="dsl-member-chip">' + m.name + '</div>';
-    }).join('');
-    document.getElementById('confirmEslMembers').innerHTML = chipsHtml;
-
     // Pre-fill form dengan data saat ini
     document.getElementById('eslSetlistName').value = group.setlist_name || '';
     document.getElementById('eslShowDate').value = group.show_date || '';
     document.getElementById('eslShowTime').value = group.show_time ? group.show_time.substring(0,5) : '';
 
+    // Clone members agar bisa diedit tanpa mutate group asli
     window._eslCurrentGroup = group;
+    window._eslOrigMemberCount = group.members ? group.members.length : 0; // snapshot jumlah member asli
+    window._eslEditMembers = group.members.map(function(m){ return { rowId: m.rowId, name: m.name, member_id: m.id }; });
+
+    eslRenderMemberChips();
+
+    document.getElementById('eslMemberError').style.display = 'none';
+    document.getElementById('eslAddMemberTextarea').value = '';
     document.getElementById('confirmEslModal').style.display = 'flex';
+}
+
+function eslRenderMemberChips() {
+    var mems = window._eslEditMembers || [];
+    var html = mems.map(function(m, idx) {
+        return '<div class="dsl-member-chip" style="display:flex;align-items:center;gap:4px;padding:4px 10px 4px 10px;">' +
+            m.name +
+            '<span onclick="eslRemoveMember(' + idx + ')" style="cursor:pointer;font-size:14px;font-weight:900;color:#ef4444;margin-left:4px;line-height:1;" title="Hapus">×</span>' +
+            '</div>';
+    }).join('');
+    document.getElementById('confirmEslMembers').innerHTML = html || '<span style="font-size:12px;color:#8b5cf6;font-style:italic;">Belum ada member — tambah di bawah</span>';
+}
+
+function eslAddMembersFromTextarea() {
+    var ta = document.getElementById('eslAddMemberTextarea');
+    var raw = ta.value.trim();
+    if (!raw) return;
+
+    var names = raw.split(',').map(function(n){ return n.trim(); }).filter(function(n){ return n.length > 0; });
+    var currentIds = (window._eslEditMembers || []).map(function(m){ return m.member_id; });
+    var added = [], notFound = [], alreadyIn = [];
+
+    names.forEach(function(name) {
+        var found = (members || []).find(function(m){ return m.name.toLowerCase() === name.toLowerCase(); });
+        if (!found) {
+            notFound.push(name);
+        } else if (currentIds.indexOf(found.id) !== -1) {
+            alreadyIn.push(found.name);
+        } else {
+            window._eslEditMembers.push({ rowId: null, name: found.name, member_id: found.id });
+            currentIds.push(found.id);
+            added.push(found.name);
+        }
+    });
+
+    eslRenderMemberChips();
+    ta.value = '';
+
+    var errEl = document.getElementById('eslMemberError');
+    var msgs = [];
+    if (notFound.length) msgs.push('Tidak ditemukan: ' + notFound.join(', '));
+    if (alreadyIn.length) msgs.push('Sudah ada: ' + alreadyIn.join(', '));
+    if (msgs.length) {
+        errEl.textContent = msgs.join(' | ');
+        errEl.style.display = 'block';
+    } else {
+        errEl.style.display = 'none';
+    }
+}
+
+function eslRemoveMember(idx) {
+    document.getElementById('eslMemberError').style.display = 'none';
+    window._eslEditMembers.splice(idx, 1);
+    eslRenderMemberChips();
 }
 
 async function doEditEslShow() {
@@ -4287,9 +4461,11 @@ async function doEditEslShow() {
     var newSetlist = document.getElementById('eslSetlistName').value.trim();
     var newDate = document.getElementById('eslShowDate').value;
     var newTime = document.getElementById('eslShowTime').value;
+    var editMembers = window._eslEditMembers || [];
 
     if (!newSetlist) { showNotification('warning', 'Validasi', 'Nama setlist tidak boleh kosong'); return; }
     if (!newDate) { showNotification('warning', 'Validasi', 'Tanggal tidak boleh kosong'); return; }
+    // Schedule boleh kosong member-nya
 
     document.getElementById('confirmEslModal').style.display = 'none';
 
@@ -4300,9 +4476,68 @@ async function doEditEslShow() {
             show_time: newTime ? newTime + ':00' : null
         };
 
-        for (var i = 0; i < group.ids.length; i++) {
-            var res = await db.from('setlist_performance').update(updateData).eq('id', group.ids[i]);
+        var origRowIds = group.ids;
+        var origMemberIds = group.members.map(function(m){ return m.id; });
+        var newMemberIds = editMembers.map(function(m){ return m.member_id; });
+
+        // Cek apakah ada row placeholder kosong (member_id null) di group
+        var hasNullRow = origMemberIds.length < origRowIds.length || (group.members.length === 0 && origRowIds.length > 0);
+        var nullRowId = null;
+        if (hasNullRow) {
+            // row dengan member_id null: id-nya ada di origRowIds tapi tidak ter-cover oleh group.members
+            var coveredRowIds = group.members.map(function(m){ return m.rowId; });
+            nullRowId = origRowIds.find(function(rid){ return coveredRowIds.indexOf(rid) === -1; });
+        }
+
+        // Jika ada member baru ditambah dan masih ada null row — gunakan null row untuk member pertama
+        var addedMemberIds = newMemberIds.filter(function(mid){ return origMemberIds.indexOf(mid) === -1; });
+        var removedMemberIds = origMemberIds.filter(function(mid){ return newMemberIds.indexOf(mid) === -1; });
+
+        // 1. Update semua row lama dengan data show terbaru
+        for (var i = 0; i < origRowIds.length; i++) {
+            var res = await db.from('setlist_performance').update(updateData).eq('id', origRowIds[i]);
             if (res.error) throw res.error;
+        }
+
+        // 2. Hapus row member yang dihapus
+        for (var j = 0; j < removedMemberIds.length; j++) {
+            var rMid = removedMemberIds[j];
+            var memberObj = group.members.find(function(m){ return m.id === rMid; });
+            if (memberObj && memberObj.rowId) {
+                var delRes = await db.from('setlist_performance').delete().eq('id', memberObj.rowId);
+                if (delRes.error) throw delRes.error;
+            }
+        }
+
+        // 3. Tambah row untuk member baru
+        // Ambil sample sekali saja
+        var sample = {};
+        if (origRowIds.length > 0) {
+            var sampleRow = await db.from('setlist_performance').select('*').eq('id', origRowIds[0]).single();
+            sample = sampleRow.data || {};
+        }
+        var skipCols = ['id', 'member_id', 'setlist_name', 'show_date', 'show_time', 'members'];
+
+        var firstAdded = true;
+        for (var k = 0; k < addedMemberIds.length; k++) {
+            var aMid = addedMemberIds[k];
+
+            // Gunakan null row untuk member pertama (update saja, tidak insert baru)
+            if (firstAdded && nullRowId) {
+                var upRes = await db.from('setlist_performance').update({ member_id: aMid }).eq('id', nullRowId);
+                if (upRes.error) throw upRes.error;
+                nullRowId = null; // sudah dipakai
+                firstAdded = false;
+                continue;
+            }
+            firstAdded = false;
+
+            var insertData = { member_id: aMid, setlist_name: newSetlist, show_date: newDate, show_time: newTime ? newTime + ':00' : null };
+            Object.keys(sample).forEach(function(col) {
+                if (skipCols.indexOf(col) === -1) insertData[col] = sample[col];
+            });
+            var insRes = await db.from('setlist_performance').insert(insertData);
+            if (insRes.error) throw insRes.error;
         }
 
         showNotification('success', 'Berhasil', 'Show berhasil diperbarui');
@@ -4372,26 +4607,17 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Splash animation logic
+    // Skip splash animation - langsung tampilkan konten
     var splash = document.getElementById('loginSplash');
     var loginModal = document.getElementById('loginModal');
     
-    if (!_needLogin) {
-        // Already logged in: hide splash quickly
-        setTimeout(function() {
-            splash.classList.add('hiding');
-            setTimeout(function() { splash.style.display = 'none'; }, 500);
-        }, 1200);
-    } else {
-        // Not logged in: show splash then reveal login
-        setTimeout(function() {
-            splash.classList.add('hiding');
-            setTimeout(function() {
-                splash.style.display = 'none';
-                loginModal.style.display = 'flex';
-                loginModal.classList.add('animate-in');
-            }, 500);
-        }, 3500);
+    // Langsung sembunyikan splash tanpa animasi
+    splash.style.display = 'none';
+    
+    if (_needLogin) {
+        // Tampilkan login modal langsung
+        loginModal.style.display = 'flex';
+        loginModal.classList.add('animate-in');
     }
 });
 </script>
