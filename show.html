@@ -11,663 +11,394 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:Arial,sans-serif;background:#f5f5f5;color:#333;min-height:100vh;padding:0;transition:background 0.3s,color 0.3s}
+body{font-family:Arial,sans-serif;background:#f5f5f5;color:#333;min-height:100vh;padding-bottom:60px;transition:background 0.3s,color 0.3s}
 body.dark{background:#0a0e1a;color:#e5e7eb}
 
+/* ============= HEADER SAMA DENGAN LIVESHOW ============= */
 .main-header{position:fixed;top:0;left:0;right:0;background:#fff;z-index:1001;border-bottom:1px solid #ddd;transition:background 0.3s,border-color 0.3s}
 body.dark .main-header{background:#111827;border-color:#1f2937}
-
 .theater-header{text-align:center;padding:8px 20px;font-size:14px;font-weight:bold;color:#fff;letter-spacing:1px;background:#e60012;}
 body.dark .theater-header{color:#fff;background:#e60012;}
-
-.detail-header{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:12px 20px;
-    background:#fff;
-    border-bottom:1px solid #ddd;
-    transition:background 0.3s,border-color 0.3s;
-}
-body.dark .detail-header{
-    background:#111827;
-    border-color:#1f2937;
-}
-
-.back-btn{
-    background:transparent;
-    border:none;
-    color:#333;
-    font-size:16px;
-    font-weight:600;
-    cursor:pointer;
-    display:flex;
-    align-items:center;
-    gap:6px;
-    padding:8px 0;
-    transition:all 0.3s;
-}
+.detail-header{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:#fff;border-bottom:1px solid #ddd;transition:background 0.3s,border-color 0.3s}
+body.dark .detail-header{background:#111827;border-color:#1f2937}
+.back-btn{background:transparent;border:none;color:#333;font-size:16px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;padding:8px 0;transition:all 0.3s}
 body.dark .back-btn{color:#e5e7eb}
 .back-btn:hover{opacity:0.7}
-
-.detail-title{
-    font-size:16px;
-    font-weight:bold;
-    color:#333;
-    text-align:center;
-    flex:1;
-    margin:0 10px;
-}
+.detail-title{font-size:16px;font-weight:bold;color:#333;text-align:center;flex:1;margin:0 10px}
 body.dark .detail-title{color:#e5e7eb}
+.header-controls{display:flex;align-items:center;gap:10px}
+.theme-toggle-detail{background:#e60012;border:none;width:40px;height:40px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:8px;transition:all 0.3s}
+.theme-toggle-detail:hover{background:#d5000f;transform:scale(1.1)}
+.theme-toggle-detail svg{width:100%;height:100%;color:#fff}
 
-.header-controls{
-    display:flex;
-    align-items:center;
-    gap:10px;
-}
+/* ============= CONTAINER SAMA DENGAN LIVESHOW ============= */
+.container{max-width:800px;width:100%;margin:140px auto 30px;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.1);transition:background 0.3s,box-shadow 0.3s}
+body.dark .container{background:#111827;box-shadow:0 2px 8px rgba(0,0,0,0.4)}
 
-.theme-toggle-detail{
-    background:#e60012;
-    border:none;
-    width:40px;
-    height:40px;
-    border-radius:50%;
-    cursor:pointer;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:8px;
-    transition:all 0.3s;
-}
-.theme-toggle-detail:hover{
-    background:#d5000f;
-    transform:scale(1.1);
-}
-.theme-toggle-detail svg{
-    width:100%;
-    height:100%;
-    color:#fff;
-}
+/* ============= KALENDER SECTION ============= */
+.calendar-section{padding:25px;border-bottom:1px solid #e5e7eb}
+body.dark .calendar-section{border-color:#374151}
+.calendar-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.calendar-title{font-size:18px;font-weight:bold;color:#333}
+body.dark .calendar-title{color:#e5e7eb}
+.calendar-nav{display:flex;gap:8px}
+.calendar-nav button{background:#f0f0f0;border:none;width:36px;height:36px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
+.calendar-nav button:hover{background:#e0e0e0}
+body.dark .calendar-nav button{background:#374151;color:#9ca3af}
+body.dark .calendar-nav button:hover{background:#4b5563}
+.calendar-nav button svg{width:18px;height:18px}
+.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+.calendar-day-header{padding:12px 0;text-align:center;font-size:12px;font-weight:bold;color:#666;text-transform:uppercase}
+body.dark .calendar-day-header{color:#9ca3af}
+.calendar-day{padding:12px 0;text-align:center;border-radius:8px;cursor:pointer;transition:all 0.2s;position:relative;min-height:45px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.calendar-day:hover{background:#f0f0f0}
+.calendar-day.active{background:#e60012;color:#fff}
+.calendar-day.today{border:2px solid #e60012}
+.calendar-day.other-month{color:#999}
+body.dark .calendar-day:hover{background:#374151}
+body.dark .calendar-day.active{background:#e60012}
+body.dark .calendar-day.today{border-color:#e60012}
+body.dark .calendar-day.other-month{color:#666}
+.calendar-indicators{display:flex;gap:3px;justify-content:center;margin-top:4px;flex-wrap:wrap}
+.calendar-indicator{width:6px;height:6px;border-radius:50%}
 
-.container{
-    max-width:480px;
-    width:100%;
-    margin:120px auto 30px;
-    background:transparent;
-    border-radius:0;
-    overflow:visible;
-    box-shadow:none;
-}
+/* ============= SHOW LIST SECTION ============= */
+.shows-section{padding:25px}
+.section-title{font-size:16px;font-weight:bold;color:#333;margin-bottom:20px;display:flex;align-items:center;gap:8px}
+body.dark .section-title{color:#e5e7eb}
+.shows-count{background:#e60012;color:#fff;padding:3px 8px;border-radius:10px;font-size:11px;font-weight:bold;min-width:25px;text-align:center}
+.shows-list{display:flex;flex-direction:column;gap:15px}
 
-.member-info{
-    padding:20px;
-    text-align:center;
-    border-bottom:1px solid #e5e7eb;
-    overflow:visible;
-}
-body.dark .member-info{
-    border-bottom-color:#374151;
-}
+/* ============= SHOW CARD SAMA STYLING DENGAN LIVESHOW ============= */
+.show-card{background:#fff;border-radius:15px;overflow:hidden;cursor:pointer;transition:all 0.3s;box-shadow:0 2px 8px rgba(0,0,0,0.1);border:2px solid transparent}
+body.dark .show-card{background:#1f2937;box-shadow:0 2px 8px rgba(0,0,0,0.3)}
+.show-card:hover{transform:translateY(-3px);box-shadow:0 6px 16px rgba(0,0,0,0.15);border-color:#e60012}
+.show-card-header{background:linear-gradient(135deg, #ef4444 0%, #dc2626 100%);padding:20px;position:relative}
+.show-card-header.live-now{background:linear-gradient(135deg, #ef4444 0%, #dc2626 100%)}
+.show-card-header.upcoming{background:linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)}
+.show-card-header.finished{background:linear-gradient(135deg, #6b7280 0%, #4b5563 100%)}
+.show-status-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.2);padding:6px 12px;border-radius:15px;font-size:12px;font-weight:bold;margin-bottom:10px;color:#fff}
+.show-live-dot{width:8px;height:8px;background:#fff;border-radius:50%;animation:pulse 2s infinite}
+.show-upcoming-dot{width:8px;height:8px;background:#fff;border-radius:50%}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+.show-card-title{font-size:16px;font-weight:bold;color:#fff;margin:0 0 10px 0;line-height:1.3;display:flex;align-items:center;flex-wrap:wrap;gap:8px}
+.show-card-time{display:flex;align-items:center;justify-content:space-between;color:rgba(255,255,255,0.9);font-size:13px;flex-wrap:wrap;gap:10px}
+.show-card-time div{display:flex;align-items:center;gap:6px}
+.show-card-time svg{width:14px;height:14px;flex-shrink:0}
+.show-card-members{padding:15px;border-top:1px solid #e5e7eb}
+body.dark .show-card-members{border-color:#374151}
+.show-card-members p{font-size:13px;color:#666;line-height:1.5}
+body.dark .show-card-members p{color:#9ca3af}
+.show-card-members strong{color:#333;font-weight:600}
+body.dark .show-card-members strong{color:#e5e7eb}
 
-.photo-container{
-    text-align:center;
-    margin:18px 0;
-    position:relative;
-}
-
-.photo{
-    width:135px;
-    height:190px;
-    object-fit:contain;
-    border-radius:0;
-    transition:all 0.3s;
-}
-body.dark .photo{
-    background:#1a1a1a;
-}
-
-.photo-error{
-    width:135px;
-    height:190px;
-    border-radius:0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:#f5f5f5;
-    color:#6b7280;
-    font-weight:600;
-    font-size:24px;
-    margin:0 auto;
-}
-body.dark .photo-error{
-    background:#1a1a1a;
-    color:#9ca3af;
+/* Birthday Badge */
+.birthday-badge {
+    background: rgba(255,255,255,0.2);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: bold;
+    color: #fff;
+    animation: birthday-glow 2s ease-in-out infinite;
 }
 
-.member-name{
-    font-size:22px;
-    font-weight:bold;
-    color:#333;
-    margin-bottom:15px;
-}
-body.dark .member-name{color:#e5e7eb}
-
-.member-stats{
-    display:flex;
-    justify-content:center;
-    gap:40px;
+.birthday-badge svg {
+    width: 12px;
+    height: 12px;
+    fill: currentColor;
 }
 
-.stat-item{
-    text-align:center;
+@keyframes birthday-glow {
+    0%, 100% { box-shadow: 0 0 8px rgba(255,255,255,0.3); }
+    50% { box-shadow: 0 0 12px rgba(255,255,255,0.5); }
 }
 
-.stat-number{
-    font-size:28px;
-    font-weight:bold;
-    color:var(--gen-color);
+/* Graduation Badge */
+.graduation-badge {
+    background: rgba(30, 64, 175, 0.4);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: bold;
+    color: #fff;
+    animation: graduation-glow 2s ease-in-out infinite;
+    border: 1px solid rgba(59, 130, 246, 0.5);
 }
 
-.stat-label{
-    font-size:12px;
-    color:#6b7280;
-    font-weight:600;
-    margin-top:5px;
-}
-body.dark .stat-label{color:#9ca3af}
-
-.header{
-    background:linear-gradient(135deg,var(--gen-color),var(--gen-color-dark));
-    padding:18px;
-    text-align:center;
-    position:relative;
-}
-.header h1{
-    font-size:16px;
-    margin:0;
-    color:#fff;
-    font-weight:600;
+.graduation-badge svg {
+    width: 12px;
+    height: 12px;
+    fill: currentColor;
 }
 
-.filter-section{
-    padding:10px 14px;
-    background:#f9fafb;
-    border-bottom:1px solid #e5e7eb;
-    display:flex;
-    flex-wrap:wrap;
-    gap:6px;
-    margin-top:8px;
-}
-body.dark .filter-section{
-    background:#1f2937;
-    border-bottom-color:#374151;
-}
-
-.filter-btn{
-    padding:7px 14px;
-    border-radius:20px;
-    border:2px solid #e5e7eb;
-    background:#fff;
-    color:#6b7280;
-    font-size:12px;
-    font-weight:600;
-    cursor:pointer;
-    white-space:nowrap;
-    transition:all 0.3s;
-}
-body.dark .filter-btn{
-    background:#111827;
-    border-color:#374151;
-    color:#9ca3af;
-}
-.filter-btn.active{
-    background:var(--gen-color);
-    color:#fff;
-    border-color:var(--gen-color);
-}
-.filter-btn:hover{
-    background:var(--gen-color);
-    color:#fff;
-    border-color:var(--gen-color);
-}
-
-.content{padding:20px}
-
-.show-list{
-    display:flex;
-    flex-direction:column;
-    gap:15px;
-}
-
-.show-card{
-    background:#f9fafb;
-    border:1px solid #e5e7eb;
-    border-radius:12px;
-    padding:18px;
-    transition:all 0.3s;
-    cursor:pointer;
-}
-body.dark .show-card{
-    background:#1f2937;
-    border-color:#374151;
-}
-.show-card:hover{
-    border-color:var(--gen-color);
-}
-.show-card.live-now{
-    border:2px solid #ef4444;
-    background:#fff5f5;
-    animation:pulse-live 2s infinite;
-}
-body.dark .show-card.live-now{
-    background:#1f1515;
-}
-@keyframes pulse-live{
-    0%,100%{opacity:1}
-    50%{opacity:0.9}
-}
-
-.show-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-start;
-    margin-bottom:12px;
-    gap:10px;
-}
-
-.show-date{
-    font-size:15px;
-    font-weight:bold;
-    color:#333;
-}
-body.dark .show-date{color:#e5e7eb}
-
-.show-time{
-    display:flex;
-    align-items:center;
-    gap:6px;
-    font-size:13px;
-    color:#6b7280;
-    margin-top:5px;
-    font-weight:500;
-}
-body.dark .show-time{color:#9ca3af}
-.show-time svg{width:14px;height:14px}
-
-.show-badge{
-    background:var(--gen-color);
-    color:#fff;
-    padding:5px 12px;
-    border-radius:15px;
-    font-size:11px;
-    font-weight:bold;
-    white-space:nowrap;
-}
-
-.live-badge{
-    background:#ef4444;
-    color:#fff;
-    padding:6px 12px;
-    border-radius:15px;
-    font-size:11px;
-    font-weight:bold;
-    display:inline-flex;
-    align-items:center;
-    gap:5px;
-    animation:pulse 2s infinite;
-    white-space:nowrap;
-}
-@keyframes pulse{
-    0%,100%{opacity:1}
-    50%{opacity:0.7}
-}
-
-.live-dot{
-    width:6px;
-    height:6px;
-    background:#fff;
-    border-radius:50%;
-    animation:blink 1s infinite;
-}
-@keyframes blink{
-    0%,100%{opacity:1}
-    50%{opacity:0.3}
-}
-
-.sts-badge{
-    background:#f59e0b;
-    color:#fff;
-    padding:6px 12px;
-    border-radius:15px;
-    font-size:11px;
-    font-weight:bold;
-    display:inline-flex;
-    align-items:center;
-    gap:4px;
-    white-space:nowrap;
-}
-
-.lastshow-badge{
-    background:#1e40af;
-    color:#fff;
-    padding:6px 12px;
-    border-radius:15px;
-    font-size:11px;
-    font-weight:bold;
-    display:inline-flex;
-    align-items:center;
-    gap:4px;
-    white-space:nowrap;
-    animation:graduation-pulse 2s infinite;
-}
-
-@keyframes graduation-pulse {
+@keyframes graduation-glow {
     0%, 100% { 
-        opacity: 1;
-        box-shadow: 0 0 8px rgba(30, 64, 175, 0.4);
+        box-shadow: 0 0 8px rgba(59, 130, 246, 0.4); 
+        background: rgba(30, 64, 175, 0.4);
     }
     50% { 
-        opacity: 0.8;
-        box-shadow: 0 0 12px rgba(30, 64, 175, 0.6);
+        box-shadow: 0 0 12px rgba(59, 130, 246, 0.6);
+        background: rgba(30, 64, 175, 0.6);
     }
 }
 
-.badge-container{
-    display:flex;
-    gap:6px;
-    align-items:center;
-    flex-wrap:wrap;
-    justify-content:flex-end;
+/* Loading & No Shows */
+.loading{text-align:center;padding:60px 20px;color:#6b7280;display:flex;align-items:center;justify-content:center;gap:12px;flex-direction:column}
+body.dark .loading{color:#9ca3af}
+.spinner{display:inline-block;width:32px;height:32px;border:3px solid rgba(0,0,0,0.1);border-top-color:#9ca3af;border-radius:50%;animation:spin 0.8s linear infinite}
+body.dark .spinner{border-color:rgba(255,255,255,0.1);border-top-color:#9ca3af}
+@keyframes spin{to{transform:rotate(360deg)}}
+.no-shows-message{text-align:center;padding:60px 20px;color:#6b7280}
+body.dark .no-shows-message{color:#9ca3af}
+.no-shows-icon{font-size:64px;margin-bottom:20px;opacity:0.5}
+.no-shows-title{font-size:18px;font-weight:bold;margin-bottom:10px}
+.no-shows-desc{font-size:14px;line-height:1.5;margin-bottom:30px}
+
+/* ============= FOOTER SAMA DENGAN LIVESHOW ============= */
+.detail-footer{text-align:center;padding:15px;color:#6b7280;font-size:10px;border-top:1px solid #e5e7eb;margin-top:20px}
+body.dark .detail-footer{color:#9ca3af;border-top-color:#374151}
+
+/* Responsive Breakpoints */
+@media (max-width:1024px){
+    .container{max-width:90%;margin:130px auto 25px}
 }
 
-.show-setlist{
-    font-size:14px;
-    color:#6b7280;
-    margin-bottom:8px;
-    font-weight:600;
+@media (max-width:768px){
+    .container{max-width:95%;margin:120px auto 20px;border-radius:16px}
+    .calendar-section{padding:20px}
+    .shows-section{padding:20px}
+    .show-card-header{padding:15px}
+    .show-card-title{font-size:14px}
+    .show-status-badge{font-size:11px;padding:5px 10px}
+    .show-card-time{font-size:12px}
+    .show-card-time svg{width:12px;height:12px}
+    .show-card-members{padding:12px}
+    .calendar-day-header{padding:10px 0;font-size:11px}
+    .calendar-day{padding:10px 0;font-size:14px;min-height:40px}
 }
-body.dark .show-setlist{color:#9ca3af}
-
-.empty-state{
-    text-align:center;
-    padding:60px 20px;
-    color:#6b7280;
-}
-body.dark .empty-state{color:#9ca3af}
-
-.empty-icon{
-    font-size:64px;
-    margin-bottom:15px;
-    opacity:0.5;
-}
-
-.empty-title{
-    font-size:16px;
-    font-weight:bold;
-    margin-bottom:8px;
-}
-
-.empty-desc{
-    font-size:13px;
-    line-height:1.5;
-}
-
-.loading{
-    text-align:center;
-    padding:80px 20px;
-    color:#6b7280;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:8px;
-}
-
-@keyframes spin{
-    to{transform:rotate(360deg)}
-}
-
-.spinner{
-    display:inline-block;
-    width:20px;
-    height:20px;
-    border:3px solid rgba(0,0,0,0.1);
-    border-top-color:#9ca3af;
-    border-radius:50%;
-    animation:spin 0.8s linear infinite;
-}
-body.dark .spinner{
-    border-color:rgba(255,255,255,0.1);
-    border-top-color:#9ca3af;
-}
-
-.detail-footer{
-    text-align:center;
-    padding:12px;
-    color:#6b7280;
-    font-size:10px;
-    border-top:1px solid #e5e7eb;
-    margin-top:12px;
-}
-body.dark .detail-footer{
-    color:#9ca3af;
-    border-top-color:#374151;
-}
-
-.skeleton-loading{
-    padding:20px;
-    animation:skeleton-pulse 1.5s ease-in-out infinite;
-}
-@keyframes skeleton-pulse{
-    0%,100%{opacity:1}
-    50%{opacity:0.5}
-}
-
-.skeleton-card{
-    width:100%;
-    height:110px;
-    background:#e5e7eb;
-    border-radius:12px;
-    margin-bottom:15px;
-}
-body.dark .skeleton-card{background:#374151}
 
 @media (max-width:480px){
-    .container{
-        max-width:100%;
-        margin:120px 0 15px;
-        border-radius:0;
-    }
-    .member-info{padding:16px}
-    .photo,.photo-error{
-        width:120px;
-        height:170px;
-        border-radius:0;
-    }
-    .member-name{
-        font-size:20px;
-        margin-bottom:12px;
-    }
-    .member-stats{gap:20px;flex-wrap:wrap}
-    .stat-number{font-size:24px}
-    .stat-label{font-size:11px}
-    .filter-section{padding:12px 16px}
-    .filter-btn{padding:8px 14px;font-size:12px}
-    .content{padding:16px}
-    .show-card{padding:15px}
-    .show-date{font-size:14px}
-    .show-time{font-size:12px}
-    .show-setlist{font-size:13px}
+    .main-header{position:sticky}
+    .container{margin:0 auto 15px;border-radius:0;box-shadow:none;width:100%;max-width:100%}
+    body.dark .container{box-shadow:none}
+    .calendar-section{padding:15px}
+    .shows-section{padding:15px}
+    .calendar-title{font-size:16px}
+    .calendar-nav button{width:32px;height:32px}
+    .calendar-nav button svg{width:16px;height:16px}
+    .calendar-day-header{padding:8px 0;font-size:10px}
+    .calendar-day{padding:8px 0;font-size:13px;min-height:35px}
+    .calendar-indicator{width:5px;height:5px}
+    .show-card-header{padding:12px}
+    .show-card-title{font-size:13px;margin-bottom:8px}
+    .show-status-badge{font-size:10px;padding:4px 8px;margin-bottom:8px}
+    .show-live-dot,.show-upcoming-dot{width:6px;height:6px}
+    .show-card-time{font-size:11px;flex-direction:column;align-items:flex-start;gap:5px}
+    .show-card-time div{gap:4px}
+    .show-card-time svg{width:11px;height:11px}
+    .show-card-members{padding:10px}
+    .show-card-members p{font-size:12px}
+    .detail-header{padding:10px 15px}
+    .back-btn{font-size:14px;gap:4px}
+    .back-btn svg{width:14px;height:14px}
+    .detail-title{font-size:14px;margin:0 5px}
+    .theme-toggle-detail{width:36px;height:36px}
+    .theater-header{font-size:13px;padding:8px 15px}
+    .birthday-badge,
+    .graduation-badge{font-size:10px;padding:3px 8px}
 }
 
+@media (max-width:360px){
+    .calendar-grid{gap:5px}
+    .calendar-day{padding:6px 0;font-size:12px;min-height:30px}
+    .show-card-title{font-size:12px}
+    .show-card-time{font-size:10px}
+    .show-card-members p{font-size:11px}
+    .section-title{font-size:14px}
+}
+
+/* ============= DESKTOP LAYOUT ============= */
 @media (min-width: 1025px) {
-    /* Header fixed */
-    .main-header {
-        position: fixed !important;
-        top: 0; left: 0; right: 0;
-        background: #fff !important;
-        border-bottom: 1px solid #ddd !important;
-        margin-bottom: 0 !important;
-        z-index: 1001;
-    }
-    body.dark .main-header { background: #111827 !important; border-color: #1f2937 !important; }
-    .theater-header { color: #fff !important; background: #e60012 !important; font-size: 15px; padding: 10px 20px; letter-spacing: 1px; }
-    .detail-header { background: #fff !important; border-top: none; border-bottom: 1px solid #ddd; }
-    body.dark .theater-header { color: #fff !important; background: #e60012 !important; }
-    body.dark .detail-header { background: #111827 !important; border-color: #1f2937; }
-
-    .header { display: none; }
-
-    /* Container block biasa */
-    .container {
-        max-width: none;
-        width: 100%;
-        margin: 0;
-        padding-top: 0;
-        display: block;
-        background: transparent;
-        box-shadow: none;
+    body {
+        padding: 0;
+        display: flex;
+        flex-direction: column;
         min-height: 100vh;
     }
-
-    /* ===== PANEL KIRI: Foto + Filter — FIXED tidak bisa scroll ===== */
-    .member-info {
-        position: fixed;
-        top: 90px;
-        left: 0;
-        width: 280px;
-        height: calc(100vh - 90px);
-        overflow-y: auto;
-        border-bottom: none;
-        border-right: 1px solid #e5e7eb;
-        padding: 28px 20px 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+    
+    .main-header {
+        position: relative;
         background: #fff;
-        box-shadow: 2px 0 8px rgba(0,0,0,0.04);
-        z-index: 100;
+        border-bottom: 1px solid #ddd;
+        width: 100%;
     }
-    body.dark .member-info {
+    
+    .theater-header {
+        color: #333;
+        font-size: 16px;
+        padding: 12px 20px;
+        letter-spacing: 1px;
+    }
+    
+    .detail-header {
+        background: #fff;
+        border-top: none;
+        border-bottom: 1px solid #ddd;
+    }
+    
+    body.dark .main-header {
         background: #111827;
-        border-right-color: #374151;
-        box-shadow: 2px 0 8px rgba(0,0,0,0.2);
+        border-color: #1f2937;
     }
-
-    /* Foto diberi margin-top agar turun */
-    .member-info .photo-container {
-        margin-top: 20px;
-        margin-bottom: 12px;
-        flex-shrink: 0;
+    
+    body.dark .theater-header {
+        color: #e5e7eb;
     }
-    .photo, .photo-error { width: 150px; height: 210px; }
-    .member-name { font-size: 20px; margin-bottom: 10px; flex-shrink: 0; }
-    .member-stats { gap: 30px; margin-top: 8px; flex-shrink: 0; }
-    .stat-number { font-size: 26px; }
-    .stat-label { font-size: 12px; }
-
-    /* Filter di panel kiri — di bawah foto, no scroll */
-    .member-info .filter-section {
+    
+    body.dark .detail-header {
+        background: #111827;
+        border-color: #1f2937;
+    }
+    
+    .container {
         display: flex;
-        flex-direction: column;
-        align-items: stretch;
-        gap: 5px;
-        overflow: visible;
-        padding: 10px 0 0;
-        margin-top: 20px;
-        border-top: 1px solid #e5e7eb;
+        flex: 1;
+        max-width: 1200px;
         width: 100%;
-        background: transparent;
+        margin: 20px auto;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    .calendar-section {
+        flex: 0 0 350px;
+        border-right: 1px solid #e5e7eb;
         border-bottom: none;
+        padding: 30px;
     }
-    body.dark .member-info .filter-section {
-        border-top-color: #374151;
-    }
-    .member-info .filter-btn {
-        padding: 7px 12px;
-        font-size: 11px;
-        border-radius: 8px;
-        text-align: left;
-        width: 100%;
-        white-space: normal;
-        border: 1px solid #e5e7eb;
-    }
-    body.dark .member-info .filter-btn {
+    
+    body.dark .calendar-section {
         border-color: #374151;
     }
-
-    /* ===== PANEL KANAN: Show list — bisa scroll, tanpa filter ===== */
-    .content {
-        margin-left: 280px;
-        padding: 110px 30px 50px;
-        min-height: 100vh;
-        background: #fff;
-        overflow-y: auto;
-        position: relative;
+    
+    .shows-section {
+        flex: 1;
+        min-width: 0;
+        padding: 30px;
     }
-    body.dark .content { background: #111827; }
-
-    /* Sembunyikan filter di panel kanan */
-    .content .filter-section {
-        display: none;
+    
+    .calendar-title {
+        font-size: 20px;
     }
-
-    .content .filter-section .filter-btn {
-        padding: 10px 18px;
+    
+    .calendar-grid {
+        gap: 10px;
+    }
+    
+    .calendar-day {
+        padding: 15px 0;
+        min-height: 50px;
+        font-size: 16px;
+    }
+    
+    .calendar-day-header {
+        padding: 15px 0;
         font-size: 13px;
-        border-radius: 30px;
     }
-
-    .show-list { gap: 20px; }
-    .show-card { padding: 22px; border-radius: 14px; }
-    .show-date { font-size: 17px; }
-    .show-time { font-size: 14px; }
-    .show-time svg { width: 16px; height: 16px; }
-    .show-setlist { font-size: 16px; }
-    .show-badge { font-size: 12px; padding: 6px 14px; }
-    .live-badge { font-size: 12px; padding: 8px 14px; }
-    .sts-badge, .lastshow-badge { font-size: 12px; padding: 8px 14px; }
-    .live-dot { width: 8px; height: 8px; }
-
-    .detail-footer {
-        margin-left: 280px;
-        padding: 20px 30px;
+    
+    .calendar-indicator {
+        width: 8px;
+        height: 8px;
+    }
+    
+    .section-title {
+        font-size: 20px;
+        margin-bottom: 25px;
+    }
+    
+    .shows-count {
         font-size: 12px;
+        padding: 4px 10px;
+        min-width: 30px;
+    }
+    
+    .shows-list {
+        gap: 20px;
+    }
+    
+    .show-card-title {
+        font-size: 18px;
+    }
+    
+    .show-status-badge {
+        font-size: 13px;
+        padding: 8px 14px;
+        margin-bottom: 12px;
+    }
+    
+    .show-live-dot, .show-upcoming-dot {
+        width: 10px;
+        height: 10px;
+    }
+    
+    .show-card-time {
+        font-size: 14px;
+        gap: 20px;
+    }
+    
+    .show-card-time svg {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .show-card-members {
+        padding: 18px;
+    }
+    
+    .show-card-members p {
+        font-size: 14px;
+    }
+    
+    .birthday-badge,
+    .graduation-badge {
+        font-size: 12px;
+        padding: 5px 12px;
+    }
+    
+    .detail-footer {
+        padding: 15px;
+        font-size: 11px;
+        width: 100%;
+        margin-top: auto;
         border: none;
         border-top: 1px solid #e5e7eb;
+        background: #fff;
     }
-    body.dark .detail-footer { border-top-color: #374151; }
-
-    .skeleton-loading { padding: 110px 30px 30px 310px; }
-    .skeleton-card { height: 120px; }
+    
+    body.dark .detail-footer {
+        border-top-color: #374151;
+        background: #111827;
+        color: #9ca3af;
+    }
 }
 
-/* Pada mobile (<1025px) sembunyikan filter di panel kanan */
-@media (max-width: 1024px) {
-    .content .filter-section {
-        display: none;
-    }
-    .member-info .filter-section {
-        display: flex;
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        overflow-y: hidden;
-        justify-content: flex-start;
-        padding: 12px 16px;
-        gap: 8px;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-    }
-    .member-info .filter-section::-webkit-scrollbar {
-        display: none;
-    }
-    .member-info .filter-btn {
-        flex-shrink: 0;
-        white-space: nowrap;
+@media (max-height: 700px) {
+    .container {
+        margin: 10px auto;
     }
 }
 </style>
 </head>
 <body>
+<!-- ============= HEADER SAMA DENGAN LIVESHOW ============= -->
 <header class="main-header">
   <div class="theater-header">JKT48 SHOW THEATER</div>
   <div class="detail-header">
@@ -677,7 +408,7 @@ body.dark .skeleton-card{background:#374151}
       </svg>
       Kembali
     </button>
-    <div class="detail-title">Riwayat Show</div>
+    <div class="detail-title">SCHEDULE</div>
     <div class="header-controls">
       <button class="theme-toggle-detail" onclick="toggleTheme()">
         <svg id="themeIconDetail" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
@@ -688,14 +419,44 @@ body.dark .skeleton-card{background:#374151}
   </div>
 </header>
 
-<div class="container" id="container">
-  <div class="skeleton-loading">
-    <div class="skeleton-card"></div>
-    <div class="skeleton-card"></div>
-    <div class="skeleton-card"></div>
+<div class="container">
+  <div class="calendar-section">
+    <div class="calendar-header">
+      <div class="calendar-nav">
+        <button onclick="changeMonth(-1)" title="Bulan sebelumnya">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5z"/>
+          </svg>
+        </button>
+      </div>
+      <h3 class="calendar-title" id="currentMonth">Januari 2024</h3>
+      <div class="calendar-nav">
+        <button onclick="changeMonth(1)" title="Bulan berikutnya">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div class="calendar-grid" id="calendar"></div>
+  </div>
+
+  <div class="shows-section">
+    <div class="section-title">
+      <span>Daftar Show</span>
+      <span class="shows-count" id="showsCount">0</span>
+    </div>
+    
+    <div id="showList">
+      <div class="loading">
+        <div class="spinner"></div>
+        <span>Memuat jadwal show...</span>
+      </div>
+    </div>
   </div>
 </div>
 
+<!-- ============= FOOTER SAMA DENGAN LIVESHOW ============= -->
 <footer class="detail-footer">
   <p>© 2026 Show Theater. Data diperbarui secara real-time</p>
 </footer>
@@ -703,24 +464,17 @@ body.dark .skeleton-card{background:#374151}
 <script>
 const SUPABASE_URL = "https://pprxfopqkvpeajeoxzig.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBwcnhmb3Bxa3ZwZWFqZW94emlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYyNTI4MTIsImV4cCI6MjA4MTgyODgxMn0.iXRO_dAHhtVHRLqGTresG_63RD2zIaopNXtXYNfthdg";
-
-const urlParams = new URLSearchParams(window.location.search);
-const MEMBER_NAME = urlParams.get('member');
-
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const GEN_COLORS = {
-  3: '#ec4899', 6: '#22c55e', 7: '#15803d', 8: '#1e40af',
-  9: '#06b6d4', 10: '#38bdf8', 11: '#f97316', 12: '#fde68a',
-  13: '#facc15', 14: '#e879f9'
-};
+const SHOW_DURATION_MINUTES = 150;       // Durasi show biasa
+const EVENT_DURATION_MINUTES = 150;      // Durasi event (non-show)
+const PRE_SHOW_BUFFER_MINUTES = 15; // Live mulai 15 menit sebelum jam tayang
 
-const LIVE_CONFIG = {
-    BEFORE_MINUTES: 15,
-    DURATION_MINUTES: 150,
-    EVENT_DURATION_MINUTES: 100
-};
+function getDurationMinutes(isNonShow) {
+    return isNonShow ? EVENT_DURATION_MINUTES : SHOW_DURATION_MINUTES;
+}
 
+// ============= THEME =============
 (function initializeTheme() {
   const savedTheme = localStorage.getItem('jkt48_theme') || 'light';
   const html = document.documentElement;
@@ -767,333 +521,515 @@ function toggleTheme() {
   }
 }
 
+// ============= LIVE STATUS =============
 function getLiveStatus(showDate, showTime, isNonShow = false) {
     if (!showDate || !showTime) return 'FINISHED';
     
     const now = new Date();
     const showDateTime = new Date(`${showDate}T${showTime}`);
-    const durationMinutes = isNonShow ? LIVE_CONFIG.EVENT_DURATION_MINUTES : LIVE_CONFIG.DURATION_MINUTES;
-    const liveStart = new Date(showDateTime.getTime() - LIVE_CONFIG.BEFORE_MINUTES * 60000);
-    const liveEnd = new Date(showDateTime.getTime() + durationMinutes * 60000);
+    const liveStart = new Date(showDateTime.getTime() - PRE_SHOW_BUFFER_MINUTES * 60000);
+    const liveEnd = new Date(showDateTime.getTime() + getDurationMinutes(isNonShow) * 60000);
     
     if (now < liveStart) return 'UPCOMING';
     if (now >= liveStart && now <= liveEnd) return 'LIVE';
     return 'FINISHED';
 }
 
-let memberData = null;
-let showsData = [];
-let currentFilter = 'all';
-
-function getFilterButtonsHTML() {
-  const realShows = showsData.filter(s => !s.is_non_show);
-  const eventShows = showsData.filter(s => s.is_non_show);
-  const setlists = [...new Set(realShows.map(s => s.setlist_name))];
-  let html = `<button class="filter-btn ${currentFilter === 'all' ? 'active' : ''}" onclick="filterShows('all')" data-filter="all">Semua (${showsData.length})</button>`;
-  setlists.forEach(setlist => {
-    const count = realShows.filter(s => s.setlist_name === setlist).length;
-    html += `<button class="filter-btn ${currentFilter === setlist ? 'active' : ''}" onclick="filterShows('${setlist}')" data-filter="${setlist}">${setlist} (${count})</button>`;
-  });
-  if (eventShows.length > 0) {
-    html += `<button class="filter-btn ${currentFilter === 'event' ? 'active' : ''}" onclick="filterShows('event')" data-filter="event">Event (${eventShows.length})</button>`;
-  }
-  return html;
-}
-
-async function loadData() {
-  if (!MEMBER_NAME) {
-    showError('Parameter member tidak ditemukan');
-    return;
-  }
-
-  try {
-    const { data: member, error: memberError } = await db
-      .from('members')
-      .select('*')
-      .eq('name', MEMBER_NAME)
-      .single();
-
-    if (memberError) {
-      if (memberError.code === 'PGRST116') {
-        showError('Member tidak ditemukan');
-      } else {
-        throw memberError;
-      }
-      return;
-    }
-    
-    memberData = member;
-    
-    const { data: shows, error: showsError } = await db
-      .from('setlist_performance')
-      .select('*')
-      .eq('member_id', member.id)
-      .order('show_date', { ascending: false })
-      .order('show_time', { ascending: false });
-
-    if (showsError) throw showsError;
-    
-    showsData = shows || [];
-    
-    renderPage();
-    
-  } catch (err) {
-    console.error('Error:', err);
-    showError('Gagal memuat data. Coba refresh halaman.');
-  }
-}
-
-function renderPage() {
-  const color = GEN_COLORS[memberData.gen] || '#ec4899';
-  const colorDark = adjustColor(color, -20);
-  
-  document.documentElement.style.setProperty('--gen-color', color);
-  document.documentElement.style.setProperty('--gen-color-dark', colorDark);
-  
-  const realShows = showsData.filter(s => !s.is_non_show);
-  const setlists = [...new Set(realShows.map(s => s.setlist_name))];
-  const filterButtons = getFilterButtonsHTML();
-  
-  const graduationInfo = memberData.status === 'graduated' ? 
-    `<div style="margin-top: 10px; padding: 8px 16px; background: #1e40af; color: white; border-radius: 12px; font-size: 12px; display: inline-flex; align-items: center; gap: 6px;">
-      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
-        <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zM4.5 6.5a.5.5 0 0 1 0-1h5.793L8.146 4.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 7.5H4.5z"/>
-      </svg>
-      Graduated Member
-    </div>` : '';
-  
-  document.getElementById('container').innerHTML = `
-    <div class="member-info">
-      <div class="photo-container">
-        <img class="photo" 
-             src="img/${memberData.name.toLowerCase()}.jpg" 
-             loading="lazy"
-             decoding="async"
-             onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\\'photo-error\\'>${memberData.name.charAt(0)}</div>';"
-             alt="${memberData.name}">
-      </div>
-      <div class="member-name">${memberData.name}</div>
-      ${graduationInfo}
-      <div class="member-stats">
-        <div class="stat-item">
-          <div class="stat-number">${realShows.length}</div>
-          <div class="stat-label">TOTAL SHOW</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-number">${setlists.length}</div>
-          <div class="stat-label">JENIS SETLIST</div>
-        </div>
-      </div>
-      <!-- Filter untuk mobile (akan disembunyikan di desktop lewat CSS) -->
-      <div class="filter-section">
-        ${filterButtons}
-      </div>
-    </div>
-    
-    <div class="content">
-      <!-- Filter untuk desktop (NON-SCROLL / diam saja) -->
-      <div class="filter-section">
-        ${filterButtons}
-      </div>
-      <div id="showListContainer">
-        ${renderShowList()}
-      </div>
-    </div>
-  `;
-}
-
-function renderShowList() {
-  let filtered = showsData;
-  
-  if (currentFilter === 'event') {
-    filtered = showsData.filter(s => s.is_non_show);
-  } else if (currentFilter !== 'all') {
-    filtered = showsData.filter(s => s.setlist_name === currentFilter);
-  }
-  
-  const sortedFilteredShows = [...filtered].sort((a, b) => {
-    const dateA = new Date(a.show_date + ' ' + a.show_time);
-    const dateB = new Date(b.show_date + ' ' + b.show_time);
-    return dateA - dateB;
-  });
-  
-  const showsForDisplay = [...filtered].sort((a, b) => {
-    const dateA = new Date(a.show_date + ' ' + a.show_time);
-    const dateB = new Date(b.show_date + ' ' + b.show_time);
-    return dateB - dateA;
-  });
-  
-  if (filtered.length === 0) {
-    return `
-      <div class="empty-state">
-        <div class="empty-icon">
-          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-            <line x1="16" y1="2" x2="16" y2="6"></line>
-            <line x1="8" y1="2" x2="8" y2="6"></line>
-            <line x1="3" y1="10" x2="21" y2="10"></line>
-          </svg>
-        </div>
-        <div class="empty-title">Belum Ada Show</div>
-        <div class="empty-desc">
-          ${currentFilter === 'all' 
-            ? 'Belum ada riwayat show yang tercatat untuk member ini' 
-            : `Belum ada show dengan setlist "${currentFilter}"`
-          }
-        </div>
-      </div>
-    `;
-  }
-  
-  return `
-    <div class="show-list">
-      ${showsForDisplay.map(show => {
-        const date = show.show_date ? formatDate(show.show_date) : 'Tanggal tidak tersedia';
-        const time = show.show_time ? formatTime(show.show_time) : null;
-        const showNumber = sortedFilteredShows.findIndex(s => s.id === show.id) + 1;
-        
-        const status = getLiveStatus(show.show_date, show.show_time, show.is_non_show);
-        const isLive = status === 'LIVE';
-        
-        const isMemberBirthday = show.is_birthday_show && show.birthday_member === memberData.name;
-        const isMemberGraduation = show.is_graduation_show && show.graduation_member === memberData.name;
-        
-        let cardClass = 'show-card';
-        if (isLive) cardClass += ' live-now';
-        
-        return `
-          <div class="${cardClass}" data-setlist="${show.setlist_name.replace(/'/g, '&#39;')}" data-date="${show.show_date}" data-time="${show.show_time || ''}" onclick="openShowDetail(this.dataset.setlist, this.dataset.date, this.dataset.time)">
-            <div class="show-header">
-              <div>
-                <div class="show-date">${date}</div>
-                ${time ? `
-                  <div class="show-time">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <polyline points="12 6 12 12 16 14"></polyline>
-                    </svg>
-                    ${time}
-                  </div>
-                ` : ''}
-              </div>
-              <div class="badge-container">
-                ${isLive ? `
-                  <div class="live-badge">
-                    <span class="live-dot"></span>
-                    LIVE
-                  </div>
-                ` : ''}
-                ${isMemberBirthday ? `
-                  <div class="sts-badge">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
-                      <path d="m7.994.013-.595.79a.747.747 0 0 0 .101 1.01V4H5a2 2 0 0 0-2 2v3H2a2 2 0 0 0-2 2v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4a2 2 0 0 0-2-2h-1V6a2 2 0 0 0-2-2H8.5V1.806A.747.747 0 0 0 8.592.802zM4 6a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v.414a.9.9 0 0 1-.646-.268 1.914 1.914 0 0 0-2.708 0 .914.914 0 0 1-1.292 0 1.914 1.914 0 0 0-2.708 0A.9.9 0 0 1 4 6.414zm0 1.414c.49 0 .98-.187 1.354-.56a.914.914 0 0 1 1.292 0c.748.747 1.96.747 2.708 0a.914.914 0 0 1 1.292 0c.374.373.864.56 1.354.56V9H4zM1 11a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v.793l-.354.354a.914.914 0 0 1-1.293 0 1.914 1.914 0 0 0-2.707 0 .914.914 0 0 1-1.292 0 1.914 1.914 0 0 0-2.708 0 .914.914 0 0 1-1.292 0L1 11.793zm11.646 1.854a1.915 1.915 0 0 0 2.354.279V15H1v-1.867c.737.452 1.715.36 2.354-.28a.914.914 0 0 1 1.292 0c.748.748 1.96.748 2.708 0a.914.914 0 0 1 1.292 0c.748.748 1.96.748 2.707 0a.914.914 0 0 1 1.293 0Z"/>
-                    </svg>
-                    STS
-                  </div>
-                ` : ''}
-                ${isMemberGraduation ? `
-                  <div class="lastshow-badge">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
-                      <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zM4.5 6.5a.5.5 0 0 1 0-1h5.793L8.146 4.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 7.5H4.5z"/>
-                    </svg>
-                    Last Show
-                  </div>
-                ` : ''}
-                <div class="show-badge">#${showNumber}</div>
-              </div>
-            </div>
-            <div class="show-setlist">
-              ${show.setlist_name}
-              ${show.is_birthday_show && show.birthday_member ? ` (STS ${show.birthday_member})` : ''}
-              ${show.is_graduation_show && show.graduation_member ? ` (Last Show ${show.graduation_member})` : ''}
-            </div>
-          </div>
-        `;
-      }).join('')}
-    </div>
-  `;
-}
-
-function filterShows(filter) {
-  currentFilter = filter;
-
-  // Hapus class active dari semua tombol filter
-  document.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.classList.remove('active');
-  });
-
-  // Aktifkan tombol yang sesuai dengan filter
-  const activeBtn = document.querySelector(`.filter-btn[data-filter="${filter}"]`);
-  if (activeBtn) activeBtn.classList.add('active');
-
-  // Render ulang daftar show
-  document.getElementById('showListContainer').innerHTML = renderShowList();
-}
-
-function formatDate(dateString) {
-  const date = new Date(dateString);
-  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-  return date.toLocaleDateString('id-ID', options);
-}
-
-function formatTime(timeString) {
-  if (!timeString) return null;
-  
-  const parts = timeString.split(':');
-  const hours = parts[0];
-  const minutes = parts[1];
-  
-  return `${hours}:${minutes} WIB`;
-}
-
-function adjustColor(color, amount) {
-  const num = parseInt(color.replace('#', ''), 16);
-  const r = Math.max(0, Math.min(255, (num >> 16) + amount));
-  const g = Math.max(0, Math.min(255, ((num >> 8) & 0x00FF) + amount));
-  const b = Math.max(0, Math.min(255, (num & 0x0000FF) + amount));
-  return '#' + ((r << 16) | (g << 8) | b).toString(16).padStart(6, '0');
-}
+// ============= MAIN FUNCTIONS =============
+let allShows = [];
+let currentDate = new Date().toISOString().split('T')[0];
+let currentMonth = moment(currentDate);
 
 function goBack() {
-  if (window.history.length > 1) {
-    window.history.back();
-  } else {
-    window.location.href = 'index.html';
+  window.location.href = 'index.html';
+}
+
+function saveSelectedDate(dateStr) {
+    localStorage.setItem('jkt48_selected_date', dateStr);
+}
+
+function loadSelectedDate() {
+    const savedDate = localStorage.getItem('jkt48_selected_date');
+    return savedDate || new Date().toISOString().split('T')[0];
+}
+
+async function loadSchedule() {
+    try {
+        console.log('Loading schedule...');
+        
+        const today = new Date();
+        const startDate = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+        const endDate = new Date(today.getFullYear(), today.getMonth() + 2, 0);
+        const startStr = startDate.toISOString().split('T')[0];
+        const endStr = endDate.toISOString().split('T')[0];
+
+        // JOIN dengan members untuk mendapatkan nama
+        const { data, error } = await db
+            .from('setlist_performance')
+            .select(`
+                *,
+                members!inner(name)
+            `)
+            .gte('show_date', startStr)
+            .lte('show_date', endStr)
+            .order('show_date', { ascending: true })
+            .order('show_time', { ascending: true });
+
+        if (error) throw error;
+        
+        // Transform data untuk menambahkan memberName
+        allShows = (data || []).map(show => ({
+            ...show,
+            memberName: show.members?.name
+        }));
+        
+        console.log('Shows loaded:', allShows.length);
+        
+        // Selalu reset ke hari ini saat refresh
+        currentDate = new Date().toISOString().split('T')[0];
+        currentMonth = moment(currentDate);
+        
+        renderCalendar();
+        renderShows(currentDate);
+        
+    } catch (err) {
+        console.error('Error:', err);
+        document.getElementById('showList').innerHTML = `
+            <div class="no-shows-message">
+                <div class="no-shows-icon">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                </div>
+                <div class="no-shows-title">Gagal Memuat Jadwal</div>
+                <div class="no-shows-desc">Silakan coba refresh halaman atau cek koneksi internet Anda.</div>
+            </div>
+        `;
+    }
+}
+
+const SETLIST_COLORS = {
+  'Te Wo Tsunaginagara':     { from: '#FF69B4', to: '#c0407a' },
+  'Te wo Tsunaginagara':     { from: '#FF69B4', to: '#c0407a' },
+  'Cara Meminum Ramune':     { from: '#00CED1', to: '#008b8d' },
+  'Ramune no Nomikata':      { from: '#00CED1', to: '#008b8d' },
+  'Pertaruhan Cinta':        { from: '#D30000', to: '#900603' },
+  'Pajama Drive':            { from: '#00006d', to: '#000045' },
+  "Andai 'Ku Bukan Idola":   { from: '#f59e0b', to: '#b45309' },
+  'JKT48 Fight Love Dream Passion': { from: '#e60012', to: '#9f0000' },
+  'JKT48 School':            { from: '#22c55e', to: '#15803d' },
+  'Seleksi PDMK':            { from: '#6366f1', to: '#4338ca' },
+  'Z vs Alpha':              { from: '#64748b', to: '#334155' },
+  'non_show':                { from: '#3b82f6', to: '#1d4ed8' },
+};
+
+function getSetlistGradient(setlistName, isNonShow) {
+  if (isNonShow) {
+    const col = SETLIST_COLORS['non_show'];
+    return `linear-gradient(135deg, ${col.from} 0%, ${col.to} 100%)`;
   }
+  // Exact match
+  const col = SETLIST_COLORS[setlistName];
+  if (col) return `linear-gradient(135deg, ${col.from} 0%, ${col.to} 100%)`;
+  // Fallback partial match
+  const lower = (setlistName || '').toLowerCase();
+  if (lower.includes('tsunaginagara') || lower.includes('tewo')) return `linear-gradient(135deg, #FF69B4 0%, #c0407a 100%)`;
+  if (lower.includes('ramune')) return `linear-gradient(135deg, #00CED1 0%, #008b8d 100%)`;
+  if (lower.includes('pertaruhan')) return `linear-gradient(135deg, #D30000 0%, #900603 100%)`;
+  if (lower.includes('pajama')) return `linear-gradient(135deg, #00006d 0%, #000045 100%)`;
+  return null;
 }
 
-function openShowDetail(setlistName, showDate, showTime) {
-  const params = new URLSearchParams();
-  params.append('setlist', setlistName);
-  params.append('date', showDate);
-  if (showTime) {
-    params.append('time', showTime);
-  }
-  params.append('source', 'show');
-  window.location.href = `liveshow.html?${params.toString()}`;
+function getSetlistColor(setlistName) {
+    if (!setlistName) return '#e60012';
+    const setlistLower = setlistName.toLowerCase().trim();
+    
+    if (setlistLower.includes('te wo tsunaginagara') || 
+        setlistLower.includes('tewo') ||
+        setlistLower.includes('tsunaginagara')) {
+        return '#FF69B4';
+    } else if (setlistLower.includes('ramune')) {
+        return '#00CED1';
+    } else if (setlistLower.includes('pertaruhan')) {
+        return '#D30000';
+    } else if (setlistLower.includes('pajama')) {
+        return '#00006d';
+    } else {
+        return '#e60012';
+    }
 }
 
-function showError(message) {
-  document.getElementById('container').innerHTML = `
-    <div class="content" style="padding:60px 20px;text-align:center">
-      <div style="font-size:64px;margin-bottom:20px">
-        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#e60012" stroke-width="2">
-          <circle cx="12" cy="12" r="10"></circle>
-          <line x1="12" y1="8" x2="12" y2="12"></line>
-          <line x1="12" y1="16" x2="12.01" y2="16"></line>
-        </svg>
-      </div>
-      <div style="font-size:18px;font-weight:bold;color:#333;margin-bottom:10px">${message}</div>
-      <div style="color:#6b7280;margin-bottom:30px">Data tidak ditemukan atau terjadi kesalahan</div>
-      <button onclick="goBack()" style="background:#e60012;color:#fff;border:none;border-radius:12px;padding:12px 24px;font-size:14px;font-weight:600;cursor:pointer">
-        Kembali ke Beranda
-      </button>
-    </div>
-  `;
+function getSetlistsForDate(dateStr) {
+    const showsOnDate = allShows.filter(s => s.show_date === dateStr);
+    if (showsOnDate.length === 0) return [];
+    
+    const uniqueShows = [];
+    const seen = new Set();
+    
+    showsOnDate.forEach(show => {
+        const key = `${show.setlist_name}_${show.show_time}`;
+        if (!seen.has(key)) {
+            seen.add(key);
+            const color = getSetlistColor(show.setlist_name);
+            uniqueShows.push({ 
+                color, 
+                name: show.setlist_name, 
+                time: show.show_time,
+                isBirthday: show.is_birthday_show,
+                birthdayMember: show.birthday_member,
+                isGraduation: show.is_graduation_show,
+                graduationMember: show.graduation_member
+            });
+        }
+    });
+    
+    return uniqueShows;
 }
 
-window.addEventListener('DOMContentLoaded', () => {
-  loadData();
+function createIndicatorsHTML(dateStr) {
+    const setlists = getSetlistsForDate(dateStr);
+    if (setlists.length === 0) return '';
+    
+    const limitedSetlists = setlists.slice(0, 3);
+    
+    let indicatorsHTML = '<div class="calendar-indicators">';
+    limitedSetlists.forEach(setlist => {
+        const indicatorColor = setlist.color;
+        
+        let tooltip = `${setlist.name} (${setlist.time.slice(0,5)})`;
+        if (setlist.isGraduation) {
+            tooltip += ' - Last Show';
+        } else if (setlist.isBirthday) {
+            tooltip += ' - STS';
+        }
+        
+        indicatorsHTML += `<span class="calendar-indicator" style="background:${indicatorColor}" title="${tooltip}"></span>`;
+    });
+    
+    if (setlists.length > 3) {
+        indicatorsHTML += `<span class="calendar-indicator" style="background:#6b7280; width:8px; height:8px; font-size:6px; line-height:8px; text-align:center;" title="+${setlists.length - 3} show lagi">+</span>`;
+    }
+    
+    indicatorsHTML += '</div>';
+    return indicatorsHTML;
+}
+
+function renderCalendar() {
+    const calendarEl = document.getElementById('calendar');
+    const monthYearEl = document.getElementById('currentMonth');
+    
+    const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
+                       'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+    const dayNames = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+    
+    const month = currentMonth.month();
+    const year = currentMonth.year();
+    
+    monthYearEl.textContent = `${monthNames[month]} ${year}`;
+    
+    const startOfMonth = currentMonth.clone().startOf('month');
+    const endOfMonth = currentMonth.clone().endOf('month');
+    const startDate = startOfMonth.clone().startOf('week');
+    const endDate = endOfMonth.clone().endOf('week');
+    
+    let html = '';
+    
+    for (let i = 0; i < 7; i++) {
+        html += `<div class="calendar-day-header">${dayNames[i]}</div>`;
+    }
+    
+    const currentDay = moment();
+    const todayStr = currentDay.format('YYYY-MM-DD');
+    let date = startDate.clone();
+    
+    while (date.isBefore(endDate) || date.isSame(endDate, 'day')) {
+        const dateStr = date.format('YYYY-MM-DD');
+        const isToday = dateStr === todayStr;
+        const isCurrentMonth = date.month() === month;
+        const isActive = dateStr === currentDate;
+        const hasShow = allShows.some(show => show.show_date === dateStr);
+        
+        let dayClass = 'calendar-day';
+        if (!isCurrentMonth) dayClass += ' other-month';
+        if (isToday) dayClass += ' today';
+        if (isActive) dayClass += ' active';
+        
+        const indicatorsHTML = hasShow ? createIndicatorsHTML(dateStr) : '';
+        
+        html += `<div class="${dayClass}" data-date="${dateStr}" onclick="selectDate('${dateStr}')">
+                    <div>${date.date()}</div>
+                    ${indicatorsHTML}
+                 </div>`;
+        date.add(1, 'day');
+    }
+    
+    calendarEl.innerHTML = html;
+}
+
+function changeMonth(direction) {
+    currentMonth.add(direction, 'month');
+    renderCalendar();
+    
+    const firstDay = currentMonth.clone().startOf('month');
+    const firstDayStr = firstDay.format('YYYY-MM-DD');
+    
+    if (allShows.some(show => show.show_date >= firstDayStr)) {
+        selectDate(firstDayStr);
+    } else {
+        const showsThisMonth = allShows.filter(show => {
+            const showDate = moment(show.show_date);
+            return showDate.month() === currentMonth.month() && 
+                   showDate.year() === currentMonth.year();
+        });
+        
+        if (showsThisMonth.length > 0) {
+            const firstShowDate = showsThisMonth[0].show_date;
+            selectDate(firstShowDate);
+        } else {
+            selectDate(firstDayStr);
+        }
+    }
+}
+
+function selectDate(date) {
+    currentDate = date;
+    saveSelectedDate(date);
+    
+    const selectedMoment = moment(date);
+    
+    if (selectedMoment.month() !== currentMonth.month() || 
+        selectedMoment.year() !== currentMonth.year()) {
+        currentMonth = selectedMoment.clone();
+    }
+    
+    renderCalendar();
+    renderShows(date);
+}
+
+function renderShows(date) {
+    const filtered = allShows.filter(s => s.show_date === date);
+    const container = document.getElementById('showList');
+    const showsCount = document.getElementById('showsCount');
+    
+    if (filtered.length === 0) {
+        showsCount.textContent = '0';
+        container.innerHTML = `
+            <div class="no-shows-message">
+                <div class="no-shows-icon">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                </div>
+                <div class="no-shows-title">Tidak Ada Show</div>
+                <div class="no-shows-desc">Tidak ada show yang dijadwalkan pada tanggal ini.</div>
+            </div>
+        `;
+        return;
+    }
+    
+    const grouped = {};
+    filtered.forEach(show => {
+        const key = `${show.setlist_name}_${show.show_time}`;
+        if (!grouped[key]) {
+            grouped[key] = {
+                setlist: show.setlist_name,
+                time: show.show_time,
+                date: show.show_date,
+                members: [],
+                isBirthday: show.is_birthday_show,
+                birthdayMember: show.birthday_member,
+                isGraduation: show.is_graduation_show,
+                graduationMember: show.graduation_member,
+                is_non_show: show.is_non_show || false
+            };
+        }
+        // Gunakan memberName dari JOIN
+        if (show.memberName) {
+            grouped[key].members.push(show.memberName);
+        }
+    });
+    
+    const sortedShows = Object.values(grouped).sort((a, b) => {
+        return a.time.localeCompare(b.time);
+    });
+    
+    showsCount.textContent = sortedShows.length;
+    
+    let showsHTML = '<div class="shows-list">';
+    
+    sortedShows.forEach(show => {
+        const status = getLiveStatus(show.date, show.time, show.is_non_show);
+        
+        let headerClass = '';
+        let statusBadge = '';
+        
+        if (status === 'LIVE') {
+            headerClass = 'live-now';
+            statusBadge = `
+                <div class="show-status-badge">
+                    <span class="show-live-dot"></span>
+                    LIVE
+                </div>
+            `;
+        } else if (status === 'UPCOMING') {
+            headerClass = 'upcoming';
+            statusBadge = `
+                <div class="show-status-badge">
+                    <span class="show-upcoming-dot"></span>
+                    UPCOMING
+                </div>
+            `;
+        } else {
+            headerClass = 'finished';
+            statusBadge = '<div class="show-status-badge">SHOW ENDED</div>';
+        }
+        
+        const dayNames = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+        const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
+                           'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        const d = new Date(show.date);
+        const dayName = dayNames[d.getDay()];
+        const dayNumber = d.getDate();
+        const monthName = monthNames[d.getMonth()];
+        const year = d.getFullYear();
+        
+        let specialBadges = '';
+        
+        if (show.isBirthday && show.birthdayMember) {
+            specialBadges += `
+                <div class="birthday-badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="m7.994.013-.595.79a.747.747 0 0 0 .101 1.01V4H5a2 2 0 0 0-2 2v3H2a2 2 0 0 0-2 2v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4a2 2 0 0 0-2-2h-1V6a2 2 0 0 0-2-2H8.5V1.806A.747.747 0 0 0 8.592.802zM4 6a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v.414a.9.9 0 0 1-.646-.268 1.914 1.914 0 0 0-2.708 0 .914.914 0 0 1-1.292 0 1.914 1.914 0 0 0-2.708 0A.9.9 0 0 1 4 6.414zm0 1.414c.49 0 .98-.187 1.354-.56a.914.914 0 0 1 1.292 0c.748.747 1.96.747 2.708 0a.914.914 0 0 1 1.292 0c.374.373.864.56 1.354.56V9H4zM1 11a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v.793l-.354.354a.914.914 0 0 1-1.293 0 1.914 1.914 0 0 0-2.707 0 .914.914 0 0 1-1.292 0 1.914 1.914 0 0 0-2.708 0 .914.914 0 0 1-1.292 0L1 11.793zm11.646 1.854a1.915 1.915 0 0 0 2.354.279V15H1v-1.867c.737.452 1.715.36 2.354-.28a.914.914 0 0 1 1.292 0c.748.748 1.96.748 2.708 0a.914.914 0 0 1 1.292 0c.748.748 1.96.748 2.707 0a.914.914 0 0 1 1.293 0Z"/>
+                    </svg>
+                    STS ${show.birthdayMember}
+                </div>
+            `;
+        }
+        
+        if (show.isGraduation && show.graduationMember) {
+            specialBadges += `
+                <div class="graduation-badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zM4.5 6.5a.5.5 0 0 1 0-1h5.793L8.146 4.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 7.5H4.5z"/>
+                    </svg>
+                    Last Show ${show.graduationMember}
+                </div>
+            `;
+        }
+        
+        const setlistParam = encodeURIComponent(show.setlist);
+        const dateParam = encodeURIComponent(show.date);
+        const timeParam = encodeURIComponent(show.time);
+        
+        showsHTML += `
+            <div class="show-card" data-setlist="${setlistParam}" data-date="${dateParam}" data-time="${timeParam}" onclick="openShowDetail(this)">
+                <div class="show-card-header ${headerClass}" style="background:${status === 'LIVE' ? 'linear-gradient(135deg, #e60012 0%, #a00010 100%)' : status === 'FINISHED' ? 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)' : (getSetlistGradient(show.setlist, show.is_non_show) || 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)')};">
+                    ${statusBadge}
+                    <div class="show-card-title">
+                        <span>${show.setlist}</span>
+                        ${specialBadges}
+                    </div>
+                    <div class="show-card-time">
+                        <div>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                            ${dayName}, ${dayNumber} ${monthName} ${year}
+                        </div>
+                        <div>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            ${show.time.slice(0, 5)} WIB • ${show.members.length} member
+                        </div>
+                    </div>
+                </div>
+                <div class="show-card-members">
+                    <p><strong>Member yang tampil:</strong> ${show.members.sort().join(', ')}</p>
+                </div>
+            </div>
+        `;
+    });
+    
+    showsHTML += '</div>';
+    container.innerHTML = showsHTML;
+}
+
+function openShowDetail(element) {
+    const setlist = element.getAttribute('data-setlist');
+    const date = element.getAttribute('data-date');
+    const time = element.getAttribute('data-time');
+    
+    localStorage.setItem('jkt48_selected_setlist', setlist);
+    localStorage.setItem('jkt48_selected_date', date);
+    localStorage.setItem('jkt48_selected_time', time);
+    
+    const url = `liveshow.html?setlist=${setlist}&date=${date}&time=${time}`;
+    window.location.href = url;
+}
+
+// Auto-update status show setiap 30 detik
+setInterval(() => {
+    if (allShows.length > 0) {
+        renderShows(currentDate);
+    }
+}, 30000);
+
+// Cek pergantian hari setiap 1 menit
+let lastCheckedDate = new Date().toISOString().split('T')[0];
+
+function checkDayChange() {
+    const todayStr = new Date().toISOString().split('T')[0];
+    
+    // Jika hari berubah (sudah lewat tengah malam)
+    if (lastCheckedDate !== todayStr) {
+        console.log('Hari berganti dari', lastCheckedDate, 'ke', todayStr);
+        lastCheckedDate = todayStr;
+        currentDate = todayStr;
+        currentMonth = moment(currentDate);
+        
+        // Reload data dan update tampilan
+        renderCalendar();
+        renderShows(currentDate);
+    }
+}
+
+setInterval(checkDayChange, 60000); // Cek setiap 1 menit
+
+// Fungsi untuk schedule exact midnight update
+function scheduleMidnightUpdate() {
+    const now = new Date();
+    const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
+    const msUntilMidnight = tomorrow - now;
+    
+    console.log('Next midnight update in', Math.round(msUntilMidnight / 1000 / 60), 'minutes');
+    
+    setTimeout(() => {
+        console.log('Midnight reached! Updating to new day...');
+        const todayStr = new Date().toISOString().split('T')[0];
+        lastCheckedDate = todayStr;
+        currentDate = todayStr;
+        currentMonth = moment(currentDate);
+        
+        renderCalendar();
+        renderShows(currentDate);
+        
+        // Schedule next midnight
+        scheduleMidnightUpdate();
+    }, msUntilMidnight);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadSchedule();
+    scheduleMidnightUpdate(); // Start midnight scheduler
 });
 </script>
 </body>
