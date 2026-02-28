@@ -568,7 +568,7 @@ async function loadSchedule() {
             .from('setlist_performance')
             .select(`
                 *,
-                members!inner(name)
+                members(name)
             `)
             .gte('show_date', startStr)
             .lte('show_date', endStr)
@@ -948,12 +948,12 @@ function renderShows(date) {
                                 <circle cx="12" cy="12" r="10"></circle>
                                 <polyline points="12 6 12 12 16 14"></polyline>
                             </svg>
-                            ${show.time.slice(0, 5)} WIB • ${show.members.length} member
+                            ${show.time.slice(0, 5)} WIB • ${show.members.length > 0 ? show.members.length + ' member' : 'TBA'}
                         </div>
                     </div>
                 </div>
                 <div class="show-card-members">
-                    <p><strong>Member yang tampil:</strong> ${show.members.sort().join(', ')}</p>
+                    <p><strong>Member yang tampil:</strong> ${show.members.length > 0 ? show.members.sort().join(', ') : '<em style="color:#8b5cf6;">Belum ada member (TBA)</em>'}</p>
                 </div>
             </div>
         `;
