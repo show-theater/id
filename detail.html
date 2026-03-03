@@ -658,7 +658,7 @@ body.dark .spinner{border-color:rgba(255,255,255,0.1);border-top-color:#9ca3af}
 <header class="main-header">
   <!-- Baris 1: Background merah -->
   <div class="header-top-bar">
-    <span class="header-top-title">JKT48 SHOW THEATER</span>
+    <span class="header-top-title" onclick="window.location.href='index.html'" style="cursor:pointer">JKT48 SHOW THEATER</span>
   </div>
   <!-- Baris 2: Navigasi -->
   <div class="detail-header">
@@ -771,7 +771,7 @@ function toggleTheme() {
 
 async function loadMember() {
   if (!MEMBER_NAME) {
-    showError('Parameter member tidak ditemukan');
+    showError('Member tidak ditemukan');
     return;
   }
 
@@ -1001,10 +1001,17 @@ function showError(message) {
   
   document.getElementById('container').innerHTML = `
     <div class="content" style="padding:60px 20px;text-align:center">
+      <div style="font-size:64px;margin-bottom:20px">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#e60012" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+      </div>
       <div style="font-size:18px;font-weight:bold;color:#333;margin-bottom:10px">${message}</div>
       <div style="color:#6b7280;margin-bottom:30px">Member tidak ditemukan atau terjadi kesalahan</div>
       <button onclick="goBack()" style="background:#e60012;color:#fff;border:none;border-radius:12px;padding:12px 24px;font-size:14px;font-weight:600;cursor:pointer">
-        Kembali
+        Kembali ke Beranda
       </button>
     </div>
   `;
